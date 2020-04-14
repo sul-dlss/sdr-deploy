@@ -6,7 +6,6 @@
 require 'fileutils'
 
 WORK_DIR = ['tmp/repos']
-REPOS = ['sul-dlss/argo', 'sul-dlss/dor-services-app']
 
 def update_repo(repo_dir)
   Dir.chdir(repo_dir) do
@@ -42,6 +41,10 @@ def deploy(stage)
   end
 end
 
+def repos
+  File.readlines("repos", chomp: true)
+end
+
 stage = ARGV[0]
 unless %w[stage qa prod].include?(stage)
   warn "Usage:"
@@ -50,7 +53,7 @@ unless %w[stage qa prod].include?(stage)
   exit
 end
 
-REPOS.each do |repo|
+repos.each do |repo|
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
   Dir.chdir(repo_dir) do
