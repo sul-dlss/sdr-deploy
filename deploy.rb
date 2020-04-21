@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'byebug'
+
 # Usage:
 # ./deploy.rb stage
 
@@ -39,6 +41,7 @@ def deploy(stage)
       end
     end
   end
+  $?.success?
 end
 
 def repos
@@ -53,6 +56,7 @@ unless %w[stage qa prod].include?(stage)
   exit
 end
 
+deploys = {}
 repos.each do |repo|
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
@@ -61,6 +65,8 @@ repos.each do |repo|
     `bundle install`
     # Comment out where we ask what branch to deploy. We always deploy master.
     `sed -i '' 's/^\\(ask :branch.*\\)/#\\1/g' config/deploy.rb`
-    deploy(stage)
+    deploys[repo] = deploy(stage)
   end
 end
+
+deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" }
