@@ -5,6 +5,16 @@ to be deployed at once.
 
 ## Usage
 
+Make sure that:
+* You are on VPN.
+* You have `kinit`-ed.
+* You have previously `ssh`-ed into all servers.
+
+
 ```
 ./deploy.rb stage
 ```
+
+Note:
+* All repos will be cloned to `tmp`. The first time this has run the cloning will be very slow.
+* To skip a repo, comment it out in `repos.txt`.
