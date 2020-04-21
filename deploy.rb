@@ -45,7 +45,7 @@ def deploy(stage)
 end
 
 def repos
-  File.readlines("repos", chomp: true)
+  File.readlines("repos.txt", chomp: true).reject { |file| file.start_with?('#')}
 end
 
 stage = ARGV[0]
