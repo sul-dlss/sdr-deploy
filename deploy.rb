@@ -66,6 +66,7 @@ repos.each do |repo|
     # Comment out where we ask what branch to deploy. We always deploy master.
     `sed -i '' 's/^\\(ask :branch.*\\)/#\\1/g' config/deploy.rb`
     deploys[repo] = deploy(stage)
+    `git checkout config/deploy.rb`
   end
 end
 
