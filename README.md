@@ -16,5 +16,5 @@ Make sure that:
 ```
 
 Note:
-* All repos will be cloned to `tmp`. The first time this has run the cloning will be very slow.
+* All repos will be cloned to `tmp`. 
 * To skip a repo, comment it out in `repos.txt`.
