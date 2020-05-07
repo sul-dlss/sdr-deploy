@@ -19,7 +19,7 @@ def create_repo(repo_dir, repo)
   FileUtils.mkdir_p repo_dir
   puts "creating #{repo}"
   Dir.chdir(repo_dir) do
-    `git clone https://github.com/#{repo}.git .`
+    `git clone --depth=5 https://github.com/#{repo}.git .`
   end
 end
 
