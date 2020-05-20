@@ -59,6 +59,8 @@ status:
 ---
 repo: sul-dlss/preservation_robots
 ---
+repo: sul-dlss/rialto-etl
+---
 repo: sul-dlss/robot-console
 ---
 repo: sul-dlss/sdr-api
