@@ -17,4 +17,4 @@ Make sure that:
 
 Note:
 * All repos will be cloned to `tmp`. 
-* To skip a repo, comment it out in `repos.txt`.
+* To skip a repo, comment it out in `repos.yml`.
