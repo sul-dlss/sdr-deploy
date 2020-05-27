@@ -22,7 +22,7 @@ def create_repo(repo_dir, repo)
   FileUtils.mkdir_p repo_dir
   puts "creating #{repo}"
   Dir.chdir(repo_dir) do
-    `git clone --depth=5 https://github.com/#{repo}.git .`
+    `git clone --depth=5 git@github.com:#{repo}.git .`
   end
 end
 
@@ -61,6 +61,13 @@ def repo_infos
   YAML.load_stream(File.open('repos.yml'))
 end
 
+# Comment out where we ask what branch to deploy. We always deploy master.
+def comment_out_branch_prompt!
+  text = File.read('config/deploy.rb')
+  text.gsub!(%r{(?=ask :branch)}, '# ')
+  File.write('config/deploy.rb', text)
+end
+
 stage = ARGV[0]
 unless %w[stage qa prod].include?(stage)
   warn "Usage:"
@@ -77,8 +84,7 @@ repo_infos.each do |repo_info|
   Dir.chdir(repo_dir) do
     puts "Deploying #{repo_dir}"
     `bundle install`
-    # Comment out where we ask what branch to deploy. We always deploy master.
-    `sed -i '' 's/^\\(ask :branch.*\\)/#\\1/g' config/deploy.rb`
+    comment_out_branch_prompt!
     deploys[repo] = deploy(stage)
     status_url = repo_info.fetch('status', {})[stage]
     next unless deploys[repo] && status_url
