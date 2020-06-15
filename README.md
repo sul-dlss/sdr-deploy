@@ -9,7 +9,7 @@ Make sure that:
 * You are on VPN.
 * You have `kinit`-ed.
 * You have previously `ssh`-ed into all servers.
-
+* You have added the public SSH key, often `~/.ssh/id_rsa.pub`, from your machine to [GitHub](https://github.com/settings/keys)
 
 ```
 ./deploy.rb stage
