@@ -23,6 +23,10 @@ def create_repo(repo_dir, repo)
   puts "creating #{repo}"
   Dir.chdir(repo_dir) do
     `git clone --depth=5 git@github.com:#{repo}.git .`
+    unless $?.success?
+      warn "Error, while running git clone"
+      exit(1)
+    end
   end
 end
 
