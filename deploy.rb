@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'byebug'
 require 'yaml'
 require 'net/http'
@@ -8,6 +9,7 @@ require 'net/http'
 # ./deploy.rb stage
 
 require 'fileutils'
+require 'auditor'
 
 WORK_DIR = ['tmp/repos']
 
@@ -76,11 +78,14 @@ unless %w[stage qa prod].include?(stage)
   exit
 end
 
+auditor = Auditor.new
+
 deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
+  auditor.audit(repo: repo, dir: repo_dir)
   Dir.chdir(repo_dir) do
     puts "Deploying #{repo_dir}"
     `bundle install`
@@ -92,4 +97,5 @@ repo_infos.each do |repo_info|
   end
 end
 
+auditor.report
 deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" }
