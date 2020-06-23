@@ -17,8 +17,9 @@ $ gem install bundler-audit
 Make sure that:
 * You are on VPN.
 * You have `kinit`-ed.
-* You have previously `ssh`-ed into all servers.
 * You have added the public SSH key, often `~/.ssh/id_rsa.pub`, from your machine to [GitHub](https://github.com/settings/keys)
+* You have previously `ssh`-ed into all servers.
+  * NOTE: If you are unsure about this, run `./deploy.rb stage --checkssh` and watch the output for any errors!
 
 ```
 ./deploy.rb stage
