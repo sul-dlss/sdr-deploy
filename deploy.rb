@@ -1,15 +1,20 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
+$LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'byebug'
 require 'yaml'
 require 'net/http'
+require 'fileutils'
+require 'auditor'
 
 # Usage:
 # ./deploy.rb stage
+#
+# To test SSH connections to all servers in the specified environment, first run:
+# ./deploy.rb stage --checkssh
 
-require 'fileutils'
-
-WORK_DIR = ['tmp/repos']
+WORK_DIR = ['tmp/repos'].freeze
 
 def update_repo(repo_dir)
   Dir.chdir(repo_dir) do
@@ -39,13 +44,11 @@ def update_or_create_repo(repo_dir, repo)
 end
 
 def deploy(stage)
-  IO.popen("cap #{stage} deploy") do |f|
-    while true
-      begin
-        puts f.readline
-      rescue EOFError
-        break
-      end
+  IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "cap #{stage} deploy") do |f|
+    loop do
+      puts f.readline
+    rescue EOFError
+      break
     end
   end
   $?.success?
@@ -68,32 +71,43 @@ end
 # Comment out where we ask what branch to deploy. We always deploy master.
 def comment_out_branch_prompt!
   text = File.read('config/deploy.rb')
-  text.gsub!(%r{(?=ask :branch)}, '# ')
+  text.gsub!(/(?=ask :branch)/, '# ')
   File.write('config/deploy.rb', text)
 end
 
 stage = ARGV[0]
 unless %w[stage qa prod].include?(stage)
-  warn "Usage:"
-  warn "  #{$0} <stage>"
+  warn 'Usage:'
+  warn "  #{$PROGRAM_NAME} <stage>"
   warn "\n  stage must be one of \"stage\",\"qa\",\"prod\"\n\n"
   exit
 end
+
+ssh_check = ARGV[1] == '--checkssh'
+
+auditor = Auditor.new
 
 deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
+  auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
   Dir.chdir(repo_dir) do
     puts "Deploying #{repo_dir}"
     `bundle install`
-    comment_out_branch_prompt!
-    deploys[repo] = deploy(stage)
-    status_url = repo_info.fetch('status', {})[stage]
-    next unless deploys[repo] && status_url
-    deploys[repo] = status_check(status_url)
+    if ssh_check
+      `cap #{stage} ssh_check`
+    else
+      comment_out_branch_prompt!
+      deploys[repo] = deploy(stage)
+      status_url = repo_info.fetch('status', {})[stage]
+      next unless deploys[repo] && status_url
+
+      deploys[repo] = status_check(status_url)
+    end
   end
 end
 
-deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" }
+auditor.report unless ssh_check
+deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" } unless ssh_check
