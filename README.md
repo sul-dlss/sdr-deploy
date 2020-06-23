@@ -3,6 +3,15 @@
 This is a central place for deploying SDR applications (and sul_pub).  This allows all applications
 to be deployed at once.
 
+## Setup
+
+Install required gems:
+
+```shell
+$ gem install byebug
+$ gem install bundler-audit
+```
+
 ## Usage
 
 Make sure that:
@@ -16,5 +25,5 @@ Make sure that:
 ```
 
 Note:
-* All repos will be cloned to `tmp`. 
+* All repos will be cloned to `tmp`.
 * To skip a repo, comment it out in `repos.yml`.
