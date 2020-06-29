@@ -3,8 +3,5 @@
 source 'https://rubygems.org'
 
 gem 'byebug'
+gem 'dlss-capistrano', require: false
 gem 'pry-byebug'
-
-group 'deployment' do
-  gem 'dlss-capistrano', require: false
-end
