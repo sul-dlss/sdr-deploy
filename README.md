@@ -8,8 +8,8 @@ to be deployed at once.
 Install required gems:
 
 ```shell
-$ gem install byebug
-$ gem install bundler-audit
+$ gem install bundler
+$ bundle install
 ```
 
 ## Usage
