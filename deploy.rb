@@ -2,6 +2,11 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
 require 'byebug'
 require 'yaml'
 require 'net/http'
