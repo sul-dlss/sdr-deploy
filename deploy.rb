@@ -14,10 +14,10 @@ require 'fileutils'
 require 'auditor'
 
 # Usage:
-# ./deploy.rb stage
+# ./deploy.rb [qa|stage|prod]
 #
 # To test SSH connections to all servers in the specified environment, first run:
-# ./deploy.rb stage --checkssh
+# ./deploy.rb [qa|stage|prod] --checkssh
 
 WORK_DIR = ['tmp/repos'].freeze
 
