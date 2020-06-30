@@ -10,7 +10,7 @@ class Auditor
 
   def audit(dir:, repo:)
     Dir.chdir(dir) do
-      out, status = Open3.capture2 'bundle audit'
+      out, status = Open3.capture2 'bundle exec bundle audit'
       return if status.success?
 
       errors = parse_errors(out)
