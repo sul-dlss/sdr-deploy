@@ -111,6 +111,6 @@ status:
 ---
 repo: sul-dlss/workflow-server-rails
 status:
-  qa: https://sul-lyberservices-qa.stanford.edu/workflow/status
-  stage: https://sul-lyberservices-test.stanford.edu/workflow/status
-  prod: https://sul-lyberservices-prod.stanford.edu/workflow/status
+  qa: https://workflow-service-qa.stanford.edu/workflow/status
+  stage: https://workflow-service-stage.stanford.edu/workflow/status
+  prod: https://workflow-service-prod.stanford.edu/workflow/status

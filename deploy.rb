@@ -109,5 +109,8 @@ repo_infos.each do |repo_info|
   end
 end
 
+puts "\n\n------- BUNDLE AUDIT REPORT, AFTER DEPLOY -------"
 auditor.report unless ssh_check
+
+puts "\n\n------- STATUS CHECK RESULTS, AFTER DEPLOY -------"
 deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" } unless ssh_check
