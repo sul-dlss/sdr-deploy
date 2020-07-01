@@ -109,8 +109,11 @@ repo_infos.each do |repo_info|
   end
 end
 
-puts "\n\n------- BUNDLE AUDIT REPORT, AFTER DEPLOY -------"
-auditor.report unless ssh_check
+unless ssh_check
+  puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
+  auditor.report
 
-puts "\n\n------- STATUS CHECK RESULTS, AFTER DEPLOY -------"
-deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'failed'}" } unless ssh_check
+  puts "\n\n------- STATUS CHECK (https::/xxx/status) RESULTS AFTER DEPLOY -------\n"
+  deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'FAILED'}" }
+  puts "\n------- END STATUS CHECK RESULTS -------\n"
+end
