@@ -27,17 +27,20 @@ class Auditor
   end
 
   def report
-    puts "\nErrors found:"
+    if @project_errors.any?
+      puts "\nVulnerabilities found:\n"
 
-    @project_errors.each do |repo, errors|
-      puts "#{repo}: #{errors.join(', ')}"
-    end
+      @project_errors.each do |repo, errors|
+        puts "#{repo}: #{errors.join(', ')}"
+      end
 
-    puts
-    puts "Summary:"
-    @error_descriptions.each_value do |err|
-      err.to_h.each do |k,v|
-        puts "#{k.capitalize}: #{v}"
+      puts
+      puts "CVE Details:"
+      @error_descriptions.each_value do |err|
+        puts
+        err.to_h.each do |k,v|
+          puts "#{k.capitalize}: #{v}"
+        end
       end
     end
   end
