@@ -44,7 +44,7 @@ def update_or_create_repo(repo_dir, repo)
 end
 
 def deploy(stage)
-  IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "cap #{stage} deploy") do |f|
+  IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{stage} deploy") do |f|
     loop do
       puts f.readline
     rescue EOFError
@@ -97,7 +97,7 @@ repo_infos.each do |repo_info|
     puts "Deploying #{repo_dir}"
     `bundle install`
     if ssh_check
-      `cap #{stage} ssh_check`
+      `bundle exec cap #{stage} ssh_check`
     else
       comment_out_branch_prompt!
       deploys[repo] = deploy(stage)
