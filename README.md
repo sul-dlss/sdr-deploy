@@ -19,10 +19,18 @@ Make sure that:
 * You have `kinit`-ed.
 * You have added the public SSH key, often `~/.ssh/id_rsa.pub`, from your machine to [GitHub](https://github.com/settings/keys)
 * You have previously `ssh`-ed into all servers.
-  * NOTE: If you are unsure about this, run `./deploy.rb stage --checkssh` and watch the output for any errors!
+  * NOTE: If you are unsure about this, run `./deploy.rb [qa|stage|prod] --checkssh` and watch the output for any errors!
+
+NOTE: if you prefer your output in color, this will work:
 
 ```
-./deploy.rb stage
+export SSHKIT_COLOR='TRUE'
+```
+
+Run the deploys
+
+```
+./deploy.rb qa   # or stage or prod
 ```
 
 Note:
