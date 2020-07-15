@@ -94,11 +94,13 @@ repo_infos.each do |repo_info|
   update_or_create_repo(repo_dir, repo)
   auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
   Dir.chdir(repo_dir) do
-    puts "Deploying #{repo_dir}"
+    puts "Installing gems for #{repo_dir}"
     `bundle install`
     if ssh_check
+      puts "running 'cap #{stage} ssh_check' for #{repo_dir}"
       `bundle exec cap #{stage} ssh_check`
     else
+      puts "Deploying #{repo_dir}"
       comment_out_branch_prompt!
       deploys[repo] = deploy(stage)
       status_url = repo_info.fetch('status', {})[stage]
