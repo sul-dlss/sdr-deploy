@@ -2,11 +2,17 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
-require 'byebug'
-require 'yaml'
-require 'net/http'
-require 'fileutils'
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'byebug'
+  gem 'bundler-audit'
+end
+
 require 'auditor'
+require 'net/http'
 
 # Usage:
 # ./deploy.rb stage
@@ -92,21 +98,23 @@ repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
-  auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
-  Dir.chdir(repo_dir) do
-    puts "Installing gems for #{repo_dir}"
-    `bundle install`
-    if ssh_check
-      puts "running 'cap #{stage} ssh_check' for #{repo_dir}"
-      `bundle exec cap #{stage} ssh_check`
-    else
-      puts "Deploying #{repo_dir}"
-      comment_out_branch_prompt!
-      deploys[repo] = deploy(stage)
-      status_url = repo_info.fetch('status', {})[stage]
-      next unless deploys[repo] && status_url
+  Bundler.with_unbundled_env do
+    auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
+    Dir.chdir(repo_dir) do
+      puts "Installing gems for #{repo_dir}"
+      Bundler.unbundled_system('bundle install')
+      if ssh_check
+        puts "running 'cap #{stage} ssh_check' for #{repo_dir}"
+        `bundle exec cap #{stage} ssh_check`
+      else
+        puts "Deploying #{repo_dir}"
+        comment_out_branch_prompt!
+        deploys[repo] = deploy(stage)
+        status_url = repo_info.fetch('status', {})[stage]
+        next unless deploys[repo] && status_url
 
-      deploys[repo] = status_check(status_url)
+        deploys[repo] = status_check(status_url)
+      end
     end
   end
 end

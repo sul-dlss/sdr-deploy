@@ -1,4 +1,5 @@
 require 'open3'
+
 class Auditor
   SUFFIX = "\nVulnerabilities found!\n"
   Error = Struct.new(:name, :advisory, :criticality, :version, :url, :title, :solution, keyword_init: true)

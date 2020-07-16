@@ -5,12 +5,13 @@ to be deployed at once.
 
 ## Setup
 
-Install required gems:
+Install bundler:
 
 ```shell
-$ gem install byebug
-$ gem install bundler-audit
+$ gem install bundler
 ```
+
+That's it!
 
 ## Usage
 
