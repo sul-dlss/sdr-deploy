@@ -43,9 +43,6 @@ status:
   stage: https://sdr-test.stanford.edu/status
   prod: https://sdr.stanford.edu/status
 ---
-repo: sul-dlss/lyberservices-scripts
-# has no qa deploy target, but we hope this repo is going away
----
 repo: sul-dlss/modsulator-app-rails
 # modsulator does not have a status check.
 ---
