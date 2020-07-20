@@ -9,7 +9,6 @@ Install required gems:
 
 ```shell
 $ gem install byebug
-$ gem install bundler-audit
 ```
 
 ## Usage
