@@ -91,8 +91,6 @@ status:
   stage: https://dor-techmd-stage.stanford.edu/status
   prod: https://dor-techmd-prod.stanford.edu/status
 ---
-repo: sul-dlss/was_robot_suite
----
 repo: sul-dlss/was-registrar-app
 # has no qa deploy target, no qa VM https://github.com/sul-dlss/was-registrar-app/issues/251
 status:
@@ -105,6 +103,8 @@ repo: sul-dlss/was-thumbnail-service
 status:
   stage: https://was-thumbnail-stage.stanford.edu/status/
   prod: https://was-thumbnail-prod.stanford.edu/status/
+---
+repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
 status:
