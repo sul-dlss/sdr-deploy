@@ -67,6 +67,10 @@ def repo_infos
   YAML.load_stream(File.open('repos.yml'))
 end
 
+def repo_names
+  repo_infos.map { |repo_info| repo_info['repo'] }
+end
+
 # Comment out where we ask what branch to deploy. We always deploy master.
 def comment_out_branch_prompt!
   text = File.read('config/deploy.rb')
@@ -86,6 +90,8 @@ ssh_check = ARGV[1] == '--checkssh'
 
 auditor = Auditor.new
 
+puts "repos to #{ssh_check ? 'ssh_check' : 'deploy'}: #{repo_names.join(', ')}"
+
 deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
@@ -99,13 +105,14 @@ repo_infos.each do |repo_info|
       puts "running 'cap #{stage} ssh_check' for #{repo_dir}"
       `bundle exec cap #{stage} ssh_check`
     else
-      puts "Deploying #{repo_dir}"
+      puts "###\nDeploying #{repo_dir}..."
       comment_out_branch_prompt!
-      deploys[repo] = deploy(stage)
+      deploys[repo] = { cap_result: deploy(stage) }
+      puts "...Deployed #{repo_dir}; result: #{deploys[repo]}\n###"
       status_url = repo_info.fetch('status', {})[stage]
-      next unless deploys[repo] && status_url
+      next unless deploys[repo][:cap_result] && status_url
 
-      deploys[repo] = status_check(status_url)
+      deploys[repo].merge!({ status_check_result: status_check(status_url) })
     end
   end
 end
@@ -115,6 +122,17 @@ unless ssh_check
   auditor.report
 
   puts "\n\n------- STATUS CHECK (https::/xxx/status) RESULTS AFTER DEPLOY -------\n"
-  deploys.each { |repo, success| puts "#{repo} => #{success ? 'success' : 'FAILED'}" }
+  deploys.each do |repo, deploy_result|
+    cap_result = deploy_result[:cap_result] ? 'success' : 'FAILED'
+    status_check_result = case deploy_result[:status_check_result]
+      when nil
+        'N/A'
+      when true
+        'success'
+      else
+        'FAILED'
+      end
+    puts "#{repo}\n => 'cap #{stage} deploy' result: #{cap_result}\n => status check result:      #{status_check_result}"
+  end
   puts "\n------- END STATUS CHECK RESULTS -------\n"
 end
