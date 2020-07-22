@@ -108,6 +108,6 @@ repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
 status:
-  qa: https://workflow-service-qa.stanford.edu/workflow/status
-  stage: https://workflow-service-stage.stanford.edu/workflow/status
-  prod: https://workflow-service-prod.stanford.edu/workflow/status
+  qa: https://workflow-service-qa.stanford.edu/status
+  stage: https://workflow-service-stage.stanford.edu/status
+  prod: https://workflow-service-prod.stanford.edu/status
