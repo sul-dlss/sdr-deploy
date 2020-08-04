@@ -1,47 +1,47 @@
 ---
 repo: sul-dlss/argo
 status:
-  qa: https://argo-qa.stanford.edu/status/
-  stage: https://argo-stage.stanford.edu/status/
-  prod: https://argo.stanford.edu/status/
+  qa: https://argo-qa.stanford.edu/status/all/
+  stage: https://argo-stage.stanford.edu/status/all/
+  prod: https://argo.stanford.edu/status/all/
 ---
 repo: sul-dlss/common-accessioning
 # has no qa deploy target, no qa VM https://github.com/sul-dlss/common-accessioning/issues/673
 ---
 repo: sul-dlss/dor-services-app
 status:
-  qa: https://dor-services-qa.stanford.edu/status/
-  stage: https://dor-services-stage.stanford.edu/status/
-  prod: https://dor-services-prod.stanford.edu/status/
+  qa: https://dor-services-qa.stanford.edu/status/all/
+  stage: https://dor-services-stage.stanford.edu/status/all/
+  prod: https://dor-services-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/dor_indexing_app
 # unable to get local issuer certificate
 #status:
-#  qa: https://dor-indexing-app-qa-a.stanford.edu/status/
-#  stage: https://dor-indexing-app-stage-a.stanford.edu/status/
-#  prod: https://dor-indexing-app-prod-a.stanford.edu/status/
+#  qa: https://dor-indexing-app-qa-a.stanford.edu/status/all/
+#  stage: https://dor-indexing-app-stage-a.stanford.edu/status/all/
+#  prod: https://dor-indexing-app-prod-a.stanford.edu/status/all/
 ---
 repo: sul-dlss/gis-robot-suite
 # has no qa deploy target, no qa VM
 ---
 repo: sul-dlss/google-books
 status:
-  qa: https://sul-gbooks-qa.stanford.edu/status/
-  stage: https://sul-gbooks-stage.stanford.edu/status/
-  prod: https://sul-gbooks-prod.stanford.edu/status/
+  qa: https://sul-gbooks-qa.stanford.edu/status/all/
+  stage: https://sul-gbooks-stage.stanford.edu/status/all/
+  prod: https://sul-gbooks-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/hydra_etd
 # has no qa deploy target, no qa VM
 status:
-  stage: https://etd-stage.stanford.edu/status
-  prod:  https://etd.stanford.edu/status
+  stage: https://etd-stage.stanford.edu/status/all/
+  prod:  https://etd.stanford.edu/status/all/
 ---
 repo: sul-dlss/hydrus
 # has no qa deploy target, no qa VM https://github.com/sul-dlss/hydrus/issues/443
 status:
-  # qa: https://sdr-qa.stanford.edu/status
-  stage: https://sdr-test.stanford.edu/status
-  prod: https://sdr.stanford.edu/status
+  # qa: https://sdr-qa.stanford.edu/status/all/
+  stage: https://sdr-test.stanford.edu/status/all/
+  prod: https://sdr.stanford.edu/status/all/
 ---
 repo: sul-dlss/modsulator-app-rails
 # modsulator does not have a status check.
@@ -49,16 +49,16 @@ repo: sul-dlss/modsulator-app-rails
 repo: sul-dlss/pre-assembly
 # has no qa deploy target https://github.com/sul-dlss/pre-assembly/issues/691
 status:
-  # qa: https://sul-preassembly-qa.stanford.edu/status
-  stage: https://sul-preassembly-stage.stanford.edu/status
-  prod: https://sul-preassembly-prod.stanford.edu/status
+  # qa: https://sul-preassembly-qa.stanford.edu/status/all/
+  stage: https://sul-preassembly-stage.stanford.edu/status/all/
+  prod: https://sul-preassembly-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/preservation_catalog
 # has no qa deploy target, no qa VM https://github.com/sul-dlss/preservation_catalog/issues/1574
 status:
   # qa: https://preservation-catalog-qa-01.stanford.edu/status
-  stage: https://preservation-catalog-stage-01.stanford.edu/status
-  prod: https://preservation-catalog-prod-01.stanford.edu/status
+  stage: https://preservation-catalog-stage-01.stanford.edu/status/all/
+  prod: https://preservation-catalog-prod-01.stanford.edu/status/all/
 ---
 repo: sul-dlss/preservation_robots
 # has no qa deploy target https://github.com/sul-dlss/preservation_robots/issues/247
@@ -74,40 +74,42 @@ status:
 repo: sul-dlss/sul_pub
   # qa deploy target isn't set up normally
 status:
-  # qa: https://sul-pub-qa.stanford.edu/status
-  stage: https://sul-pub-stage.stanford.edu/status
-  prod: https://sul-pub-prod.stanford.edu/status
+  # qa: https://sul-pub-qa.stanford.edu/status/all/
+  stage: https://sul-pub-stage.stanford.edu/status/all/
+  prod: https://sul-pub-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/suri-rails
 status:
-  qa: https://sul-suri-qa.stanford.edu/status
-  stage: https://sul-suri-stage.stanford.edu/status
-  prod: https://sul-suri-prod.stanford.edu/status
+  qa: https://sul-suri-qa.stanford.edu/status/all/
+  stage: https://sul-suri-stage.stanford.edu/status/all/
+  # prod is locked down and cannot be checked remotely
+  # prod: https://sul-suri-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/technical-metadata-service
 # has no qa deploy target https://github.com/sul-dlss/technical-metadata-service/issues/169
 status:
-  # qa: https://dor-techmd-qa.stanford.edu/status
-  stage: https://dor-techmd-stage.stanford.edu/status
-  prod: https://dor-techmd-prod.stanford.edu/status
+  # qa: https://dor-techmd-qa.stanford.edu/status/all/
+  stage: https://dor-techmd-stage.stanford.edu/status/all/
+  prod: https://dor-techmd-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/was-registrar-app
 # has no qa deploy target, no qa VM https://github.com/sul-dlss/was-registrar-app/issues/251
 status:
-  # qa: https://was-registrar-app-qa.stanford.edu/status
-  stage: https://was-registrar-app-stage.stanford.edu/status
-  prod: https://was-registrar-app.stanford.edu/status
+  # qa: https://was-registrar-app-qa.stanford.edu/status/all/
+  stage: https://was-registrar-app-stage.stanford.edu/status/all/
+  prod: https://was-registrar-app.stanford.edu/status/all/
 ---
 repo: sul-dlss/was-thumbnail-service
 # has no qa deploy target, but repo is going away
 status:
-  stage: https://was-thumbnail-stage.stanford.edu/status/
-  prod: https://was-thumbnail-prod.stanford.edu/status/
+  stage: https://was-thumbnail-stage.stanford.edu/status/all/
+  prod: https://was-thumbnail-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
 status:
-  qa: https://workflow-service-qa.stanford.edu/status
-  stage: https://workflow-service-stage.stanford.edu/status
-  prod: https://workflow-service-prod.stanford.edu/status
+  qa: https://workflow-service-qa.stanford.edu/status/all/
+  stage: https://workflow-service-stage.stanford.edu/status/all/
+  # prod is locked down and cannot be checked remotely
+  # prod: https://workflow-service-prod.stanford.edu/status/all/
