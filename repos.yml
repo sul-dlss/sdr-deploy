@@ -82,7 +82,6 @@ repo: sul-dlss/suri-rails
 status:
   qa: https://sul-suri-qa.stanford.edu/status
   stage: https://sul-suri-stage.stanford.edu/status
-  prod: https://sul-suri-prod.stanford.edu/status
 ---
 repo: sul-dlss/technical-metadata-service
 # has no qa deploy target https://github.com/sul-dlss/technical-metadata-service/issues/169
@@ -110,4 +109,3 @@ repo: sul-dlss/workflow-server-rails
 status:
   qa: https://workflow-service-qa.stanford.edu/status
   stage: https://workflow-service-stage.stanford.edu/status
-  prod: https://workflow-service-prod.stanford.edu/status
