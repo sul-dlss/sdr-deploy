@@ -31,8 +31,8 @@ status:
   prod: https://sul-gbooks-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/hydra_etd
-# has no qa deploy target, no qa VM
 status:
+  qa: https://etd-qa.stanford.edu/status/all/
   stage: https://etd-stage.stanford.edu/status/all/
   prod:  https://etd.stanford.edu/status/all/
 ---
