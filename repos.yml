@@ -6,7 +6,6 @@ status:
   prod: https://argo.stanford.edu/status/all/
 ---
 repo: sul-dlss/common-accessioning
-# has no qa deploy target, no qa VM https://github.com/sul-dlss/common-accessioning/issues/673
 ---
 repo: sul-dlss/dor-services-app
 status:
@@ -54,14 +53,12 @@ status:
   prod: https://sul-preassembly-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/preservation_catalog
-# has no qa deploy target, no qa VM https://github.com/sul-dlss/preservation_catalog/issues/1574
 status:
-  # qa: https://preservation-catalog-qa-01.stanford.edu/status
+  qa: https://preservation-catalog-qa-01.stanford.edu/status/all/
   stage: https://preservation-catalog-stage-01.stanford.edu/status/all/
   prod: https://preservation-catalog-prod-01.stanford.edu/status/all/
 ---
 repo: sul-dlss/preservation_robots
-# has no qa deploy target https://github.com/sul-dlss/preservation_robots/issues/247
 ---
 repo: sul-dlss/robot-console
 ---
@@ -86,9 +83,8 @@ status:
   # prod: https://sul-suri-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/technical-metadata-service
-# has no qa deploy target https://github.com/sul-dlss/technical-metadata-service/issues/169
 status:
-  # qa: https://dor-techmd-qa.stanford.edu/status/all/
+  qa: https://dor-techmd-qa.stanford.edu/status/all/
   stage: https://dor-techmd-stage.stanford.edu/status/all/
   prod: https://dor-techmd-prod.stanford.edu/status/all/
 ---
