@@ -46,9 +46,8 @@ repo: sul-dlss/modsulator-app-rails
 # modsulator does not have a status check.
 ---
 repo: sul-dlss/pre-assembly
-# has no qa deploy target https://github.com/sul-dlss/pre-assembly/issues/691
 status:
-  # qa: https://sul-preassembly-qa.stanford.edu/status/all/
+  qa: https://sul-preassembly-qa.stanford.edu/status/all/
   stage: https://sul-preassembly-stage.stanford.edu/status/all/
   prod: https://sul-preassembly-prod.stanford.edu/status/all/
 ---
