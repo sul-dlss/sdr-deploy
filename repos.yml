@@ -70,8 +70,9 @@ status:
 repo: sul-dlss/sul_pub
   # qa deploy target isn't set up normally
 status:
-  # qa: https://sul-pub-qa.stanford.edu/status/all/
-  stage: https://sul-pub-stage.stanford.edu/status/all/
+  # if you check all on sul-pub stage, it will record a fail because harvesting is disabled there, that is expected
+  # qa: https://sul-pub-cap-qa.stanford.edu/status/all/
+  stage: https://sul-pub-stage.stanford.edu/status/
   prod: https://sul-pub-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/suri-rails
@@ -104,7 +105,8 @@ repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
 status:
-  qa: https://workflow-service-qa.stanford.edu/status/all/
-  stage: https://workflow-service-stage.stanford.edu/status/all/
-  # prod is locked down and cannot be checked remotely
+  # workflow-server-rails is locked down on all environments and cannot be checked remotely
+  # you can check manually using curl from the corresponding argo vms
+  # qa: https://workflow-service-qa.stanford.edu/status/all/
+  # stage: https://workflow-service-stage.stanford.edu/status/all/
   # prod: https://workflow-service-prod.stanford.edu/status/all/
