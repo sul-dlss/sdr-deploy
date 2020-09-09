@@ -104,9 +104,8 @@ status:
 repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
-status:
-  # workflow-server-rails is locked down on all environments and cannot be checked remotely
-  # you can check manually using curl from the corresponding argo vms
-  # qa: https://workflow-service-qa.stanford.edu/status/all/
-  # stage: https://workflow-service-stage.stanford.edu/status/all/
-  # prod: https://workflow-service-prod.stanford.edu/status/all/
+# workflow-server-rails is locked down on all environments and status cannot be checked remotely
+# you can check manually using curl from the corresponding argo vms
+# qa: https://workflow-service-qa.stanford.edu/status/all/
+# stage: https://workflow-service-stage.stanford.edu/status/all/
+# prod: https://workflow-service-prod.stanford.edu/status/all/
