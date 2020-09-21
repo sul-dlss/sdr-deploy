@@ -95,12 +95,6 @@ status:
   stage: https://was-registrar-app-stage.stanford.edu/status/all/
   prod: https://was-registrar-app.stanford.edu/status/all/
 ---
-repo: sul-dlss/was-thumbnail-service
-# has no qa deploy target, but repo is going away
-status:
-  stage: https://was-thumbnail-stage.stanford.edu/status/all/
-  prod: https://was-thumbnail-prod.stanford.edu/status/all/
----
 repo: sul-dlss/was_robot_suite
 ---
 repo: sul-dlss/workflow-server-rails
