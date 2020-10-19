@@ -29,6 +29,12 @@ status:
   stage: https://sul-gbooks-stage.stanford.edu/status/all/
   prod: https://sul-gbooks-prod.stanford.edu/status/all/
 ---
+repo: sul-dlss/happy-heron
+status:
+  qa: https://sul-h2-qa.stanford.edu/status/all/
+  stage: https://sul-h2-stage.stanford.edu/status/all/
+  prod: https://sul-h2-prod.stanford.edu/status/all/
+---
 repo: sul-dlss/hydra_etd
 status:
   qa: https://etd-qa.stanford.edu/status/all/
