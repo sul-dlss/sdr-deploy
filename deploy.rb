@@ -18,7 +18,7 @@ WORK_DIR = ['tmp/repos'].freeze
 def update_repo(repo_dir)
   Dir.chdir(repo_dir) do
     `git checkout config/deploy.rb`
-    `git checkout master 2> /dev/null && git pull`
+    `git checkout $(git symbolic-ref refs/remotes/origin/HEAD) 2> /dev/null && git pull`
   end
 end
 
@@ -71,7 +71,7 @@ def repo_names
   repo_infos.map { |repo_info| repo_info['repo'] }
 end
 
-# Comment out where we ask what branch to deploy. We always deploy master.
+# Comment out where we ask what branch to deploy. We always deploy to the default branch (master for most, main for some)
 def comment_out_branch_prompt!
   text = File.read('config/deploy.rb')
   text.gsub!(/(?=ask :branch)/, '# ')
