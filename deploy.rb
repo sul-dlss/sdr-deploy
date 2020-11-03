@@ -17,8 +17,8 @@ WORK_DIR = ['tmp/repos'].freeze
 
 def update_repo(repo_dir)
   Dir.chdir(repo_dir) do
-    `git checkout config/deploy.rb`
-    `git checkout $(git symbolic-ref refs/remotes/origin/HEAD) 2> /dev/null && git pull`
+    `git fetch origin`
+    `git reset --hard $(git symbolic-ref refs/remotes/origin/HEAD) 2> /dev/null`
   end
 end
 
