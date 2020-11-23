@@ -15,10 +15,10 @@ require 'auditor'
 
 WORK_DIR = ['tmp/repos'].freeze
 
-def update_repo(repo_dir)
+def update_repo(repo_dir, branch_name)
   Dir.chdir(repo_dir) do
     `git checkout config/deploy.rb`
-    `git checkout master 2> /dev/null && git pull`
+    `git checkout #{branch_name} 2> /dev/null && git pull`
   end
 end
 
@@ -34,9 +34,9 @@ def create_repo(repo_dir, repo)
   end
 end
 
-def update_or_create_repo(repo_dir, repo)
+def update_or_create_repo(repo_dir, repo, branch_name)
   if File.exist? repo_dir
-    update_repo(repo_dir)
+    update_repo(repo_dir, branch_name)
   else
     create_repo(repo_dir, repo)
   end
@@ -71,7 +71,7 @@ def repo_names
   repo_infos.map { |repo_info| repo_info['repo'] }
 end
 
-# Comment out where we ask what branch to deploy. We always deploy master.
+# Comment out where we ask what branch to deploy. We always deploy the primary branch.
 def comment_out_branch_prompt!
   text = File.read('config/deploy.rb')
   text.gsub!(/(?=ask :branch)/, '# ')
@@ -95,8 +95,9 @@ puts "repos to #{ssh_check ? 'ssh_check' : 'deploy'}: #{repo_names.join(', ')}"
 deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
+  branch_name = repo_info['branch_name'] || 'master' # default to master if not supplied in the yaml file
   repo_dir = File.join(WORK_DIR, repo)
-  update_or_create_repo(repo_dir, repo)
+  update_or_create_repo(repo_dir, repo, branch_name)
   auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
   Dir.chdir(repo_dir) do
     puts "Installing gems for #{repo_dir}"
