@@ -30,7 +30,6 @@ status:
   prod: https://sul-gbooks-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/happy-heron
-branch_name: main
 status:
   qa: https://sul-h2-qa.stanford.edu/status/all/
   stage: https://sul-h2-stage.stanford.edu/status/all/
