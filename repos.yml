@@ -21,7 +21,6 @@ repo: sul-dlss/dor_indexing_app
 #  prod: https://dor-indexing-app-prod-a.stanford.edu/status/all/
 ---
 repo: sul-dlss/gis-robot-suite
-# has no qa deploy target, no qa VM
 ---
 repo: sul-dlss/google-books
 status:
@@ -42,9 +41,8 @@ status:
   prod:  https://etd.stanford.edu/status/all/
 ---
 repo: sul-dlss/hydrus
-# has no qa deploy target, no qa VM https://github.com/sul-dlss/hydrus/issues/443
 status:
-  # qa: https://sdr-qa.stanford.edu/status/all/
+  qa: https://sdr-qa.stanford.edu/status/all/
   stage: https://sdr-test.stanford.edu/status/all/
   prod: https://sdr.stanford.edu/status/all/
 ---
@@ -74,10 +72,10 @@ status:
   prod: https://sdr-api-prod.stanford.edu/status
 ---
 repo: sul-dlss/sul_pub
-  # qa deploy target isn't set up normally
 status:
-  # if you check all on sul-pub stage, it will record a fail because harvesting is disabled there, that is expected
-  # qa: https://sul-pub-cap-qa.stanford.edu/status/all/
+  qa: https://sul-pub-cap-qa.stanford.edu/status/all/
+  # if you check all on sul-pub stage, it will record a fail because harvesting
+  # is disabled there, that is expected, hence the URL difference
   stage: https://sul-pub-stage.stanford.edu/status/
   prod: https://sul-pub-prod.stanford.edu/status/all/
 ---
@@ -95,9 +93,8 @@ status:
   prod: https://dor-techmd-prod.stanford.edu/status/all/
 ---
 repo: sul-dlss/was-registrar-app
-# has no qa deploy target, no qa VM https://github.com/sul-dlss/was-registrar-app/issues/251
 status:
-  # qa: https://was-registrar-app-qa.stanford.edu/status/all/
+  qa: https://was-registrar-app-qa.stanford.edu/status/all/
   stage: https://was-registrar-app-stage.stanford.edu/status/all/
   prod: https://was-registrar-app.stanford.edu/status/all/
 ---
