@@ -59,7 +59,9 @@ repo: sul-dlss/preservation_catalog
 status:
   qa: https://preservation-catalog-qa-01.stanford.edu/status/all/
   stage: https://preservation-catalog-stage-01.stanford.edu/status/all/
-  prod: https://preservation-catalog-prod-01.stanford.edu/status/all/
+  prod: https://preservation-catalog-prod-02.stanford.edu/status/all/
+  # note that the https://preservation-catalog-prod-01.stanford.edu/status/all box status check fails the 
+  #  feature-zip_storage_dir: PASSED Directory '/sdr-transfers' is writable  check, but the 2 passes by design
 ---
 repo: sul-dlss/preservation_robots
 ---
