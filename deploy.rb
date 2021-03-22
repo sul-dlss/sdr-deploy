@@ -89,12 +89,18 @@ unless %w[stage qa prod].include?(stage)
   exit
 end
 
-ssh_check = ARGV[1] == '--checkssh'
-check_cocina = ARGV[1] == '--check-cocina'
+mode = ARGV[1]
+ssh_check = mode == '--checkssh' || mode == '--ssh_check' || mode == '--sshcheck' # tolerance for those who forget the exact flag
+check_cocina = mode == '--check-cocina'
+unless (mode.nil? || ssh_check || check_cocina)
+  warn "Unrecognized mode of operation: #{mode}"
+  exit
+end
 
 auditor = Auditor.new
 
-puts "repos to #{ssh_check ? 'ssh_check' : 'deploy'}: #{repo_names.join(', ')}"
+mode_display = mode ? mode.gsub('--', '') : 'deploy'
+puts "repos to #{mode_display}: #{repo_names.join(', ')}"
 
 deploys = {}
 repo_infos.each do |repo_info|
