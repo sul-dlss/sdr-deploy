@@ -90,6 +90,7 @@ unless %w[stage qa prod].include?(stage)
 end
 
 ssh_check = ARGV[1] == '--checkssh'
+check_cocina = ARGV[1] == '--check-cocina'
 
 auditor = Auditor.new
 
@@ -100,6 +101,8 @@ repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
   update_or_create_repo(repo_dir, repo)
+  next if check_cocina
+
   auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
   Dir.chdir(repo_dir) do
     puts "Installing gems for #{repo_dir}"
@@ -120,7 +123,21 @@ repo_infos.each do |repo_info|
   end
 end
 
-unless ssh_check
+if check_cocina
+  command =  "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -h -e 'cocina-models (\\d'|sort|uniq"
+  out, _err = Open3.capture2 command
+  puts "\n\n------- COCINA REPORT -------"
+  puts "Found these versions of cocina in use:\n#{out}\n\n"
+  lines = out.split("\n")
+  lines.pop # discard the most recent
+  lines.each do |line|
+    command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -l \"#{line}\""
+    out, _err = Open3.capture2 command
+    puts "found #{line.strip.sub('cocina-models (', '').tr(')','')} in the following files:\n#{out.gsub('tmp/repos/sul-dlss/', '')}\n\n"
+  end
+end
+
+unless ssh_check || check_cocina
   puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
   auditor.report
 

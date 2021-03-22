@@ -12,13 +12,16 @@ Make sure that:
 * You have previously `ssh`-ed into all servers.
   * NOTE: If you are unsure about this, run `./deploy.rb [qa|stage|prod] --checkssh` and watch the output for any errors!
 
-NOTE: if you prefer your output in color, this will work:
+### Check versions of cocina
 
 ```
-export SSHKIT_COLOR='TRUE'
+./deploy.rb qa --check-cocina
 ```
 
-Run the deploys
+This will let you know which versions of cocina each project is locked to.
+
+
+### Run the deploys
 
 ```
 ./deploy.rb qa   # or stage or prod
@@ -27,3 +30,7 @@ Run the deploys
 Note:
 * All repos will be cloned to `tmp`.
 * To skip a repo, comment it out in `repos.yml`.
+* if you prefer your output in color, this will work:
+```
+export SSHKIT_COLOR='TRUE'
+```
