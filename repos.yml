@@ -42,7 +42,8 @@ status:
 ---
 repo: sul-dlss/hydrus
 status:
-  qa: https://sdr-qa.stanford.edu/status/all/
+  # NOTE: hydrus qa fails because there is no Solr collection for it
+  # qa: https://sdr-qa.stanford.edu/status/all/
   stage: https://sdr-test.stanford.edu/status/all/
   prod: https://sdr.stanford.edu/status/all/
 ---
