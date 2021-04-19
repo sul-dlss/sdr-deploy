@@ -78,7 +78,7 @@ status:
 ---
 repo: sul-dlss/sul_pub
 status:
-  qa: https://sul-pub-cap-qa.stanford.edu/status/all/
+  qa: https://sul-pub-cap-uat.stanford.edu/status/all/
   # if you check all on sul-pub stage, it will record a fail because harvesting
   # is disabled there, that is expected, hence the URL difference
   stage: https://sul-pub-stage.stanford.edu/status/
