@@ -24,7 +24,7 @@ end
 
 def create_repo(repo_dir, repo)
   FileUtils.mkdir_p repo_dir
-  puts "creating #{repo}"
+  puts "**** Creating #{repo}"
   Dir.chdir(repo_dir) do
     `git clone --depth=5 git@github.com:#{repo}.git .`
     unless $?.success?
@@ -56,10 +56,10 @@ end
 def status_check(status_url)
   uri = URI(status_url)
   resp = Net::HTTP.get_response(uri)
-  puts "Status check #{status_url} returned #{resp.code}: #{resp.body}"
+  puts "\n**** STATUS CHECK #{status_url} returned #{resp.code}: #{resp.body} ****\n"
   resp.code == '200'
 rescue StandardError => e
-  puts "Status check #{status_url} raised #{e.message}"
+  puts "!!!!!!!!! STATUS CHECK #{status_url} RAISED #{e.message}"
   false
 end
 
@@ -106,6 +106,7 @@ deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
+  puts "\n-------------------- BEGIN #{repo} --------------------\n" unless ssh_check || check_cocina
   update_or_create_repo(repo_dir, repo)
   next if check_cocina
 
@@ -117,15 +118,17 @@ repo_infos.each do |repo_info|
       puts "running 'cap #{stage} ssh_check' for #{repo_dir}"
       `bundle exec cap #{stage} ssh_check`
     else
-      puts "###\nDeploying #{repo_dir}..."
+      puts "\n**** DEPLOYING #{repo} ****\n"
       comment_out_branch_prompt!
       deploys[repo] = { cap_result: deploy(stage) }
-      puts "...Deployed #{repo_dir}; result: #{deploys[repo]}\n###"
+      puts "\n**** DEPLOYED #{repo}; result: #{deploys[repo]} ****\n"
+
       status_url = repo_info.fetch('status', {})[stage]
       next unless deploys[repo][:cap_result] && status_url
 
       deploys[repo].merge!({ status_check_result: status_check(status_url) })
     end
+    puts "\n--------------------  END #{repo}  --------------------\n" unless ssh_check || check_cocina
   end
 end
 
@@ -147,7 +150,7 @@ unless ssh_check || check_cocina
   puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
   auditor.report
 
-  puts "\n\n------- STATUS CHECK (https::/xxx/status) RESULTS AFTER DEPLOY -------\n"
+  puts "\n\n------- STATUS CHECK RESULTS AFTER DEPLOY -------\n"
   deploys.each do |repo, deploy_result|
     cap_result = deploy_result[:cap_result] ? 'success' : 'FAILED'
     status_check_result = case deploy_result[:status_check_result]
