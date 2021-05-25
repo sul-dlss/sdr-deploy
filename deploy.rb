@@ -28,7 +28,7 @@ def create_repo(repo_dir, repo)
   Dir.chdir(repo_dir) do
     `git clone --depth=5 git@github.com:#{repo}.git .`
     unless $?.success?
-      warn "Error, while running git clone"
+      warn 'Error, while running git clone'
       exit(1)
     end
   end
@@ -90,7 +90,7 @@ unless %w[stage qa prod].include?(stage)
 end
 
 mode = ARGV[1]
-ssh_check = mode == '--checkssh' || mode == '--ssh_check' || mode == '--sshcheck' # tolerance for those who forget the exact flag
+ssh_check = ['--checkssh', '--ssh_check', '--sshcheck'].include?(mode) # tolerance for those who forget the exact flag
 check_cocina = mode == '--check-cocina'
 unless (mode.nil? || ssh_check || check_cocina)
   warn "Unrecognized mode of operation: #{mode}"
@@ -133,7 +133,7 @@ repo_infos.each do |repo_info|
 end
 
 if check_cocina
-  command =  "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -h -e 'cocina-models (\\d'|sort|uniq"
+  command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -h -e 'cocina-models (\\d'|sort|uniq"
   out, _err = Open3.capture2 command
   puts "\n\n------- COCINA REPORT -------"
   puts "Found these versions of cocina in use:\n#{out}\n\n"
@@ -142,7 +142,8 @@ if check_cocina
   lines.each do |line|
     command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -l \"#{line}\""
     out, _err = Open3.capture2 command
-    puts "found #{line.strip.sub('cocina-models (', '').tr(')','')} in the following files:\n#{out.gsub('tmp/repos/sul-dlss/', '')}\n\n"
+    puts "found #{line.strip.sub('cocina-models (', '').tr(')', '')} in the following files:"
+    puts "#{out.gsub('tmp/repos/sul-dlss/', '')}\n\n"
   end
 end
 
@@ -154,14 +155,15 @@ unless ssh_check || check_cocina
   deploys.each do |repo, deploy_result|
     cap_result = deploy_result[:cap_result] ? 'success' : 'FAILED'
     status_check_result = case deploy_result[:status_check_result]
-      when nil
-        'N/A'
-      when true
-        'success'
-      else
-        'FAILED'
-      end
-    puts "#{repo}\n => 'cap #{stage} deploy' result: #{cap_result}\n => status check result:      #{status_check_result}"
+                          when nil
+                            'N/A'
+                          when true
+                            'success'
+                          else
+                            'FAILED'
+                          end
+    puts "#{repo}\n => 'cap #{stage} deploy' result: #{cap_result}"
+    puts " => status check result:      #{status_check_result}"
   end
   puts "\n------- END STATUS CHECK RESULTS -------\n"
 end
