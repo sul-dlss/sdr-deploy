@@ -12,6 +12,9 @@ require 'auditor'
 #
 # To test SSH connections to all servers in the specified environment, first run:
 # ./deploy.rb stage --checkssh
+#
+# To see whether there's any inconsistency in the respective cocina-models versions used across the apps:
+# ./deploy.rb stage --check-cocina # stage is ignored here, but must be provided, because arg parsing is not fancy in this script
 
 WORK_DIR = ['tmp/repos'].freeze
 
