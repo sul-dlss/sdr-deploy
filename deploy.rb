@@ -37,6 +37,22 @@ def create_repo(repo_dir, repo)
   end
 end
 
+def cocina_check
+  command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -h -e 'cocina-models (\\d'|sort|uniq"
+  out, _err = Open3.capture2 command
+  puts "\n\n------- COCINA REPORT -------"
+  puts "Found these versions of cocina in use:\n#{out}\n\n"
+  lines = out.split("\n")
+  lines.pop # discard the most recent
+  lines.each do |line|
+    command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -l \"#{line}\""
+    out, _err = Open3.capture2 command
+    puts "found #{line.strip.sub('cocina-models (', '').tr(')', '')} in the following files:"
+    puts "#{out.gsub('tmp/repos/sul-dlss/', '')}\n\n"
+  end
+  lines.count < 1
+end
+
 def update_or_create_repo(repo_dir, repo)
   if File.exist? repo_dir
     update_repo(repo_dir)
@@ -105,6 +121,12 @@ auditor = Auditor.new
 mode_display = mode ? mode.gsub('--', '') : 'deploy'
 puts "repos to #{mode_display}: #{repo_names.join(', ')}"
 
+
+unless ssh_check || check_cocina
+  # Runs cocina check before deployment
+  exit unless cocina_check
+end
+
 deploys = {}
 repo_infos.each do |repo_info|
   repo = repo_info['repo']
@@ -135,20 +157,7 @@ repo_infos.each do |repo_info|
   end
 end
 
-if check_cocina
-  command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -h -e 'cocina-models (\\d'|sort|uniq"
-  out, _err = Open3.capture2 command
-  puts "\n\n------- COCINA REPORT -------"
-  puts "Found these versions of cocina in use:\n#{out}\n\n"
-  lines = out.split("\n")
-  lines.pop # discard the most recent
-  lines.each do |line|
-    command = "find tmp/repos/sul-dlss -path '*/Gemfile.lock'|xargs grep -l \"#{line}\""
-    out, _err = Open3.capture2 command
-    puts "found #{line.strip.sub('cocina-models (', '').tr(')', '')} in the following files:"
-    puts "#{out.gsub('tmp/repos/sul-dlss/', '')}\n\n"
-  end
-end
+cocina_check if check_cocina
 
 unless ssh_check || check_cocina
   puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
