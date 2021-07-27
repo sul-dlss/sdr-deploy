@@ -122,9 +122,20 @@ mode_display = mode ? mode.gsub('--', '') : 'deploy'
 puts "repos to #{mode_display}: #{repo_names.join(', ')}"
 
 
+repo_infos.each do |repo_info|
+  repo = repo_info['repo']
+  repo_dir = File.join(WORK_DIR, repo)
+  puts "\n-------------------- updating #{repo}... --------------------\n"
+  update_or_create_repo(repo_dir, repo)
+  puts "\n-------------------- ...updated #{repo}  --------------------\n"
+end
+
 unless ssh_check || check_cocina
   # Runs cocina check before deployment
-  exit unless cocina_check
+  unless cocina_check
+    puts 'ABORTING: multiple versions of the cocina-models gem are in use'
+    exit
+  end
 end
 
 deploys = {}
@@ -132,7 +143,6 @@ repo_infos.each do |repo_info|
   repo = repo_info['repo']
   repo_dir = File.join(WORK_DIR, repo)
   puts "\n-------------------- BEGIN #{repo} --------------------\n" unless ssh_check || check_cocina
-  update_or_create_repo(repo_dir, repo)
   next if check_cocina
 
   auditor.audit(repo: repo, dir: repo_dir) unless ssh_check
