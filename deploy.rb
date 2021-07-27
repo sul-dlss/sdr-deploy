@@ -105,7 +105,7 @@ unless %w[stage qa prod].include?(stage)
   warn 'Usage:'
   warn "  #{$PROGRAM_NAME} <stage>"
   warn "\n  stage must be one of \"stage\",\"qa\",\"prod\"\n\n"
-  exit
+  exit(1)
 end
 
 mode = ARGV[1]
@@ -113,7 +113,7 @@ ssh_check = ['--checkssh', '--ssh_check', '--sshcheck'].include?(mode) # toleran
 check_cocina = mode == '--check-cocina'
 unless (mode.nil? || ssh_check || check_cocina)
   warn "Unrecognized mode of operation: #{mode}"
-  exit
+  exit(1)
 end
 
 auditor = Auditor.new
@@ -134,7 +134,7 @@ unless ssh_check || check_cocina
   # Runs cocina check before deployment
   unless cocina_check
     puts 'ABORTING: multiple versions of the cocina-models gem are in use'
-    exit
+    exit(1)
   end
 end
 
