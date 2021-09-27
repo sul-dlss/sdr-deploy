@@ -72,9 +72,9 @@ repo: sul-dlss/robot-console
 ---
 repo: sul-dlss/sdr-api
 status:
-  qa: https://sdr-api-qa.stanford.edu/status
-  stage: https://sdr-api-stage.stanford.edu/status
-  prod: https://sdr-api-prod.stanford.edu/status
+  qa: https://sdr-api-qa.stanford.edu/status/all
+  stage: https://sdr-api-stage.stanford.edu/status/all
+  prod: https://sdr-api-prod.stanford.edu/status/all
 ---
 repo: sul-dlss/sul_pub
 status:
