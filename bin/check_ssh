@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift 'lib'
+
+require 'sdr_deploy'
+
+# CLI for checking SSH connections
+class CheckSsh < Thor
+  default_task :check_ssh
+
+  option :environment,
+         required: true,
+         enum: ::Settings.supported_envs,
+         banner: 'ENVIRONMENT',
+         desc: "Environment (#{Settings.supported_envs})",
+         aliases: '-e'
+
+  desc 'check_ssh', 'check SSH connections'
+  def check_ssh
+    RepoUpdater.update_all
+    SshChecker.check(environment: options[:environment])
+  end
+
+  def self.exit_on_failure?
+    true
+  end
+end
+
+CheckSsh.start(ARGV)

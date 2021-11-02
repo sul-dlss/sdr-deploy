@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'open3'
+# Audit for gemfile vulns
 class Auditor
   SUFFIX = "\nVulnerabilities found!\n"
   Error = Struct.new(:name, :advisory, :criticality, :version, :url, :title, :solution, :cve, :ghsa, keyword_init: true)
@@ -10,15 +10,12 @@ class Auditor
     @error_descriptions = {}
   end
 
-  def audit(dir:, repo:)
-    Dir.chdir(dir) do
-      _out, _status = Open3.capture2 'bundle'
-      out, status = Open3.capture2 'bundle exec bundle audit'
-      return if status.success?
+  def audit(repo:)
+    out, status = Open3.capture2 'bundle exec bundle audit'
+    return if status.success?
 
-      errors = parse_errors(out)
-      add_to_store(repo, errors)
-    end
+    errors = parse_errors(out)
+    add_to_store(repo, errors)
   end
 
   def add_to_store(repo, errors)
@@ -53,11 +50,11 @@ class Auditor
 
     err = err.delete_suffix(SUFFIX)
     err.split("\n\n").map do |error_str|
-      begin
-        Error.new(error_str.split("\n").map { |row| row.split(': ') }.to_h.transform_keys(&:downcase).transform_keys(&:to_sym))
-      rescue ArgumentError
-        puts "!!!!!!!!! PROBLEM PUTTING ERROR INTO OUR ERROR STRUCT: #{error_str.inspect}"
-      end
+      Error.new(error_str.split("\n").map do |row|
+                  row.split(': ')
+                end.to_h.transform_keys(&:downcase).transform_keys(&:to_sym))
+    rescue ArgumentError
+      puts "!!!!!!!!! PROBLEM PUTTING ERROR INTO OUR ERROR STRUCT: #{error_str.inspect}"
     end
   end
 end
