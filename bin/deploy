@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift 'lib'
+
+require 'sdr_deploy'
+
+# CLI for deployment
+class Deploy < Thor
+  default_task :deploy
+
+  option :environment,
+         required: true,
+         enum: Settings.supported_envs,
+         banner: 'ENVIRONMENT',
+         desc: "Environment (#{Settings.supported_envs})",
+         aliases: '-e'
+
+  desc 'deploy', 'deploy all the services in an environment'
+  def deploy
+    RepoUpdater.update_all
+    Deployer.deploy(environment: options[:environment])
+  end
+
+  def self.exit_on_failure?
+    true
+  end
+end
+
+Deploy.start(ARGV)

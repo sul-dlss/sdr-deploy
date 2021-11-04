@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'byebug'
+require 'config'
+require 'open3'
+require 'thor'
+
+Config.load_and_set_settings(
+  Config.setting_files('config', 'local')
+)
+
+# Common methods
+def within_project_dir(dir, &block)
+  Dir.chdir(dir) do
+    # NOTE: This is how we execute commands in the project-specific
+    #       bundler context, rather than sdr-deploy's bundler context.
+    Bundler.with_unbundled_env do
+      block.call
+    end
+  end
+end
+
+Dir['./lib/*.rb'].sort.each { |f| require f }
