@@ -5,6 +5,7 @@ require 'byebug'
 require 'config'
 require 'open3'
 require 'thor'
+require 'tty-progressbar'
 
 Config.load_and_set_settings(
   Config.setting_files('config', 'local')

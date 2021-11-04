@@ -5,8 +5,20 @@ require 'fileutils'
 # Update locally cached git repositories
 class RepoUpdater
   def self.update_all
-    Settings.repositories.each { |repo| new(repo: repo.name).update_or_create_repo }
+    Settings.repositories.each do |repo|
+      new(repo: repo.name).update_or_create_repo
+      progress_bar.advance(repo: repo.name)
+    end
   end
+
+  def self.progress_bar
+    @progress_bar ||= TTY::ProgressBar.new(
+      'updating cached git repositories [:bar] (:current/:total, ETA: :eta) :repo',
+      bar_format: :crate,
+      total: Settings.repositories.count
+    )
+  end
+  private_class_method :progress_bar
 
   attr_reader :repo, :repo_dir
 
@@ -16,13 +28,11 @@ class RepoUpdater
   end
 
   def update_or_create_repo
-    puts "\n-------------------- updating #{repo}... --------------------\n"
     if File.exist?(repo_dir)
       update_repo
     else
       create_repo
     end
-    puts "\n-------------------- ...updated #{repo}  --------------------\n"
   end
 
   def update_repo
