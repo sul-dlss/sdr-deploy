@@ -40,6 +40,7 @@ class RepoUpdater
       ErrorEmittingExecutor.execute('git fetch origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('git reset --hard $(git symbolic-ref refs/remotes/origin/HEAD)',
                                     exit_on_error: true)
+      ErrorEmittingExecutor.execute('bundle install')
     end
   end
 
@@ -48,6 +49,7 @@ class RepoUpdater
     puts "**** Creating #{repo}"
     within_project_dir(repo_dir) do
       ErrorEmittingExecutor.execute("git clone --depth=5 git@github.com:#{repo}.git .", exit_on_error: true)
+      ErrorEmittingExecutor.execute('bundle install')
     end
   end
 end

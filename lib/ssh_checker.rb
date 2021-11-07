@@ -15,12 +15,8 @@ class SshChecker
   def check_ssh
     puts "repos to SSH check: #{repos.map(&:name).join(', ')}"
     repos.each do |repo|
-      repo_updater = RepoUpdater.new(repo: repo.name)
-
-      within_project_dir(repo_updater.repo_dir) do
-        puts "Installing gems for #{repo_updater.repo_dir}"
-        ErrorEmittingExecutor.execute('bundle install')
-        puts "running 'cap #{environment} ssh_check' for #{repo_updater.repo_dir}"
+      within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
+        puts "running 'cap #{environment} ssh_check' for #{repo.name}"
         ErrorEmittingExecutor.execute("bundle exec cap #{environment} ssh_check")
       end
     end

@@ -19,6 +19,8 @@ class Deploy < Thor
   desc 'deploy', 'deploy all the services in an environment'
   def deploy
     RepoUpdater.update_all
+    abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check
+
     Deployer.deploy(environment: options[:environment])
   end
 

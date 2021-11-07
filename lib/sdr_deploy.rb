@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'byebug'
 require 'config'
 require 'open3'
+require 'pastel'
 require 'thor'
 require 'tty-progressbar'
 
@@ -20,6 +21,18 @@ def within_project_dir(dir, &block)
       block.call
     end
   end
+end
+
+def colorize_failure(string)
+  pastel.white.on_bright_red.bold(string)
+end
+
+def colorize_success(string)
+  pastel.green.on_bright_black.bold(string)
+end
+
+def pastel
+  @pastel ||= Pastel.new
 end
 
 Dir['./lib/*.rb'].sort.each { |f| require f }

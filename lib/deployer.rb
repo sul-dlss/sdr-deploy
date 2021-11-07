@@ -9,61 +9,35 @@ class Deployer
     new(environment: environment).deploy_all
   end
 
-  attr_reader :environment
+  attr_reader :deploys, :environment
 
   def initialize(environment:)
     @environment = environment
+    @deploys = {}
   end
 
   def deploy_all
     puts "repos to deploy: #{repos.map(&:name).join(', ')}"
 
-    unless CocinaChecker.check
-      puts 'ABORTING: multiple versions of the cocina-models gem are in use'
-      exit(1)
-    end
-
-    deploys = {}
     repos.each do |repo|
-      repo_updater = RepoUpdater.new(repo: repo.name)
-
       puts "\n-------------------- BEGIN #{repo.name} --------------------\n"
-
-      within_project_dir(repo_updater.repo_dir) do
+      within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
         auditor.audit(repo: repo.name)
-        puts "Installing gems for #{repo_updater.repo_dir}"
-        ErrorEmittingExecutor.execute('bundle install')
         puts "\n**** DEPLOYING #{repo.name} ****\n"
         comment_out_branch_prompt!
         deploys[repo.name] = { cap_result: deploy }
         puts "\n**** DEPLOYED #{repo.name}; result: #{deploys[repo.name]} ****\n"
 
-        status_url = repo.status[environment]
+        status_url = repo.status&.public_send(environment)
+
         next unless deploys[repo.name][:cap_result] && status_url
 
         deploys[repo.name].merge!({ status_check_result: status_check(status_url) })
-        puts "\n--------------------  END #{repo.name}  --------------------\n"
       end
+      puts "\n--------------------  END #{repo.name}  --------------------\n"
     end
 
-    puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
-    auditor.report
-
-    puts "\n\n------- STATUS CHECK RESULTS AFTER DEPLOY -------\n"
-    deploys.each do |repo, deploy_result|
-      cap_result = deploy_result[:cap_result] ? 'success' : 'FAILED'
-      status_check_result = case deploy_result[:status_check_result]
-                            when nil
-                              'N/A'
-                            when true
-                              'success'
-                            else
-                              'FAILED'
-                            end
-      puts "#{repo}\n => 'cap #{environment} deploy' result: #{cap_result}"
-      puts " => status check result:      #{status_check_result}"
-      puts "\n------- END STATUS CHECK RESULTS -------\n"
-    end
+    print_report!
   end
 
   private
@@ -73,7 +47,7 @@ class Deployer
   end
 
   def auditor
-    Auditor.new
+    @auditor ||= Auditor.new
   end
 
   def deploy
@@ -93,7 +67,7 @@ class Deployer
     puts "\n**** STATUS CHECK #{status_url} returned #{resp.code}: #{resp.body} ****\n"
     resp.code == '200'
   rescue StandardError => e
-    puts "!!!!!!!!! STATUS CHECK #{status_url} RAISED #{e.message}"
+    puts colorize_failure("!!!!!!!!! STATUS CHECK #{status_url} RAISED #{e.message}")
     false
   end
 
@@ -105,5 +79,24 @@ class Deployer
     # different repositories to use different default branches.
     text.gsub!(/ask :branch/, 'set :branch')
     File.write('config/deploy.rb', text)
+  end
+
+  def print_report!
+    auditor.report
+    puts "\n\n------- STATUS CHECK RESULTS AFTER DEPLOY -------\n"
+    deploys.each do |repo, deploy_result|
+      cap_result = deploy_result[:cap_result] ? colorize_success('success') : colorize_failure('FAILED')
+      status_check_result = case deploy_result[:status_check_result]
+                            when nil
+                              colorize_success('N/A')
+                            when true
+                              colorize_success('success')
+                            else
+                              colorize_failure('FAILED')
+                            end
+      puts "#{repo}\n => 'cap #{environment} deploy' result: #{cap_result}"
+      puts " => status check result:      #{status_check_result}"
+    end
+    puts "\n------- END STATUS CHECK RESULTS -------\n"
   end
 end
