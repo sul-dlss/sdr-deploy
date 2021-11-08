@@ -60,6 +60,10 @@ GEM
     rubocop-ast (1.12.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
+    strings (0.2.1)
+      strings-ansi (~> 0.2)
+      unicode-display_width (>= 1.5, < 3.0)
+      unicode_utils (~> 1.4)
     strings-ansi (0.2.0)
     thor (1.1.0)
     tty-color (0.6.0)
@@ -70,7 +74,12 @@ GEM
       tty-screen (~> 0.8)
       unicode-display_width (>= 1.6, < 3.0)
     tty-screen (0.8.1)
+    tty-table (0.12.0)
+      pastel (~> 0.8)
+      strings (~> 0.2.0)
+      tty-screen (~> 0.8)
     unicode-display_width (2.1.0)
+    unicode_utils (1.4.0)
 
 PLATFORMS
   x86_64-linux
@@ -82,6 +91,7 @@ DEPENDENCIES
   rubocop (~> 1.22)
   thor (~> 1.1)
   tty-progressbar (~> 0.18)
+  tty-table (~> 0.12)
 
 BUNDLED WITH
    2.2.30

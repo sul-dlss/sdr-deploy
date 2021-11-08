@@ -9,11 +9,10 @@ class Deployer
     new(environment: environment).deploy_all
   end
 
-  attr_reader :deploys, :environment
+  attr_reader :environment
 
   def initialize(environment:)
     @environment = environment
-    @deploys = {}
   end
 
   def deploy_all
@@ -25,19 +24,26 @@ class Deployer
         auditor.audit(repo: repo.name)
         puts "\n**** DEPLOYING #{repo.name} ****\n"
         comment_out_branch_prompt!
-        deploys[repo.name] = { cap_result: deploy }
-        puts "\n**** DEPLOYED #{repo.name}; result: #{deploys[repo.name]} ****\n"
+        cap_result = deploy ? colorize_success('success') : colorize_failure('FAILED')
+        puts "\n**** DEPLOYED #{repo.name}; result: #{cap_result} ****\n"
 
-        status_url = repo.status&.public_send(environment)
-
-        next unless deploys[repo.name][:cap_result] && status_url
-
-        deploys[repo.name].merge!({ status_check_result: status_check(status_url) })
+        status_check_result = case status_check(repo.status&.public_send(environment))
+                              when nil
+                                colorize_success('N/A')
+                              when true
+                                colorize_success('success')
+                              else
+                                colorize_failure('FAILED')
+                              end
+        status_table << [repo.name, cap_result, status_check_result]
       end
       puts "\n--------------------  END #{repo.name}  --------------------\n"
     end
 
-    print_report!
+    auditor.report
+
+    puts "\n------- RESULTS: -------\n"
+    puts status_table.render(:unicode)
   end
 
   private
@@ -62,6 +68,8 @@ class Deployer
   end
 
   def status_check(status_url)
+    return if status_url.nil?
+
     uri = URI(status_url)
     resp = Net::HTTP.get_response(uri)
     puts "\n**** STATUS CHECK #{status_url} returned #{resp.code}: #{resp.body} ****\n"
@@ -81,22 +89,7 @@ class Deployer
     File.write('config/deploy.rb', text)
   end
 
-  def print_report!
-    auditor.report
-    puts "\n\n------- STATUS CHECK RESULTS AFTER DEPLOY -------\n"
-    deploys.each do |repo, deploy_result|
-      cap_result = deploy_result[:cap_result] ? colorize_success('success') : colorize_failure('FAILED')
-      status_check_result = case deploy_result[:status_check_result]
-                            when nil
-                              colorize_success('N/A')
-                            when true
-                              colorize_success('success')
-                            else
-                              colorize_failure('FAILED')
-                            end
-      puts "#{repo}\n => 'cap #{environment} deploy' result: #{cap_result}"
-      puts " => status check result:      #{status_check_result}"
-    end
-    puts "\n------- END STATUS CHECK RESULTS -------\n"
+  def status_table
+    @status_table ||= TTY::Table.new(header: ['repo', 'deploy result', 'status result'])
   end
 end
