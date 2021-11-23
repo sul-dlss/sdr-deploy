@@ -16,9 +16,14 @@ Config.load_and_set_settings(
 # Common methods
 def within_project_dir(dir, &block)
   Dir.chdir(dir) do
-    # NOTE: This is how we execute commands in the project-specific
-    #       bundler context, rather than sdr-deploy's bundler context.
+    # NOTE: This is how we execute commands in the project-specific bundler
+    #       context, rather than sdr-deploy's bundler context. We want *most* of
+    #       the behavior provided by `Bundler.with_unbundled_env`, except we
+    #       still need the ContribSys credentials in order to be able to install
+    #       sidekiq-pro into the bundle for projects using sidekiq-pro.
+    contribsys_credentials = ENV['BUNDLE_GEMS__CONTRIBSYS__COM']
     Bundler.with_unbundled_env do
+      ENV['BUNDLE_GEMS__CONTRIBSYS__COM'] = contribsys_credentials
       block.call
     end
   end
