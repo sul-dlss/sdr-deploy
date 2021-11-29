@@ -9,6 +9,12 @@ require 'sdr_deploy'
 class CheckSsh < Thor
   default_task :check_ssh
 
+  option :skip_update,
+         type: :boolean,
+         default: false,
+         desc: 'Skip update repos',
+         aliases: '-s'
+
   option :environment,
          required: true,
          enum: ::Settings.supported_envs,
@@ -18,7 +24,7 @@ class CheckSsh < Thor
 
   desc 'check_ssh', 'check SSH connections'
   def check_ssh
-    RepoUpdater.update_all
+    RepoUpdater.update_all unless options[:skip_update]
     SshChecker.check(environment: options[:environment])
   end
 
