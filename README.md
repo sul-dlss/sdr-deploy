@@ -19,7 +19,8 @@ Make sure that:
 ### Check your SSH connection to all servers
 
 ```
-bin/check_ssh -e [qa|stage|prod]
+# Add -s flag to skip the local repo update
+bin/check_ssh -e qa # or stage or prod
 ```
 
 NOTE: Watch the output for any errors
