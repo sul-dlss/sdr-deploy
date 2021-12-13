@@ -59,7 +59,6 @@ bin/deploy -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 
 Note:
 * All repos will be cloned to `tmp/repos`.
-* To skip a repo, comment it out in `config/settings.yml`.
 * If you prefer your output in color, this will work:
 ```
 export SSHKIT_COLOR='TRUE'
