@@ -2,14 +2,15 @@
 
 # Service class for checking SSH connections
 class SshChecker
-  def self.check(environment:)
-    new(environment: environment).check_ssh
+  def self.check(environment:, repos:)
+    new(environment: environment, repos: repos).check_ssh
   end
 
-  attr_reader :environment
+  attr_reader :environment, :repos
 
-  def initialize(environment:)
+  def initialize(environment:, repos:)
     @environment = environment
+    @repos = repos
   end
 
   def check_ssh
@@ -20,11 +21,5 @@ class SshChecker
         ErrorEmittingExecutor.execute("bundle exec cap #{environment} ssh_check")
       end
     end
-  end
-
-  private
-
-  def repos
-    @repos ||= Settings.repositories
   end
 end
