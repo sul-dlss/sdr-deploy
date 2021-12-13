@@ -5,14 +5,15 @@ require 'net/http'
 
 # Service class for deploying
 class Deployer
-  def self.deploy(environment:)
-    new(environment: environment).deploy_all
+  def self.deploy(environment:, repos:)
+    new(environment: environment, repos: repos).deploy_all
   end
 
-  attr_reader :environment
+  attr_reader :environment, :repos
 
-  def initialize(environment:)
+  def initialize(environment:, repos:)
     @environment = environment
+    @repos = repos
   end
 
   def deploy_all
@@ -47,10 +48,6 @@ class Deployer
   end
 
   private
-
-  def repos
-    @repos ||= Settings.repositories
-  end
 
   def auditor
     @auditor ||= Auditor.new

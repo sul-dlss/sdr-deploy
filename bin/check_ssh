@@ -9,6 +9,16 @@ require 'sdr_deploy'
 class CheckSsh < Thor
   default_task :check_ssh
 
+  option :only,
+         type: :array,
+         default: [],
+         desc: 'Update only these repos'
+
+  option :except,
+         type: :array,
+         default: [],
+         desc: 'Update all except these repos'
+
   option :skip_update,
          type: :boolean,
          default: false,
@@ -24,12 +34,26 @@ class CheckSsh < Thor
 
   desc 'check_ssh', 'check SSH connections'
   def check_ssh
-    RepoUpdater.update_all unless options[:skip_update]
-    SshChecker.check(environment: options[:environment])
+    raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
+
+    RepoUpdater.update(repos: repositories) unless options[:skip_update]
+    SshChecker.check(environment: options[:environment], repos: repositories)
   end
 
   def self.exit_on_failure?
     true
+  end
+
+  private
+
+  def repositories
+    if options[:only].any?
+      Settings.repositories.select { |repo| options[:only].include?(repo.name) }
+    elsif options[:except].any?
+      Settings.repositories.reject { |repo| options[:except].include?(repo.name) }
+    else
+      Setting.repositories
+    end
   end
 end
 

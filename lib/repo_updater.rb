@@ -4,21 +4,22 @@ require 'fileutils'
 
 # Update locally cached git repositories
 class RepoUpdater
-  def self.update_all
-    progress_bar.start
-    Settings.repositories.each do |repo|
+  def self.update(repos:)
+    @progress_bar = progress_bar(repos)
+    @progress_bar.start
+    repos.each do |repo|
       new(repo: repo.name).tap do |updater|
-        progress_bar.advance(repo: repo.name, operation: updater.operation_label)
+        @progress_bar.advance(repo: repo.name, operation: updater.operation_label)
         updater.update_or_create_repo
       end
     end
   end
 
-  def self.progress_bar
-    @progress_bar ||= TTY::ProgressBar.new(
+  def self.progress_bar(repos)
+    TTY::ProgressBar.new(
       ':operation cached git repository [:bar] (:current/:total, ETA: :eta) :repo',
       bar_format: :crate,
-      total: Settings.repositories.count
+      total: repos.count
     )
   end
   private_class_method :progress_bar

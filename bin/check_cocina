@@ -11,7 +11,7 @@ class CheckCocina < Thor
 
   desc 'check_cocina', 'check cocina versions'
   def check_cocina
-    RepoUpdater.update_all
+    RepoUpdater.update(repos: Settings.repositories)
     CocinaChecker.check
   end
 

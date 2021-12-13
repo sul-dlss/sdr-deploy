@@ -19,8 +19,16 @@ Make sure that:
 ### Check your SSH connection to all servers
 
 ```
-# Add -s flag to skip the local repo update
 bin/check_ssh -e qa # or stage or prod
+
+# Add -s flag to skip the local repo update
+bin/check_ssh -s -e qa
+
+# Add --only flag to only check one or more named repos
+bin/check_ssh -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+
+# Add --except flag to check all but one or more named repos
+bin/check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
@@ -38,6 +46,15 @@ This will let you know which versions of cocina-models each project is locked to
 
 ```
 bin/deploy -e qa # or stage or prod
+
+# Add -s flag to skip the local repo update
+bin/deploy -s -e qa
+
+# Add --only flag to only deploy one or more named repos
+bin/deploy -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+
+# Add --except flag to deploy all but one or more named repos
+bin/deploy -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 Note:
