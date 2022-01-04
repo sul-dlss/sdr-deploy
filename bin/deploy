@@ -54,7 +54,7 @@ class Deploy < Thor
     elsif options[:except].any?
       Settings.repositories.reject { |repo| options[:except].include?(repo.name) }
     else
-      Setting.repositories
+      Settings.repositories
     end
   end
 end
