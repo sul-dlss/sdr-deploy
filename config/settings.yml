@@ -43,6 +43,7 @@ repositories:
       qa: https://sdr-qa.stanford.edu/status/all/
       stage: https://sdr-test.stanford.edu/status/all/
       prod: https://sul-hydrus-prod.stanford.edu/status/all
+  - name: sul-dlss/ksr-app
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     status:
