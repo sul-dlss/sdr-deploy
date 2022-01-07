@@ -37,12 +37,6 @@ repositories:
       qa: https://etd-qa.stanford.edu/status/all/
       stage: https://etd-stage.stanford.edu/status/all/
       prod:  https://etd.stanford.edu/status/all/
-  - name: sul-dlss/hydrus
-    status:
-      # NOTE: hydrus qa fails because there is no Solr collection for it
-      qa: https://sdr-qa.stanford.edu/status/all/
-      stage: https://sdr-test.stanford.edu/status/all/
-      prod: https://sul-hydrus-prod.stanford.edu/status/all
   - name: sul-dlss/ksr-app
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
