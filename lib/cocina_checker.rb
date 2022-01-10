@@ -27,7 +27,7 @@ class CocinaChecker
     end
 
     # `true` is the happy path; `false` means dragons
-    unique_values.size == 1
+    unique_values.size <= 1
   end
 
   private
