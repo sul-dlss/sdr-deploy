@@ -57,7 +57,25 @@ bin/deploy -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
 bin/deploy -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
-Note:
+### A note about ruby versions
+
+As of Jan 2022, some projects have not yet been updated to be Ruby 3.0 compatible, so you either need to deploy all using ruby 2.7 or split the deployment into two chunks:
+
+In Ruby 3.0
+
+```
+bin/deploy -e stage --except sul-dlss/dor-services-app sul-dlss/gis-robot-suite sul-dlss/ksr-app sul-dlss/preservation_catalog
+```
+
+Then in Ruby 2.7
+```
+bin/deploy -e stage --only sul-dlss/dor-services-app sul-dlss/gis-robot-suite sul-dlss/ksr-app sul-dlss/preservation_catalog
+```
+
+The 4 projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
+
+
+### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
 * If you prefer your output in color, this will work:
 ```
