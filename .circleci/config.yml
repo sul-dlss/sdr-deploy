@@ -1,22 +1,8 @@
 version: 2.1
-
 orbs:
-  ruby: circleci/ruby@1.2.0
-
-jobs:
-  lint:
-    docker:
-      - image: cimg/ruby:2.7.3
-    executor: ruby/default
-    steps:
-      - checkout
-      - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/install-deps
-      - ruby/rubocop-check
-
+  ruby-rails: sul-dlss/ruby-rails@1.1.0
 workflows:
-  test:
+  build:
     jobs:
-      - lint
+      - ruby-rails/lint:
+          name: lint
