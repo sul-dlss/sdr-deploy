@@ -11,3 +11,7 @@ gem 'rubocop', '~> 1.22'
 gem 'thor', '~> 1.1'
 gem 'tty-progressbar', '~> 0.18'
 gem 'tty-table', '~> 0.12'
+
+group :test, :development do
+  gem 'rspec_junit_formatter' # Used by CircleCI
+end
