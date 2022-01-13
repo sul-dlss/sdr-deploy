@@ -59,4 +59,15 @@ class Deploy < Thor
   end
 end
 
+def warning
+  puts '*************************'
+  puts 'WARNING! (added jan 2022)'
+  puts "Argo is commented out in config/settings.yml since we don't want to"
+  puts 'automatically deploy Argo to production during the Fedora removal workcycle!'
+  puts 'Add back in when workcycle is complete.  You should still deploy Argo to qa/stage manually.'
+  puts '*************************'
+end
+
+warning
 Deploy.start(ARGV)
+warning
