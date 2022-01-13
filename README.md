@@ -81,3 +81,5 @@ The 4 projects that still use ruby 2.7 should eventually be converted to Ruby 3.
 ```
 export SSHKIT_COLOR='TRUE'
 ```
+
+# DO NOT MERGE: bogus commit to test merge script
