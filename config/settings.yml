@@ -7,17 +7,21 @@ repositories:
   # JAN 13 2022 Do not automatically deploy Argo to production during the Fedora removal workcycle!
   #  uncomment out when workcycle is complete and remove warning message in bin/deploy
   # - name: sul-dlss/argo
+  #   cocina_models_update: true
   #   status:
   #     qa: https://argo-qa.stanford.edu/status/all/
   #     stage: https://argo-stage.stanford.edu/status/all/
   #     prod: https://argo.stanford.edu/status/all/
   - name: sul-dlss/common-accessioning
+    cocina_models_update: true
   - name: sul-dlss/dor-services-app
+    cocina_models_update: true
     status:
       qa: https://dor-services-qa.stanford.edu/status/all/
       stage: https://dor-services-stage.stanford.edu/status/all/
       prod: https://dor-services-prod.stanford.edu/status/all/
   - name: sul-dlss/dor_indexing_app
+    cocina_models_update: true
     # # unable to get local issuer certificate
     # status:
     #   qa: https://dor-indexing-app-qa-a.stanford.edu/status/all/
@@ -25,16 +29,19 @@ repositories:
     #   prod: https://dor-indexing-app-prod-a.stanford.edu/status/all/
   - name: sul-dlss/gis-robot-suite
   - name: sul-dlss/google-books
+    cocina_models_update: true
     status:
       qa: https://sul-gbooks-qa.stanford.edu/status/all/
       stage: https://sul-gbooks-stage.stanford.edu/status/all/
       prod: https://sul-gbooks-prod.stanford.edu/status/all/
   - name: sul-dlss/happy-heron
+    cocina_models_update: true
     status:
       qa: https://sul-h2-qa.stanford.edu/status/all/
       stage: https://sul-h2-stage.stanford.edu/status/all/
       prod: https://sdr.stanford.edu/status/all/
   - name: sul-dlss/hydra_etd
+    cocina_models_update: true
     status:
       qa: https://etd-qa.stanford.edu/status/all/
       stage: https://etd-stage.stanford.edu/status/all/
@@ -42,6 +49,7 @@ repositories:
   - name: sul-dlss/ksr-app
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
+    cocina_models_update: true
     status:
       qa: https://sul-preassembly-qa.stanford.edu/status/all/
       stage: https://sul-preassembly-stage.stanford.edu/status/all/
@@ -58,6 +66,7 @@ repositories:
   - name: sul-dlss/preservation_robots
   - name: sul-dlss/robot-console
   - name: sul-dlss/sdr-api
+    cocina_models_update: true
     status:
       qa: https://sdr-api-qa.stanford.edu/status/all
       stage: https://sdr-api-stage.stanford.edu/status/all

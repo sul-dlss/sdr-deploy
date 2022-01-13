@@ -54,9 +54,9 @@ class Auditor
 
     err = err.delete_suffix(SUFFIX)
     err.split("\n\n").map do |error_str|
-      Error.new(error_str.split("\n").map do |row|
+      Error.new(error_str.split("\n").to_h do |row|
                   row.split(': ')
-                end.to_h.transform_keys(&:downcase).transform_keys(&:to_sym))
+                end.transform_keys(&:downcase).transform_keys(&:to_sym))
     rescue ArgumentError
       puts colorize_failure("!!!!!!!!! PROBLEM PUTTING ERROR INTO OUR ERROR STRUCT: #{error_str.inspect}")
     end
