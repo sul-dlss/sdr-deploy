@@ -19,6 +19,12 @@ class Deploy < Thor
          default: [],
          desc: 'Update all except these repos'
 
+  option :cocina,
+         type: :boolean,
+         default: false,
+         desc: 'Only update repos affected by new cocina-models gem release',
+         aliases: '-c'
+
   option :skip_update,
          type: :boolean,
          default: false,
@@ -49,12 +55,19 @@ class Deploy < Thor
   private
 
   def repositories
+    repos =
+      if options[:cocina]
+        Settings.repositories.select { |repo| repo.cocina_models_update }
+      else
+        Settings.repositories
+      end
+
     if options[:only].any?
-      Settings.repositories.select { |repo| options[:only].include?(repo.name) }
+      repos.select { |repo| options[:only].include?(repo.name) }
     elsif options[:except].any?
-      Settings.repositories.reject { |repo| options[:except].include?(repo.name) }
+      repos.reject { |repo| options[:except].include?(repo.name) }
     else
-      Settings.repositories
+      repos
     end
   end
 end

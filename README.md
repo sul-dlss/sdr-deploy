@@ -74,6 +74,24 @@ bin/deploy -e stage --only sul-dlss/dor-services-app sul-dlss/ksr-app
 
 The 4 projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
 
+### Only Deploy Repos Related to Cocina-Models Update
+
+Note: this includes dor-services-app and sdr-api in addition to cocina level2 updates.
+
+Use the `--cocina` or `-c` flag.  
+
+In Ruby 3.0
+
+```
+# -e can be qa or stage or prod
+bin/deploy -e stage -c --except sul-dlss/dor-services-app
+```
+
+Then in Ruby 2.7
+```
+# -e can be qa or stage or prod
+bin/deploy -e stage -c --only sul-dlss/dor-services-app
+```
 
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
