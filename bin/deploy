@@ -57,7 +57,7 @@ class Deploy < Thor
   def repositories
     repos =
       if options[:cocina]
-        Settings.repositories.select { |repo| repo.cocina_models_update }
+        Settings.repositories.select(&:cocina_models_update)
       else
         Settings.repositories
       end

@@ -41,4 +41,4 @@ def pastel
   @pastel ||= Pastel.new
 end
 
-Dir['./lib/*.rb'].sort.each { |f| require f }
+Dir['./lib/*.rb'].each { |f| require f }
