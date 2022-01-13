@@ -4,11 +4,13 @@ supported_envs:
   - prod
   - stage
 repositories:
-  - name: sul-dlss/argo
-    status:
-      qa: https://argo-qa.stanford.edu/status/all/
-      stage: https://argo-stage.stanford.edu/status/all/
-      prod: https://argo.stanford.edu/status/all/
+  # JAN 13 2022 Do not automatically deploy Argo to production during the Fedora removal workcycle!
+  #  uncomment out when workcycle is complete and remove warning message in bin/deploy
+  # - name: sul-dlss/argo
+  #   status:
+  #     qa: https://argo-qa.stanford.edu/status/all/
+  #     stage: https://argo-stage.stanford.edu/status/all/
+  #     prod: https://argo.stanford.edu/status/all/
   - name: sul-dlss/common-accessioning
   - name: sul-dlss/dor-services-app
     status:
