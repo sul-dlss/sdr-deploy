@@ -5,6 +5,8 @@ require 'fileutils'
 # Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
   def self.update(repos:)
+    # first look through all of the locally cached repos in the working directory,
+    #  and then remove any that are not configured in the settings.yml file (they are likely deprecated)
     tmp_repos = Dir["#{Settings.work_dir}/*/*"].filter_map do |entry|
       entry.gsub("#{Settings.work_dir}/", '') if File.directory? entry
     end
