@@ -4,7 +4,7 @@ AllCops:
   TargetRubyVersion: 3.0
   DisplayCopNames: true
   Exclude:
-    - Gemfile
+    - tmp/repos/**/*
 
 # The behavior of RuboCop can be controlled via the .rubocop.yml
 # configuration file. It makes it possible to enable/disable
