@@ -2,7 +2,7 @@
 
 require 'fileutils'
 
-# Update locally cached git repositories
+# Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
   def self.update(repos:)
     @progress_bar = progress_bar(repos)
@@ -13,6 +13,7 @@ class RepoUpdater
         updater.update_or_create_repo
       end
     end
+    prune_removed_repos_from_cache!(repos)
   end
 
   def self.progress_bar(repos)
@@ -23,6 +24,14 @@ class RepoUpdater
     )
   end
   private_class_method :progress_bar
+
+  def self.prune_removed_repos_from_cache!(repos)
+    Dir["#{Settings.work_dir}/*/*"].each do |cached_dir|
+      next if repos.map(&:name).any? { |repo_name| cached_dir.end_with?(repo_name) }
+
+      FileUtils.rm_rf(cached_dir)
+    end
+  end
 
   attr_reader :repo, :repo_dir
 
@@ -47,6 +56,10 @@ class RepoUpdater
     else
       create_repo
     end
+  end
+
+  def delete_repo
+    FileUtils.rm_rf(repo_dir)
   end
 
   def update_repo

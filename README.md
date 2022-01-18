@@ -78,7 +78,7 @@ The 4 projects that still use ruby 2.7 should eventually be converted to Ruby 3.
 
 Note: this includes dor-services-app and sdr-api in addition to cocina level2 updates.
 
-Use the `--cocina` or `-c` flag.  
+Use the `--cocina` or `-c` flag.
 
 In Ruby 3.0
 
@@ -95,6 +95,7 @@ bin/deploy -e stage -c --only sul-dlss/dor-services-app
 
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
+* Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-depoy commands are run (unless the repo update is explicitly skipped via user-provided flag).
 * If you prefer your output in color, this will work:
 ```
 export SSHKIT_COLOR='TRUE'
