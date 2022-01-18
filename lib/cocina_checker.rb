@@ -7,9 +7,13 @@ class CocinaChecker
   end
 
   def check_cocina
-    puts "repos to Cocina check: #{repos.map(&:name).join(', ')}"
+    gem_filename = 'Gemfile.lock'
+    repo_names = repos.map(&:name)
+    puts "repos to Cocina check: #{repo_names.join(', ')}"
+    version_map = Dir["#{base_directory}**/#{gem_filename}"].filter_map do |lockfile_path|
+      cached_repo_name = lockfile_path.gsub(base_directory, '').gsub(gem_filename, '').chomp('/')
+      next unless repo_names.include? cached_repo_name # skip any cached repo not found in the settings.yml file
 
-    version_map = Dir["#{base_directory}**/Gemfile.lock"].filter_map do |lockfile_path|
       cocina_models_version = cocina_version_from(lockfile_path)
       next if cocina_models_version.empty?
 
