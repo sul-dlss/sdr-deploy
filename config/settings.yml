@@ -1,4 +1,5 @@
 work_dir: tmp/repos
+gem_filename: Gemfile.lock
 supported_envs:
   - qa
   - prod
