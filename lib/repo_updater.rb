@@ -2,9 +2,20 @@
 
 require 'fileutils'
 
-# Update locally cached git repositories
+# Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
   def self.update(repos:)
+    tmp_repos = Dir["#{Settings.work_dir}/*/*"].filter_map do |entry|
+      entry.gsub("#{Settings.work_dir}/", '') if File.directory? entry
+    end
+    repo_names = repos.map(&:name)
+    tmp_repos.each do |tmp_repo|
+      unless repo_names.include? tmp_repo
+        puts "Removing locally cached repo #{tmp_repo}"
+        new(repo: tmp_repo).delete_repo
+      end
+    end
+
     @progress_bar = progress_bar(repos)
     @progress_bar.start
     repos.each do |repo|
@@ -47,6 +58,10 @@ class RepoUpdater
     else
       create_repo
     end
+  end
+
+  def delete_repo
+    FileUtils.rm_rf(repo_dir)
   end
 
   def update_repo
