@@ -5,19 +5,6 @@ require 'fileutils'
 # Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
   def self.update(repos:)
-    # first look through all of the locally cached repos in the working directory,
-    #  and then remove any that are not configured in the settings.yml file (they are likely deprecated)
-    tmp_repos = Dir["#{Settings.work_dir}/*/*"].filter_map do |entry|
-      entry.gsub("#{Settings.work_dir}/", '') if File.directory? entry
-    end
-    repo_names = repos.map(&:name)
-    tmp_repos.each do |tmp_repo|
-      unless repo_names.include? tmp_repo
-        puts "Removing locally cached repo #{tmp_repo}"
-        new(repo: tmp_repo).delete_repo
-      end
-    end
-
     @progress_bar = progress_bar(repos)
     @progress_bar.start
     repos.each do |repo|
@@ -26,6 +13,7 @@ class RepoUpdater
         updater.update_or_create_repo
       end
     end
+    prune_removed_repos_from_cache!(repos)
   end
 
   def self.progress_bar(repos)
@@ -36,6 +24,14 @@ class RepoUpdater
     )
   end
   private_class_method :progress_bar
+
+  def self.prune_removed_repos_from_cache!(repos)
+    Dir["#{Settings.work_dir}/*/*"].each do |cached_dir|
+      next if repos.map(&:name).any? { |repo_name| cached_dir.end_with?(repo_name) }
+
+      FileUtils.rm_rf(cached_dir)
+    end
+  end
 
   attr_reader :repo, :repo_dir
 

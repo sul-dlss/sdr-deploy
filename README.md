@@ -95,10 +95,7 @@ bin/deploy -e stage -c --only sul-dlss/dor-services-app
 
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
-* Any repos cloned to `tmp/repos` that are no longer configured in the `settings.yml` file will
-be automatically removed when you deploy or check cocina versions to prevent outdated code from
-being checked.  If you add the repo back to the `settings.yml` file again later, it will be re-cloned
-automatically.
+* Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-depoy commands are run (unless the repo update is explicitly skipped via user-provided flag).
 * If you prefer your output in color, this will work:
 ```
 export SSHKIT_COLOR='TRUE'
