@@ -64,15 +64,15 @@ As of Jan 2022, some projects have not yet been updated to be Ruby 3.0 compatibl
 In Ruby 3.0
 
 ```
-bin/deploy -e stage --except sul-dlss/dor-services-app sul-dlss/ksr-app
+bin/deploy -e stage --except sul-dlss/dor-services-app
 ```
 
 Then in Ruby 2.7
 ```
-bin/deploy -e stage --only sul-dlss/dor-services-app sul-dlss/ksr-app
+bin/deploy -e stage --only sul-dlss/dor-services-app
 ```
 
-The 4 projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
+The projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
 
 ### Only Deploy Repos Related to Cocina-Models Update
 
