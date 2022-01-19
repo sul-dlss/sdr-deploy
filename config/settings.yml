@@ -47,6 +47,10 @@ repositories:
       stage: https://etd-stage.stanford.edu/status/all/
       prod:  https://etd.stanford.edu/status/all/
   - name: sul-dlss/ksr-app
+    status:
+      qa: https://ksr-search-dev.stanford.edu/status/all/
+      stage: https://ksr-search-stage.stanford.edu/status/all/
+      prod: https://ksr-search-prod.stanford.edu/status/all/
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     cocina_models_update: true
