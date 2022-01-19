@@ -32,6 +32,7 @@ class RepoUpdater
       FileUtils.rm_rf(cached_dir)
     end
   end
+  private_class_method :prune_removed_repos_from_cache!
 
   attr_reader :repo, :repo_dir
 
@@ -64,7 +65,7 @@ class RepoUpdater
 
   def update_repo
     within_project_dir(repo_dir) do
-      ErrorEmittingExecutor.execute('git fetch origin', exit_on_error: true)
+      ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('git reset --hard $(git symbolic-ref refs/remotes/origin/HEAD)',
                                     exit_on_error: true)
       ErrorEmittingExecutor.execute('bundle install')
@@ -74,7 +75,8 @@ class RepoUpdater
   def create_repo
     FileUtils.mkdir_p(repo_dir)
     within_project_dir(repo_dir) do
-      ErrorEmittingExecutor.execute("git clone --depth=5 git@github.com:#{repo}.git .", exit_on_error: true)
+      ErrorEmittingExecutor.execute("git clone --depth=5 --tags git@github.com:#{repo}.git .", exit_on_error: true)
+      ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('bundle install')
     end
   end

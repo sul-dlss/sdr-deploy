@@ -11,14 +11,26 @@ class Tag < Thor
 
   option :message,
          required: false,
-         banner: 'TAG MESSAGE',
-         desc: 'Message to describe the tag',
+         banner: 'TAG_MESSAGE',
+         desc: 'Message to describe a newly created tag',
          aliases: '-m'
 
-  desc 'tag TAG_NAME', 'create a tag named TAG_NAME'
+  option :delete,
+         required: false,
+         type: :boolean,
+         default: false,
+         banner: 'DELETE',
+         desc: 'Delete the tag locally and remotely',
+         aliases: '-d'
+
+  desc 'tag TAG_NAME', 'create or delete a tag named TAG_NAME'
   def tag(tag_name)
     RepoUpdater.update(repos: Settings.repositories)
-    Tagger.tag(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'))
+    if options[:delete]
+      Tagger.delete(tag_name: tag_name)
+    else
+      Tagger.create(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'))
+    end
   end
 
   def self.exit_on_failure?
@@ -26,4 +38,6 @@ class Tag < Thor
   end
 end
 
+# Allow Thor default task to be run without naming it twice: https://github.com/rails/thor/issues/370#issuecomment-381423134
+ARGV.unshift(Tag.default_task) unless Tag.all_tasks.key?(ARGV[0])
 Tag.start(ARGV)

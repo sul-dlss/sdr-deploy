@@ -19,23 +19,27 @@ Make sure that:
 ### Check your SSH connection to all servers
 
 ```
-bin/check_ssh -e qa # or stage or prod
+Usage:
+  bin/check_ssh -e, --environment=ENVIRONMENT
 
-# Add -s flag to skip the local repo update
-bin/check_ssh -s -e qa
+Options:
+      [--only=one two three]               # Update only these repos
+      [--except=one two three]             # Update all except these repos
+  -s, [--skip-update], [--no-skip-update]  # Skip update repos
+  -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
+                                           # Possible values: qa, prod, stage
 
-# Add --only flag to only check one or more named repos
-bin/check_ssh -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+check SSH connections
 
-# Add --except flag to check all but one or more named repos
-bin/check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+Example:
+  bin/check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
 
 ### Check versions of cocina-models
 
-```
+```shell
 bin/check_cocina
 ```
 
@@ -45,16 +49,37 @@ This will let you know which versions of cocina-models each project is locked to
 ### Run the deploys
 
 ```
-bin/deploy -e qa # or stage or prod
+Usage:
+  bin/deploy -e, --environment=ENVIRONMENT
 
-# Add -s flag to skip the local repo update
-bin/deploy -s -e qa
+Options:
+      [--only=one two three]               # Update only these repos
+      [--except=one two three]             # Update all except these repos
+  -c, [--cocina], [--no-cocina]            # Only update repos affected by new cocina-models gem release
+  -s, [--skip-update], [--no-skip-update]  # Skip update repos
+  -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
+                                           # Possible values: qa, prod, stage
 
-# Add --only flag to only deploy one or more named repos
-bin/deploy -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+deploy all the services in an environment
 
-# Add --except flag to deploy all but one or more named repos
-bin/deploy -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+Example:
+  bin/deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+```
+
+### Create repository tags
+
+```
+Usage:
+  bin/tag TAG_NAME
+
+Options:
+  -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
+  -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
+
+create or delete a tag named TAG_NAME
+
+Example:
+  bin/tag -m 'coordinating the release of cocina-models 1.2.3' rel-88
 ```
 
 ### A note about ruby versions
