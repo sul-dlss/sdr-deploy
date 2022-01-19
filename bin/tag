@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift 'lib'
+
+require 'sdr_deploy'
+
+# CLI for tagging git repos
+class Tag < Thor
+  default_task :tag
+
+  option :message,
+         required: false,
+         banner: 'TAG MESSAGE',
+         desc: 'Message to describe the tag',
+         aliases: '-m'
+
+  desc 'tag TAG_NAME', 'create a tag named TAG_NAME'
+  def tag(tag_name)
+    RepoUpdater.update(repos: Settings.repositories)
+    Tagger.tag(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'))
+  end
+
+  def self.exit_on_failure?
+    true
+  end
+end
+
+Tag.start(ARGV)
