@@ -4,7 +4,7 @@ require 'fileutils'
 
 # Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
-  def self.update(repos:)
+  def self.update(repos:, prune: false)
     @progress_bar = progress_bar(repos)
     @progress_bar.start
     repos.each do |repo|
@@ -13,7 +13,7 @@ class RepoUpdater
         updater.update_or_create_repo
       end
     end
-    prune_removed_repos_from_cache!(repos)
+    prune_removed_repos_from_cache!(repos) if prune
   end
 
   def self.progress_bar(repos)

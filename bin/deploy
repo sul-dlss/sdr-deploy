@@ -42,7 +42,7 @@ class Deploy < Thor
   def deploy
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    RepoUpdater.update(repos: repositories) unless options[:skip_update]
+    RepoUpdater.update(repos: repositories, prune: prune?) unless options[:skip_update]
     abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check
 
     Deployer.deploy(environment: options[:environment], repos: repositories)
@@ -53,6 +53,11 @@ class Deploy < Thor
   end
 
   private
+
+  # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
+  def prune?
+    options.slice(:only, :except, :cocina).none?
+  end
 
   def repositories
     repos =
