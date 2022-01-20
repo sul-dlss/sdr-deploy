@@ -36,7 +36,7 @@ class CheckSsh < Thor
   def check_ssh
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    RepoUpdater.update(repos: repositories) unless options[:skip_update]
+    RepoUpdater.update(repos: repositories, prune: prune?) unless options[:skip_update]
     SshChecker.check(environment: options[:environment], repos: repositories)
   end
 
@@ -45,6 +45,11 @@ class CheckSsh < Thor
   end
 
   private
+
+  # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
+  def prune?
+    options.slice(:only, :except).none?
+  end
 
   def repositories
     if options[:only].any?
