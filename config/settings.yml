@@ -92,7 +92,7 @@ repositories:
     status:
       qa: https://dor-techmd-qa.stanford.edu/status/all/
       stage: https://dor-techmd-stage-a.stanford.edu/status/all/
-      prod: https://dor-techmd-prod.stanford.edu/status/all/
+      prod: https://dor-techmd-prod-a.stanford.edu/status/all/
   - name: sul-dlss/was-registrar-app
     status:
       qa: https://was-registrar-app-qa.stanford.edu/status/all/
