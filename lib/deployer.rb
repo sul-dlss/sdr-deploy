@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'English'
-require 'net/http'
 
 # Service class for deploying
 class Deployer
@@ -24,21 +23,22 @@ class Deployer
     repos.each do |repo|
       puts "\n-------------------- BEGIN #{repo.name} --------------------\n"
       within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
-        puts "\n**** DEPLOYING #{repo.name} ****\n"
-        set_deploy_target!
-        auditor.audit(repo: repo.name)
-        cap_result = deploy ? colorize_success('success') : colorize_failure('FAILED')
-        puts "\n**** DEPLOYED #{repo.name}; result: #{cap_result} ****\n"
+        StatusChecker.check(repo: repo, environment: environment)
+        # puts "\n**** DEPLOYING #{repo.name} ****\n"
+        # set_deploy_target!
+        # auditor.audit(repo: repo.name)
+        # cap_result = deploy ? colorize_success('success') : colorize_failure('FAILED')
+        # puts "\n**** DEPLOYED #{repo.name}; result: #{cap_result} ****\n"
 
-        status_check_result = case status_check(repo.status&.public_send(environment))
-                              when nil
-                                colorize_success('N/A')
-                              when true
-                                colorize_success('success')
-                              else
-                                colorize_failure('FAILED')
-                              end
-        status_table << [repo.name, cap_result, status_check_result]
+        # status_check_result = case StatusChecker.check(repo: repo, environment: environment)
+        #                       when nil
+        #                         colorize_success('N/A')
+        #                       when true
+        #                         colorize_success('success')
+        #                       else
+        #                         colorize_failure('FAILED')
+        #                       end
+        # status_table << [repo.name, cap_result, status_check_result]
       end
       puts "\n--------------------  END #{repo.name}  --------------------\n"
     end
@@ -76,18 +76,6 @@ class Deployer
       end
     end
     $CHILD_STATUS.success?
-  end
-
-  def status_check(status_url)
-    return if status_url.nil?
-
-    uri = URI(status_url)
-    resp = Net::HTTP.get_response(uri)
-    puts "\n**** STATUS CHECK #{status_url} returned #{resp.code}: #{resp.body} ****\n"
-    resp.code == '200'
-  rescue StandardError => e
-    puts colorize_failure("!!!!!!!!! STATUS CHECK #{status_url} RAISED #{e.message}")
-    false
   end
 
   # Either deploy HEAD or the given tag
