@@ -60,8 +60,8 @@ repositories:
       prod: https://sul-preassembly-prod.stanford.edu/status/all/
   - name: sul-dlss/preservation_catalog
     status:
-      qa: https://preservation-catalog-qa-01.stanford.edu/status/all/
-      stage: https://preservation-catalog-stage-01.stanford.edu/status/all/
+      qa: https://preservation-catalog-qa-02.stanford.edu/status/all/
+      stage: https://preservation-catalog-stage-02.stanford.edu/status/all/
       prod: https://preservation-catalog-prod-02.stanford.edu/status/all/
       # NOTE: the /status/all check fails on https://preservation-catalog-prod-01.stanford.edu, because the
       # `feature-zip_storage_dir` check (confirm that `/sdr-transfers` is writable) fails on that box.
