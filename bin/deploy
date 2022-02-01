@@ -79,10 +79,12 @@ end
 
 def warning
   puts '*************************'
-  puts 'WARNING! (added jan 2022)'
-  puts "Argo is commented out in config/settings.yml since we don't want to"
+  puts 'WARNINGS! (added jan 2022)'
+  puts '1. You must remember to deploy dor-service-app using Ruby 2.7'
+  puts '2. You must deploy Argo to qa/stage using `cap deploy` from your cloned argo repo'
+  puts "(Argo is commented out in config/settings.yml since we don't want to"
   puts 'automatically deploy Argo to production during the Fedora removal workcycle!'
-  puts 'Add back in when workcycle is complete.  You should still deploy Argo to qa/stage manually.'
+  puts 'Add back in when workcycle is complete.)'
   puts '*************************'
 end
 
