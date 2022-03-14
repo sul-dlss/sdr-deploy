@@ -5,15 +5,17 @@ require 'net/http'
 
 # Service class for deploying
 class Deployer
-  def self.deploy(environment:, repos:)
-    new(environment: environment, repos: repos).deploy_all
+  def self.deploy(environment:, repos:, tag: nil)
+    new(environment: environment, repos: repos, tag: tag).deploy_all
   end
 
-  attr_reader :environment, :repos
+  attr_reader :environment, :repos, :tag
 
-  def initialize(environment:, repos:)
+  def initialize(environment:, repos:, tag: nil)
     @environment = environment
     @repos = repos
+    @tag = tag
+    ensure_tag_present_in_all_repos! if tag
   end
 
   def deploy_all
@@ -22,9 +24,9 @@ class Deployer
     repos.each do |repo|
       puts "\n-------------------- BEGIN #{repo.name} --------------------\n"
       within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
-        auditor.audit(repo: repo.name)
         puts "\n**** DEPLOYING #{repo.name} ****\n"
-        comment_out_branch_prompt!
+        set_deploy_target!
+        auditor.audit(repo: repo.name)
         cap_result = deploy ? colorize_success('success') : colorize_failure('FAILED')
         puts "\n**** DEPLOYED #{repo.name}; result: #{cap_result} ****\n"
 
@@ -48,6 +50,18 @@ class Deployer
   end
 
   private
+
+  def ensure_tag_present_in_all_repos!
+    return if repos_missing_tag.empty?
+
+    raise "Aborting: git tag '#{tag}' is missing in these repos: #{repos_missing_tag.join(', ')}"
+  end
+
+  def repos_missing_tag
+    @repos_missing_tag ||= repos.reject do |repo|
+      Dir.chdir(RepoUpdater.new(repo: repo.name).repo_dir) { `git tag`.split.include?(tag) }
+    end.map(&:name)
+  end
 
   def auditor
     @auditor ||= Auditor.new
@@ -76,13 +90,17 @@ class Deployer
     false
   end
 
-  # Comment out where we ask what branch to deploy. We always deploy the default
-  # branch as configured in git/GitHub.
-  def comment_out_branch_prompt!
+  # Either deploy HEAD or the given tag
+  def set_deploy_target!
     text = File.read('config/deploy.rb')
-    # Forces the `git:create_release` cap task to use the HEAD ref, which allows
-    # different repositories to use different default branches.
-    text.gsub!(/ask :branch/, 'set :branch')
+    if tag
+      # Deploy the given tag
+      text.sub!(/^ask :branch.+$/, "set :branch, '#{tag}'")
+    else
+      # Forces the `git:create_release` cap task to use the HEAD ref, which allows
+      # different repositories to use different default branches.
+      text.sub!(/ask :branch/, 'set :branch')
+    end
     File.write('config/deploy.rb', text)
   end
 
