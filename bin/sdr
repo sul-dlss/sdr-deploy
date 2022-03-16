@@ -1,0 +1,130 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift 'lib'
+
+require 'sdr_deploy'
+
+# SDR CLI
+class CLI < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  desc 'check_cocina', 'check for cocina-models version mismatches'
+  def check_cocina
+    RepoUpdater.update(repos: Settings.repositories)
+    CocinaChecker.check
+  end
+
+  option :message,
+         required: false,
+         banner: 'TAG_MESSAGE',
+         desc: 'Message to describe a newly created tag',
+         aliases: '-m'
+  option :delete,
+         required: false,
+         type: :boolean,
+         default: false,
+         banner: 'DELETE',
+         desc: 'Delete the tag locally and remotely',
+         aliases: '-d'
+  desc 'tag TAG_NAME', 'create or delete a tag named TAG_NAME'
+  def tag(tag_name)
+    RepoUpdater.update(repos: Settings.repositories)
+    if options[:delete]
+      Tagger.delete(tag_name: tag_name)
+    else
+      Tagger.create(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'))
+    end
+  end
+
+  option :only,
+         type: :array,
+         default: [],
+         desc: 'Update only these repos'
+  option :except,
+         type: :array,
+         default: [],
+         desc: 'Update all except these repos'
+  option :skip_update,
+         type: :boolean,
+         default: false,
+         desc: 'Skip update repos',
+         aliases: '-s'
+  option :environment,
+         required: true,
+         enum: ::Settings.supported_envs,
+         banner: 'ENVIRONMENT',
+         desc: "Environment (#{Settings.supported_envs})",
+         aliases: '-e'
+  desc 'check_ssh', 'check SSH connections'
+  def check_ssh
+    raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
+
+    repositories = if options[:only].any?
+                     Settings.repositories.select { |repo| options[:only].include?(repo.name) }
+                   elsif options[:except].any?
+                     Settings.repositories.reject { |repo| options[:except].include?(repo.name) }
+                   else
+                     Settings.repositories
+                   end
+
+    # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
+    RepoUpdater.update(repos: repositories, prune: options.slice(:only, :except).none?) unless options[:skip_update]
+    SshChecker.check(environment: options[:environment], repos: repositories)
+  end
+
+  option :only,
+         type: :array,
+         default: [],
+         desc: 'Update only these repos'
+  option :except,
+         type: :array,
+         default: [],
+         desc: 'Update all except these repos'
+  option :cocina,
+         type: :boolean,
+         default: false,
+         desc: 'Only update repos affected by new cocina-models gem release',
+         aliases: '-c'
+  option :tag,
+         type: :string,
+         desc: 'Deploy the given tag instead of the main branch',
+         aliases: '-t'
+  option :skip_update,
+         type: :boolean,
+         default: false,
+         desc: 'Skip update repos',
+         aliases: '-s'
+  option :environment,
+         required: true,
+         enum: Settings.supported_envs,
+         banner: 'ENVIRONMENT',
+         desc: "Environment (#{Settings.supported_envs})",
+         aliases: '-e'
+  desc 'deploy', 'deploy all the services in an environment'
+  def deploy
+    raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
+
+    repositories = if options[:cocina]
+                     Settings.repositories.select(&:cocina_models_update)
+                   else
+                     Settings.repositories
+                   end
+
+    if options[:only].any?
+      repositories.select! { |repo| options[:only].include?(repo.name) }
+    elsif options[:except].any?
+      repositories.reject! { |repo| options[:except].include?(repo.name) }
+    end
+
+    # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
+    RepoUpdater.update(repos: repositories, prune: options.slice(:only, :except, :cocina).none?) unless options[:skip_update]
+    abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check
+
+    Deployer.deploy(environment: options[:environment], repos: repositories, tag: options[:tag])
+  end
+end
+
+CLI.start(ARGV)

@@ -10,8 +10,8 @@ Make sure that:
 * You have `kinit`-ed.
 * You have added the public SSH key, often `~/.ssh/id_rsa.pub`, from your machine to [GitHub](https://github.com/settings/keys)
 * You have previously `ssh`-ed into all servers.
-  * NOTE: If you are unsure about this, run `bin/check_ssh -e [qa|stage|prod]` and watch the output for any errors!
-* NOTE: if you run `bin/check_cocina`, you may need to ensure that you have the contribsys gem credentials available for google-books to install the sidekiq-pro gem locally (the credential is already on our deploy target VMs).
+  * NOTE: If you are unsure about this, run `bin/sdr check_ssh -e [qa|stage|prod]` and watch the output for any errors!
+* NOTE: if you run `bin/sdr check_cocina`, you may need to ensure that you have the contribsys gem credentials available for google-books to install the sidekiq-pro gem locally (the credential is already on our deploy target VMs).
   * You can get the env variable name and value from the README in shared_configs for google-books-prod (not in google-books-stage or -qa)
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
 
@@ -19,7 +19,7 @@ Make sure that:
 
 ```
 Usage:
-  bin/check_ssh -e, --environment=ENVIRONMENT
+  bin/sdr check_ssh -e, --environment=ENVIRONMENT
 
 Options:
       [--only=one two three]               # Update only these repos
@@ -31,7 +31,7 @@ Options:
 check SSH connections
 
 Example:
-  bin/check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
@@ -39,7 +39,7 @@ NOTE: Watch the output for any errors
 ### Check versions of cocina-models
 
 ```shell
-bin/check_cocina
+bin/sdr check_cocina
 ```
 
 This will let you know which versions of cocina-models each project is locked to.
@@ -49,7 +49,7 @@ This will let you know which versions of cocina-models each project is locked to
 
 ```
 Usage:
-  bin/deploy -e, --environment=ENVIRONMENT
+  bin/sdr deploy -e, --environment=ENVIRONMENT
 
 Options:
       [--only=one two three]               # Update only these repos
@@ -63,14 +63,14 @@ Options:
 deploy all the services in an environment
 
 Example:
-  bin/deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 ### Create repository tags
 
 ```
 Usage:
-  bin/tag TAG_NAME
+  bin/sdr tag TAG_NAME
 
 Options:
   -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
@@ -79,7 +79,7 @@ Options:
 create or delete a tag named TAG_NAME
 
 Example:
-  bin/tag -m 'coordinating the release of cocina-models 1.2.3' rel-88
+  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-88
 ```
 
 ### A note about ruby versions
@@ -89,12 +89,12 @@ As of Jan 2022, some projects have not yet been updated to be Ruby 3.0 compatibl
 In Ruby 3.0
 
 ```
-bin/deploy -e stage --except sul-dlss/dor-services-app
+bin/sdr deploy -e stage --except sul-dlss/dor-services-app
 ```
 
 Then in Ruby 2.7
 ```
-bin/deploy -e stage --only sul-dlss/dor-services-app
+bin/sdr deploy -e stage --only sul-dlss/dor-services-app
 ```
 
 The projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
@@ -109,13 +109,13 @@ In Ruby 3.0
 
 ```
 # -e can be qa or stage or prod
-bin/deploy -e stage -c --except sul-dlss/dor-services-app
+bin/sdr deploy -e stage -c --except sul-dlss/dor-services-app
 ```
 
 Then in Ruby 2.7
 ```
 # -e can be qa or stage or prod
-bin/deploy -e stage -c --only sul-dlss/dor-services-app
+bin/sdr deploy -e stage -c --only sul-dlss/dor-services-app
 ```
 
 ### Notes and tips:
