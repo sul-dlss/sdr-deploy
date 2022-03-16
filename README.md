@@ -103,6 +103,8 @@ The projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
 
 Note: this includes dor-services-app and sdr-api in addition to cocina level2 updates.
 
+**[Turn off Google Books](https://sul-gbooks-prod.stanford.edu/features) when deploying to production.** This avoids failed deposit due to a temporary Cocina model mismatch. Unlike other applications, the deposits will fail without retry and require manual remediation.
+
 Use the `--cocina` or `-c` flag.
 
 In Ruby 3.0
