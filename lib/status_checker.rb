@@ -17,8 +17,10 @@ class StatusChecker
 
   def check_status
     configured_url = repo.status&.public_send(environment)
-    puts "configured url for #{repo.name} (#{environment}): #{configured_url}"
-    puts "code url for #{repo.name} (#{environment}): #{server_url}"
+    if configured_url != server_url
+      puts "configured url for #{repo.name} (#{environment}): #{configured_url}"
+      puts "code url for #{repo.name} (#{environment}): #{server_url}"
+    end
     # return if configured_url.nil?
 
   #   uri = URI(status_url)
@@ -33,6 +35,12 @@ class StatusChecker
   private
 
   def server_url
-    File.readlines("config/deploy/#{environment}.rb").grep(/^server/)
+    server = File.readlines("config/deploy/#{environment}.rb")
+                 .grep(/^server/)
+                 .first
+                 .match(/server '(.+?)'/)
+                 .captures
+                 .first
+    "https://#{server}/status/all"
   end
 end
