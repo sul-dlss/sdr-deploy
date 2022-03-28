@@ -66,12 +66,20 @@ Example:
   bin/sdr deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
-**NOTE**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured for an application on `config/settings.yml` via, .e.g.:
+**NOTE 1**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured on a per-application basis in `config/settings.yml` via, .e.g.:
 
 ```yaml
   - name: sul-dlss/sul_pub
     non_standard_envs:
       - cap-dev
+```
+
+**NOTE 2**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, .e.g.:
+
+```yaml
+  - name: sul-dlss/argo
+    confirmation_required_envs:
+      - prod
 ```
 
 ### Create repository tags

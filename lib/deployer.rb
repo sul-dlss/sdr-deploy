@@ -16,6 +16,7 @@ class Deployer
     @repos = repos
     @tag = tag
     ensure_tag_present_in_all_repos! if tag
+    prompt_user_for_confirmation!
   end
 
   def deploy_all
@@ -54,6 +55,23 @@ class Deployer
   end
 
   private
+
+  def prompt_user_for_confirmation!
+    return if repos_requiring_confirmation.empty?
+
+    prompt_text = "Some repos require approval before being deployed to #{environment} " \
+                  "(#{repos_requiring_confirmation.join(', ')}). Has this been approved?"
+
+    confirmation = TTY::Prompt.new.yes?(prompt_text) { |prompt| prompt.default(false) }
+
+    abort 'Deployment not approved! Aborting.' unless confirmation
+  end
+
+  def repos_requiring_confirmation
+    repos
+      .select { |repo| Array(repo.confirmation_required_envs).include?(environment) }
+      .map(&:name)
+  end
 
   def ensure_tag_present_in_all_repos!
     return if repos_missing_tag.empty?
@@ -97,6 +115,7 @@ class Deployer
   # Either deploy HEAD or the given tag
   def set_deploy_target!
     text = File.read('config/deploy.rb')
+
     if tag
       # Deploy the given tag
       text.sub!(/^ask :branch.+$/, "set :branch, '#{tag}'")
@@ -105,6 +124,7 @@ class Deployer
       # different repositories to use different default branches.
       text.sub!(/ask :branch/, 'set :branch')
     end
+
     File.write('config/deploy.rb', text)
   end
 
