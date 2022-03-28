@@ -42,10 +42,13 @@ repositories:
       prod: https://sdr.stanford.edu/status/all/
   - name: sul-dlss/hydra_etd
     cocina_models_update: true
+    non_standard_envs:
+      - uat
     status:
       qa: https://etd-qa.stanford.edu/status/all/
       stage: https://etd-stage.stanford.edu/status/all/
       prod:  https://etd.stanford.edu/status/all/
+      uat: https://etd-test.stanford.edu/status/all/
   - name: sul-dlss/ksr-app
     status:
       qa: https://ksr-search-dev.stanford.edu/status/all/
@@ -76,12 +79,15 @@ repositories:
       stage: https://sdr-api-stage.stanford.edu/status/all
       prod: https://sdr-api-prod.stanford.edu/status/all
   - name: sul-dlss/sul_pub
+    non_standard_envs:
+      - cap-dev
     status:
       qa: https://sul-pub-cap-uat.stanford.edu/status/all/
-      # if you check all on sul-pub stage, it will record a fail because harvesting
+      # if you check all on sul-pub stage or cap-dev, it will record a fail because harvesting
       # is disabled there, that is expected, hence the URL difference
       stage: https://sul-pub-stage.stanford.edu/status/
       prod: https://sul-pub-prod.stanford.edu/status/all/
+      cap-dev: https://sul-pub-cap-dev-a.stanford.edu/status/
   - name: sul-dlss/suri-rails
     status:
       qa: https://sul-suri-qa.stanford.edu/status/all/

@@ -19,7 +19,7 @@ class Tagger
   def create(tag_message:)
     puts "creating tag in repos: #{repos.map(&:name).join(', ')}"
     repos.each do |repo|
-      within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
+      within_project_dir(repo: repo) do
         puts "creating tag '#{tag_name}' for #{repo.name}: #{tag_message}"
         ErrorEmittingExecutor.execute("git tag -a #{tag_name} -m '#{tag_message}'", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push origin #{tag_name}", exit_on_error: true)
@@ -30,7 +30,7 @@ class Tagger
   def delete
     puts "deleting tag in repos: #{repos.map(&:name).join(', ')}"
     repos.each do |repo|
-      within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
+      within_project_dir(repo: repo) do
         puts "deleting tag '#{tag_name}' from #{repo.name}"
         ErrorEmittingExecutor.execute("git tag -d #{tag_name}", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push --delete origin #{tag_name}", exit_on_error: true)
