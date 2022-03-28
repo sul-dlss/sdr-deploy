@@ -68,6 +68,8 @@ Example:
 
 ### Create repository tags
 
+**NOTE**: We conventionally name tags `rel-{YYYY}-{MM}-{DD}`.
+
 ```
 Usage:
   bin/sdr tag TAG_NAME
@@ -79,7 +81,7 @@ Options:
 create or delete a tag named TAG_NAME
 
 Example:
-  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-88
+  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
 ```
 
 ### A note about ruby versions
