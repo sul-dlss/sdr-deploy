@@ -23,14 +23,14 @@ class Deployer
 
     repos.each do |repo|
       puts "\n-------------------- BEGIN #{repo.name} --------------------\n"
-      within_project_dir(RepoUpdater.new(repo: repo.name).repo_dir) do
-        puts "\n**** DEPLOYING #{repo.name} ****\n"
+      within_project_dir(repo: repo, environment: environment) do |env|
+        puts "\n**** DEPLOYING #{repo.name} to #{env} ****\n"
         set_deploy_target!
         auditor.audit(repo: repo.name)
-        cap_result = deploy ? colorize_success('success') : colorize_failure('FAILED')
-        puts "\n**** DEPLOYED #{repo.name}; result: #{cap_result} ****\n"
+        cap_result = deploy(env) ? colorize_success('success') : colorize_failure('FAILED')
+        puts "\n**** DEPLOYED #{repo.name} to #{env}; result: #{cap_result} ****\n"
 
-        status_check_result = case status_check(repo.status&.public_send(environment))
+        status_check_result = case status_check(repo.status&.public_send(env))
                               when nil
                                 colorize_success('N/A')
                               when true
@@ -38,7 +38,11 @@ class Deployer
                               else
                                 colorize_failure('FAILED')
                               end
-        status_table << [repo.name, cap_result, status_check_result]
+        status_table << [
+          env == environment ? repo.name : "#{repo.name} (#{env})",
+          cap_result,
+          status_check_result
+        ]
       end
       puts "\n--------------------  END #{repo.name}  --------------------\n"
     end
@@ -67,8 +71,8 @@ class Deployer
     @auditor ||= Auditor.new
   end
 
-  def deploy
-    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{environment} deploy") do |f|
+  def deploy(env)
+    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy") do |f|
       loop do
         puts f.readline
       rescue EOFError

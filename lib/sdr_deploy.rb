@@ -14,8 +14,8 @@ Config.load_and_set_settings(
 )
 
 # Common methods
-def within_project_dir(dir, &block)
-  Dir.chdir(dir) do
+def within_project_dir(repo:, environment: nil, &block)
+  Dir.chdir(RepoUpdater.new(repo: repo).repo_dir) do
     # NOTE: This is how we execute commands in the project-specific bundler
     #       context, rather than sdr-deploy's bundler context. We want *most* of
     #       the behavior provided by `Bundler.with_unbundled_env`, except we
@@ -24,7 +24,12 @@ def within_project_dir(dir, &block)
     contribsys_credentials = ENV['BUNDLE_GEMS__CONTRIBSYS__COM']
     Bundler.with_unbundled_env do
       ENV['BUNDLE_GEMS__CONTRIBSYS__COM'] = contribsys_credentials
-      block.call
+      block.call(environment)
+
+      # Some of our apps use non-standard envs and by convention we deploy these when deploying QA
+      return unless environment == 'qa' && repo.non_standard_envs
+
+      repo.non_standard_envs.each { |env| block.call(env) }
     end
   end
 end

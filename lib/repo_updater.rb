@@ -8,7 +8,7 @@ class RepoUpdater
     @progress_bar = progress_bar(repos)
     @progress_bar.start
     repos.each do |repo|
-      new(repo: repo.name).tap do |updater|
+      new(repo: repo).tap do |updater|
         @progress_bar.advance(repo: repo.name, operation: updater.operation_label)
         updater.update_or_create_repo
       end
@@ -38,7 +38,7 @@ class RepoUpdater
 
   def initialize(repo:)
     @repo = repo
-    @repo_dir = File.join(Settings.work_dir, repo)
+    @repo_dir = File.join(Settings.work_dir, repo.name)
   end
 
   def already_created?
@@ -64,7 +64,7 @@ class RepoUpdater
   end
 
   def update_repo
-    within_project_dir(repo_dir) do
+    within_project_dir(repo: repo) do
       ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('git reset --hard $(git symbolic-ref refs/remotes/origin/HEAD)',
                                     exit_on_error: true)
@@ -74,8 +74,8 @@ class RepoUpdater
 
   def create_repo
     FileUtils.mkdir_p(repo_dir)
-    within_project_dir(repo_dir) do
-      ErrorEmittingExecutor.execute("git clone --depth=5 --tags git@github.com:#{repo}.git .", exit_on_error: true)
+    within_project_dir(repo: repo) do
+      ErrorEmittingExecutor.execute("git clone --depth=5 --tags git@github.com:#{repo.name}.git .", exit_on_error: true)
       ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('bundle install')
     end
