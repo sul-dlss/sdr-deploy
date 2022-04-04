@@ -63,7 +63,7 @@ class Deployer
 
   def repos_missing_tag
     @repos_missing_tag ||= repos.reject do |repo|
-      Dir.chdir(RepoUpdater.new(repo: repo.name).repo_dir) { `git tag`.split.include?(tag) }
+      Dir.chdir(RepoUpdater.new(repo: repo).repo_dir) { `git tag`.split.include?(tag) }
     end.map(&:name)
   end
 
