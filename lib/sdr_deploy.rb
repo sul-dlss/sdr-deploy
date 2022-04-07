@@ -7,6 +7,7 @@ require 'open3'
 require 'pastel'
 require 'thor'
 require 'tty-progressbar'
+require 'tty-prompt'
 require 'tty-table'
 
 Config.load_and_set_settings(
