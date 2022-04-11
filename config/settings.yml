@@ -82,9 +82,12 @@ repositories:
     non_standard_envs:
       - cap-dev
     status:
+      # see https://github.com/sul-dlss/sul_pub/wiki/Servers-Deployment-environment for explanation of
+      #  sul-pub server names, why there is an extra one and why their names do not match DLSS standards
+      #   it was determined it is better to have standard deploy targets names on our end, even if it didn't sync with server names
       qa: https://sul-pub-cap-uat.stanford.edu/status/all/
-      # if you check all on sul-pub stage or cap-dev, it will record a fail because harvesting
-      # is disabled there, that is expected, hence the URL difference
+      # if you check status/all on sul-pub stage or cap-dev, it will record a fail because harvesting
+      # is disabled there, but that is expected ... hence the URL difference
       stage: https://sul-pub-stage.stanford.edu/status/
       prod: https://sul-pub-prod.stanford.edu/status/all/
       cap-dev: https://sul-pub-cap-dev-a.stanford.edu/status/
