@@ -17,9 +17,9 @@ repositories:
   - name: sul-dlss/dor-services-app
     cocina_models_update: true
     status:
-      qa: https://dor-services-qa.stanford.edu/status/all/
-      stage: https://dor-services-stage.stanford.edu/status/all/
-      prod: https://dor-services-prod.stanford.edu/status/all/
+      qa: https://dor-services-qa-lb.stanford.edu/status/all/
+      stage: https://dor-services-stage-lb.stanford.edu/status/all/
+      prod: https://dor-services-prod-lb.stanford.edu/status/all/
   - name: sul-dlss/dor_indexing_app
     cocina_models_update: true
     # # unable to get local issuer certificate
