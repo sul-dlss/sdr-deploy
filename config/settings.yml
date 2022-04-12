@@ -103,6 +103,7 @@ repositories:
       stage: https://dor-techmd-stage-a.stanford.edu/status/all/
       prod: https://dor-techmd-prod-a.stanford.edu/status/all/
   - name: sul-dlss/was-registrar-app
+    cocina_models_update: true
     status:
       qa: https://was-registrar-app-qa.stanford.edu/status/all/
       stage: https://was-registrar-app-stage.stanford.edu/status/all/
@@ -110,7 +111,6 @@ repositories:
   - name: sul-dlss/was_robot_suite
     cocina_models_update: true
   - name: sul-dlss/workflow-server-rails
-    cocina_models_update: true
     # workflow-server-rails is locked down on all environments and status cannot be checked remotely
     # you can check manually using curl from the corresponding argo vms
     # status:
