@@ -29,13 +29,25 @@ class CLI < Thor
          banner: 'DELETE',
          desc: 'Delete the tag locally and remotely',
          aliases: '-d'
+  option :cocina,
+         type: :boolean,
+         default: false,
+         desc: 'Only tag repos affected by new cocina-models gem release',
+         aliases: '-c'
+
   desc 'tag TAG_NAME', 'create or delete a tag named TAG_NAME'
   def tag(tag_name)
-    RepoUpdater.update(repos: Settings.repositories)
+    repositories = if options[:cocina]
+                     Settings.repositories.select(&:cocina_models_update)
+                   else
+                     Settings.repositories
+                   end
+
+    RepoUpdater.update(repos: repositories)
     if options[:delete]
-      Tagger.delete(tag_name: tag_name)
+      Tagger.delete(tag_name: tag_name, repos: repositories)
     else
-      Tagger.create(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'))
+      Tagger.create(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'), repos: repositories)
     end
   end
 
