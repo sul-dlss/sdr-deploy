@@ -4,6 +4,7 @@ require 'English'
 require 'net/http'
 
 # Service class for deploying
+# rubocop:disable Metrics/ClassLength
 class Deployer
   def self.deploy(environment:, repos:, tag: nil)
     new(environment: environment, repos: repos, tag: tag).deploy_all
@@ -16,7 +17,8 @@ class Deployer
     @repos = repos
     @tag = tag
     ensure_tag_present_in_all_repos! if tag
-    prompt_user_for_confirmation!
+    prompt_user_for_main_confirmation!
+    prompt_user_for_approval_confirmation!
   end
 
   def deploy_all
@@ -56,7 +58,18 @@ class Deployer
 
   private
 
-  def prompt_user_for_confirmation!
+  def prompt_user_for_main_confirmation!
+    return if @tag && @tag != 'main'
+
+    prompt_text = 'You are deploying without a tag, which will deploy the main branch of all repos.  Are you sure?'
+    confirmation = TTY::Prompt.new.yes?(prompt_text) do |prompt|
+      prompt.default(false)
+    end
+
+    abort 'Deployment to main aborted.' unless confirmation
+  end
+
+  def prompt_user_for_approval_confirmation!
     return if repos_requiring_confirmation.empty?
 
     prompt_text = "Some repos require approval before being deployed to #{environment} " \
@@ -132,3 +145,4 @@ class Deployer
     @status_table ||= TTY::Table.new(header: ['repo', 'deploy result', 'status result'])
   end
 end
+# rubocop:enable Metrics/ClassLength
