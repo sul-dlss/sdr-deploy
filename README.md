@@ -93,6 +93,7 @@ Usage:
 Options:
   -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
   -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
+  -c, [--cocina], [--no-cocina]         # Only update repos affected by new cocina-models gem release
 
 create or delete a tag named TAG_NAME
 

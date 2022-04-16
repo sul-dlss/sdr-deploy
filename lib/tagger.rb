@@ -2,18 +2,19 @@
 
 # Service class for tagging repositories
 class Tagger
-  def self.create(tag_name:, tag_message:)
-    new(tag_name: tag_name).create(tag_message: tag_message)
+  def self.create(tag_name:, tag_message:, repos:)
+    new(tag_name: tag_name, repos: repos).create(tag_message: tag_message)
   end
 
-  def self.delete(tag_name:)
-    new(tag_name: tag_name).delete
+  def self.delete(tag_name:, repos:)
+    new(tag_name: tag_name, repos: repos).delete
   end
 
-  attr_reader :tag_name
+  attr_reader :tag_name, :repos
 
-  def initialize(tag_name:)
+  def initialize(tag_name:, repos:)
     @tag_name = tag_name
+    @repos = repos
   end
 
   def create(tag_message:)
@@ -36,11 +37,5 @@ class Tagger
         ErrorEmittingExecutor.execute("git push --delete origin #{tag_name}", exit_on_error: true)
       end
     end
-  end
-
-  private
-
-  def repos
-    @repos ||= Settings.repositories
   end
 end
