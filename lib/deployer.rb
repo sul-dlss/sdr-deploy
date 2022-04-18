@@ -16,7 +16,9 @@ class Deployer
     @environment = environment
     @repos = repos
     @tag = tag
-    ensure_tag_present_in_all_repos! if tag
+    raise '*** ERROR: You must supply a tag to deploy (can set to main and confirm) ***' unless @tag
+
+    ensure_tag_present_in_all_repos!
     prompt_user_for_main_confirmation!
     prompt_user_for_approval_confirmation!
   end
