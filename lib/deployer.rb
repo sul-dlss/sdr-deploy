@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'English'
-require 'net/http'
+require 'launchy'
 
 # Service class for deploying
-# rubocop:disable Metrics/ClassLength
 class Deployer
   def self.deploy(environment:, repos:, tag: nil)
     new(environment: environment, repos: repos, tag: tag).deploy_all
@@ -33,18 +32,9 @@ class Deployer
         cap_result = deploy(env) ? colorize_success('success') : colorize_failure('FAILED')
         puts "\n**** DEPLOYED #{repo.name} to #{env}; result: #{cap_result} ****\n"
 
-        status_check_result = case status_check(repo.status&.public_send(env))
-                              when nil
-                                colorize_success('N/A')
-                              when true
-                                colorize_success('success')
-                              else
-                                colorize_failure('FAILED')
-                              end
-        status_table << [
+        report_table << [
           env == environment ? repo.name : "#{repo.name} (#{env})",
-          cap_result,
-          status_check_result
+          cap_result
         ]
       end
       puts "\n--------------------  END #{repo.name}  --------------------\n"
@@ -53,10 +43,17 @@ class Deployer
     auditor.report
 
     puts "\n------- RESULTS: -------\n"
-    puts status_table.render(:unicode)
+    puts report_table.render(:unicode)
+
+    puts "Deployments to #{environment} complete. Opening #{status_url} in your browser so you can check statuses"
+    Launchy.open(status_url)
   end
 
   private
+
+  def status_url
+    Settings.supported_envs[environment]
+  end
 
   def prompt_user_for_main_confirmation!
     return if @tag && @tag != 'main'
@@ -113,18 +110,6 @@ class Deployer
     $CHILD_STATUS.success?
   end
 
-  def status_check(status_url)
-    return if status_url.nil?
-
-    uri = URI(status_url)
-    resp = Net::HTTP.get_response(uri)
-    puts "\n**** STATUS CHECK #{status_url} returned #{resp.code}: #{resp.body} ****\n"
-    resp.code == '200'
-  rescue StandardError => e
-    puts colorize_failure("!!!!!!!!! STATUS CHECK #{status_url} RAISED #{e.message}")
-    false
-  end
-
   # Either deploy HEAD or the given tag
   def set_deploy_target!
     text = File.read('config/deploy.rb')
@@ -141,8 +126,7 @@ class Deployer
     File.write('config/deploy.rb', text)
   end
 
-  def status_table
-    @status_table ||= TTY::Table.new(header: ['repo', 'deploy result', 'status result'])
+  def report_table
+    @report_table ||= TTY::Table.new(header: %w[repo result])
   end
 end
-# rubocop:enable Metrics/ClassLength

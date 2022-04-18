@@ -6,6 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'byebug'
 gem 'config', '~> 3.1'
+gem 'launchy', '~> 2.5'
 gem 'pastel', '~> 0.8'
 gem 'rubocop', '~> 1.24'
 gem 'thor', '~> 1.1'

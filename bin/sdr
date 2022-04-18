@@ -66,9 +66,9 @@ class CLI < Thor
          aliases: '-s'
   option :environment,
          required: true,
-         enum: ::Settings.supported_envs,
+         enum: ::Settings.supported_envs.keys.map(&:to_s),
          banner: 'ENVIRONMENT',
-         desc: "Environment (#{Settings.supported_envs})",
+         desc: "Environment (#{Settings.supported_envs.keys.map(&:to_s)})",
          aliases: '-e'
   desc 'check_ssh', 'check SSH connections'
   def check_ssh
@@ -111,9 +111,9 @@ class CLI < Thor
          aliases: '-s'
   option :environment,
          required: true,
-         enum: Settings.supported_envs,
+         enum: Settings.supported_envs.keys.map(&:to_s),
          banner: 'ENVIRONMENT',
-         desc: "Environment (#{Settings.supported_envs})",
+         desc: "Environment (#{Settings.supported_envs.keys.map(&:to_s)})",
          aliases: '-e'
   desc 'deploy', 'deploy all the services in an environment'
   def deploy

@@ -1,119 +1,44 @@
 work_dir: tmp/repos
 supported_envs:
-  - qa
-  - prod
-  - stage
+  qa: https://sul-nagios-stage.stanford.edu/nagios/cgi-bin/status.cgi?hostgroup=infrastructure-qa&style=detail&servicestatustypes=28&hoststatustypes=15
+  prod: https://sul-nagios-prod.stanford.edu/nagios/cgi-bin/status.cgi?hostgroup=infrastructure-prod&style=detail&servicestatustypes=28&hoststatustypes=15
+  stage: https://sul-nagios-stage.stanford.edu/nagios/cgi-bin/status.cgi?hostgroup=infrastructure-stage&style=detail&servicestatustypes=28&hoststatustypes=15
 repositories:
   - name: sul-dlss/argo
     cocina_models_update: true
     confirmation_required_envs:
       - prod
-    status:
-      qa: https://argo-qa.stanford.edu/status/all/
-      stage: https://argo-stage.stanford.edu/status/all/
-      prod: https://argo.stanford.edu/status/all/
   - name: sul-dlss/common-accessioning
     cocina_models_update: true
   - name: sul-dlss/dor-services-app
     cocina_models_update: true
-    status:
-      qa: https://dor-services-qa-lb.stanford.edu/status/all/
-      stage: https://dor-services-stage-lb.stanford.edu/status/all/
-      prod: https://dor-services-prod-lb.stanford.edu/status/all/
   - name: sul-dlss/dor_indexing_app
     cocina_models_update: true
-    # # unable to get local issuer certificate
-    # status:
-    #   qa: https://dor-indexing-app-qa-a.stanford.edu/status/all/
-    #   stage: https://dor-indexing-app-stage-a.stanford.edu/status/all/
-    #   prod: https://dor-indexing-app-prod-a.stanford.edu/status/all/
   - name: sul-dlss/gis-robot-suite
   - name: sul-dlss/google-books
     cocina_models_update: true
-    status:
-      qa: https://sul-gbooks-qa.stanford.edu/status/all/
-      stage: https://sul-gbooks-stage.stanford.edu/status/all/
-      prod: https://sul-gbooks-prod.stanford.edu/status/all/
   - name: sul-dlss/happy-heron
     cocina_models_update: true
-    status:
-      qa: https://sul-h2-qa.stanford.edu/status/all/
-      stage: https://sul-h2-stage.stanford.edu/status/all/
-      prod: https://sdr.stanford.edu/status/all/
   - name: sul-dlss/hydra_etd
     cocina_models_update: true
     non_standard_envs:
       - uat
-    status:
-      qa: https://etd-qa.stanford.edu/status/all/
-      stage: https://etd-stage.stanford.edu/status/all/
-      prod:  https://etd.stanford.edu/status/all/
-      uat: https://etd-test.stanford.edu/status/all/
   - name: sul-dlss/ksr-app
-    status:
-      qa: https://ksr-search-dev.stanford.edu/status/all/
-      stage: https://ksr-search-stage.stanford.edu/status/all/
-      prod: https://ksr-search-prod.stanford.edu/status/all/
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     cocina_models_update: true
-    status:
-      qa: https://sul-preassembly-qa.stanford.edu/status/all/
-      stage: https://sul-preassembly-stage.stanford.edu/status/all/
-      prod: https://sul-preassembly-prod.stanford.edu/status/all/
   - name: sul-dlss/preservation_catalog
-    status:
-      qa: https://preservation-catalog-qa-02.stanford.edu/status/all/
-      stage: https://preservation-catalog-stage-02.stanford.edu/status/all/
-      prod: https://preservation-catalog-prod-02.stanford.edu/status/all/
-      # NOTE: the /status/all check fails on https://preservation-catalog-*-01.stanford.edu, because the
-      # `feature-zip_storage_dir` check (confirm that `/sdr-transfers` is writable) fails on that box.
-      # That is expected, and preservation-catalog-*-02 should pass. This is because only the resque worker
-      # boxes (-02 through -04) mount that directory.
   - name: sul-dlss/preservation_robots
   - name: sul-dlss/robot-console
   - name: sul-dlss/sdr-api
     cocina_models_update: true
-    status:
-      qa: https://sdr-api-qa.stanford.edu/status/all
-      stage: https://sdr-api-stage.stanford.edu/status/all
-      prod: https://sdr-api-prod.stanford.edu/status/all
   - name: sul-dlss/sul_pub
     non_standard_envs:
       - cap-dev
-    status:
-      # see https://github.com/sul-dlss/sul_pub/wiki/Servers-Deployment-environment for explanation of
-      #  sul-pub server names, why there is an extra one and why their names do not match DLSS standards
-      #   it was determined it is better to have standard deploy targets names on our end, even if it didn't sync with server names
-      qa: https://sul-pub-cap-uat.stanford.edu/status/all/
-      # if you check status/all on sul-pub stage or cap-dev, it will record a fail because harvesting
-      # is disabled there, but that is expected ... hence the URL difference
-      stage: https://sul-pub-stage.stanford.edu/status/
-      prod: https://sul-pub-prod.stanford.edu/status/all/
-      cap-dev: https://sul-pub-cap-dev-a.stanford.edu/status/
   - name: sul-dlss/suri-rails
-    status:
-      qa: https://sul-suri-qa.stanford.edu/status/all/
-      stage: https://sul-suri-stage.stanford.edu/status/all/
-      # prod is locked down and cannot be checked remotely
-      # prod: https://sul-suri-prod.stanford.edu/status/all/
   - name: sul-dlss/technical-metadata-service
-    status:
-      qa: https://dor-techmd-qa.stanford.edu/status/all/
-      stage: https://dor-techmd-stage-a.stanford.edu/status/all/
-      prod: https://dor-techmd-prod-a.stanford.edu/status/all/
   - name: sul-dlss/was-registrar-app
     cocina_models_update: true
-    status:
-      qa: https://was-registrar-app-qa.stanford.edu/status/all/
-      stage: https://was-registrar-app-stage.stanford.edu/status/all/
-      prod: https://was-registrar-app.stanford.edu/status/all/
   - name: sul-dlss/was_robot_suite
     cocina_models_update: true
   - name: sul-dlss/workflow-server-rails
-    # workflow-server-rails is locked down on all environments and status cannot be checked remotely
-    # you can check manually using curl from the corresponding argo vms
-    # status:
-    #   qa: https://workflow-service-qa.stanford.edu/status/all/
-    #   stage: https://workflow-service-stage.stanford.edu/status/all/
-    #   prod: https://workflow-service-prod.stanford.edu/status/all/
