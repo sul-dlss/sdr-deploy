@@ -44,7 +44,7 @@ GEM
       dry-schema (~> 1.9, >= 1.9.1)
     launchy (2.5.0)
       addressable (~> 2.7)
-    parallel (1.21.0)
+    parallel (1.22.1)
     parser (3.1.1.0)
       ast (~> 2.4.1)
     pastel (0.8.0)
@@ -109,6 +109,7 @@ DEPENDENCIES
   byebug
   config (~> 3.1)
   launchy (~> 2.5)
+  parallel (~> 1.21)
   pastel (~> 0.8)
   rspec_junit_formatter
   rubocop (~> 1.24)
