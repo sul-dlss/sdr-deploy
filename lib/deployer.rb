@@ -5,6 +5,7 @@ require 'launchy'
 require 'parallel'
 
 # Service class for deploying
+# rubocop:disable Metrics/ClassLength
 class Deployer
   Result = Struct.new(:repo, :env, :status, :output)
 
@@ -26,7 +27,7 @@ class Deployer
   def deploy_all
     puts "Repositories: #{repos.map(&:name).join(', ')}"
 
-    results = Parallel.map(repos, progress: 'Deploying...') do |repo|
+    results = Parallel.map(repos, in_processes: Settings.num_parallel_processes, progress: 'Deploying...') do |repo|
       within_project_dir(repo: repo, environment: environment) do |env|
         auditor.audit(repo: repo.name)
         set_deploy_target!
@@ -151,3 +152,4 @@ class Deployer
     @report_table ||= TTY::Table.new(header: %w[repo result])
   end
 end
+# rubocop:enable Metrics/ClassLength

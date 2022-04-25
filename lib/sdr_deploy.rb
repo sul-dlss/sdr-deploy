@@ -15,6 +15,7 @@ Config.load_and_set_settings(
 )
 
 # Common methods
+# rubocop: disable Metrics/MethodLength
 def within_project_dir(repo:, environment: nil, &block)
   results = []
 
@@ -38,6 +39,7 @@ def within_project_dir(repo:, environment: nil, &block)
     end
   end
 end
+# rubocop: enable Metrics/MethodLength
 
 def colorize_failure(string)
   pastel.white.on_bright_red.bold(string)
