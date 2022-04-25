@@ -2,9 +2,13 @@
 
 require 'English'
 require 'launchy'
+require 'parallel'
 
 # Service class for deploying
+# rubocop:disable Metrics/ClassLength
 class Deployer
+  Result = Struct.new(:repo, :env, :status, :output)
+
   def self.deploy(environment:, repos:, tag: nil)
     new(environment: environment, repos: repos, tag: tag).deploy_all
   end
@@ -21,35 +25,48 @@ class Deployer
   end
 
   def deploy_all
-    puts "repos to deploy: #{repos.map(&:name).join(', ')}"
+    puts "Repositories: #{repos.map(&:name).join(', ')}"
 
-    repos.each do |repo|
-      puts "\n-------------------- BEGIN #{repo.name} --------------------\n"
+    results = Parallel.map(repos, in_processes: Settings.num_parallel_processes, progress: 'Deploying...') do |repo|
       within_project_dir(repo: repo, environment: environment) do |env|
-        puts "\n**** DEPLOYING #{repo.name} to #{env} ****\n"
-        set_deploy_target!
         auditor.audit(repo: repo.name)
-        cap_result = deploy(env) ? colorize_success('success') : colorize_failure('FAILED')
-        puts "\n**** DEPLOYED #{repo.name} to #{env}; result: #{cap_result} ****\n"
-
-        report_table << [
+        set_deploy_target!
+        status, output = deploy(env)
+        Result.new(
           env == environment ? repo.name : "#{repo.name} (#{env})",
-          cap_result
-        ]
+          env,
+          status ? colorize_success('success') : colorize_failure('FAILED'),
+          output
+        )
       end
-      puts "\n--------------------  END #{repo.name}  --------------------\n"
-    end
+    end.flatten
 
     auditor.report
 
-    puts "\n------- RESULTS: -------\n"
+    build_report_table!(results)
+
     puts report_table.render(:unicode)
+
+    results
+      .select { |result| result.status.match?('FAILED') }
+      .each do |result|
+      puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
+    end
 
     puts "Deployments to #{environment} complete. Opening #{status_url} in your browser so you can check statuses"
     Launchy.open(status_url)
   end
 
   private
+
+  def build_report_table!(results)
+    results.each do |result|
+      report_table << [
+        result.repo,
+        result.status
+      ]
+    end
+  end
 
   def status_url
     Settings.supported_envs[environment]
@@ -100,14 +117,19 @@ class Deployer
   end
 
   def deploy(env)
-    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy") do |f|
+    output = []
+
+    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy 2>&1") do |f|
       loop do
-        puts f.readline
+        output << f.readline
+        # NOTE: Uncomment this if the deploy does something mysterious and you crave more observability.
+        # puts output
       rescue EOFError
         break
       end
     end
-    $CHILD_STATUS.success?
+
+    [$CHILD_STATUS.success?, output.join]
   end
 
   # Either deploy HEAD or the given tag
@@ -130,3 +152,4 @@ class Deployer
     @report_table ||= TTY::Table.new(header: %w[repo result])
   end
 end
+# rubocop:enable Metrics/ClassLength
