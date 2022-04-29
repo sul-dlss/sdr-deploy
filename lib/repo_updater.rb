@@ -7,18 +7,17 @@ class RepoUpdater
   def self.update(repos:, prune: false)
     @progress_bar = progress_bar(repos)
     @progress_bar.start
-    repos.each do |repo|
-      new(repo: repo).tap do |updater|
-        @progress_bar.advance(repo: repo.name, operation: updater.operation_label)
-        updater.update_or_create_repo
-      end
-    end
+    Parallel.each(
+      repos,
+      in_processes: Settings.num_parallel_processes,
+      finish: ->(repo, _i, _result) { @progress_bar.advance(repo: repo.name) }
+    ) { |repo| new(repo: repo).update_or_create_repo }
     prune_removed_repos_from_cache!(repos) if prune
   end
 
   def self.progress_bar(repos)
     TTY::ProgressBar.new(
-      ':operation cached git repository [:bar] (:current/:total, ETA: :eta) :repo',
+      'Updating cached git repository [:bar] (:current/:total, ETA: :eta) :repo',
       bar_format: :crate,
       total: repos.count
     )
@@ -43,12 +42,6 @@ class RepoUpdater
 
   def already_created?
     File.exist?(repo_dir)
-  end
-
-  def operation_label
-    return 'updating' if already_created?
-
-    'creating'
   end
 
   def update_or_create_repo

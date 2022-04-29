@@ -47,7 +47,7 @@ This will let you know which versions of cocina-models each project is locked to
 
 ### Run the deploys
 
-This command will deploy repositories in parallel.
+This command deploys repositories in parallel.
 
 ```
 Usage:
@@ -85,6 +85,8 @@ Example:
 ```
 
 ### Create repository tags
+
+This command tags repositories in parallel.
 
 **NOTE**: We conventionally name tags `rel-{YYYY}-{MM}-{DD}`.
 
