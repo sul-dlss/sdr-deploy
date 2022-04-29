@@ -2,7 +2,6 @@
 
 require 'English'
 require 'launchy'
-require 'parallel'
 
 # Service class for deploying
 # rubocop:disable Metrics/ClassLength
@@ -13,11 +12,16 @@ class Deployer
     new(environment: environment, repos: repos, tag: tag).deploy_all
   end
 
-  attr_reader :environment, :repos, :tag
+  attr_reader :environment, :progress_bar, :repos, :tag
 
   def initialize(environment:, repos:, tag: nil)
     @environment = environment
     @repos = repos
+    @progress_bar = TTY::ProgressBar.new(
+      'Deploying [:bar] (:current/:total, ETA: :eta) :repo',
+      bar_format: :crate,
+      total: @repos.count
+    )
     @tag = tag
     ensure_tag_present_in_all_repos! if tag
     prompt_user_for_main_confirmation!
@@ -26,8 +30,13 @@ class Deployer
 
   def deploy_all
     puts "Repositories: #{repos.map(&:name).join(', ')}"
+    progress_bar.start
 
-    results = Parallel.map(repos, in_processes: Settings.num_parallel_processes, progress: 'Deploying...') do |repo|
+    results = Parallel.map(
+      repos,
+      in_processes: Settings.num_parallel_processes,
+      finish: ->(repo, _i, _result) { progress_bar.advance(repo: repo.name) }
+    ) do |repo|
       within_project_dir(repo: repo, environment: environment) do |env|
         auditor.audit(repo: repo.name)
         set_deploy_target!
