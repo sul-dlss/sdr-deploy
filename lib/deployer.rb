@@ -8,13 +8,14 @@ require 'launchy'
 class Deployer
   Result = Struct.new(:repo, :env, :status, :output)
 
-  def self.deploy(environment:, repos:, tag: nil)
-    new(environment: environment, repos: repos, tag: tag).deploy_all
+  def self.deploy(environment:, repos:, tag: nil, before_command: nil)
+    new(environment: environment, repos: repos, tag: tag, before_command: before_command).deploy_all
   end
 
-  attr_reader :environment, :progress_bar, :repos, :tag
+  attr_reader :environment, :progress_bar, :repos, :tag, :before_command
 
-  def initialize(environment:, repos:, tag: nil)
+  def initialize(environment:, repos:, tag: nil, before_command: nil)
+    @before_command = before_command
     @environment = environment
     @repos = repos
     @progress_bar = TTY::ProgressBar.new(
@@ -39,6 +40,7 @@ class Deployer
     ) do |repo|
       within_project_dir(repo: repo, environment: environment) do |env|
         auditor.audit(repo: repo.name)
+        run_before_command!(env)
         set_deploy_target!
         status, output = deploy(env)
         Result.new(
@@ -68,6 +70,12 @@ class Deployer
 
   private
 
+  def run_before_command!(env)
+    return unless before_command
+
+    `bundle exec cap #{env} remote_execute['#{before_command}'] 2>&1`
+  end
+
   def build_report_table!(results)
     results.each do |result|
       report_table << [
@@ -82,7 +90,7 @@ class Deployer
   end
 
   def prompt_user_for_main_confirmation!
-    return if @tag && @tag != 'main'
+    return if tag && tag != 'main'
 
     prompt_text = 'You are deploying without a tag, which will deploy the main branch of all repos.  Are you sure?'
     confirmation = TTY::Prompt.new.yes?(prompt_text) do |prompt|
