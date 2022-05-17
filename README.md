@@ -57,9 +57,10 @@ Options:
       [--only=one two three]               # Update only these repos
       [--except=one two three]             # Update all except these repos
   -c, [--cocina], [--no-cocina]            # Only update repos affected by new cocina-models gem release
+  -b, [--before-command=BEFORE_COMMAND]    # Run this command on each host before deploying
   -t, [--tag=TAG]                          # Deploy the given tag instead of the main branch
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
-  -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
+  -e, --environment=ENVIRONMENT            # Deployment environment
                                            # Possible values: qa, prod, stage
 
 deploy all the services in an environment
@@ -68,7 +69,13 @@ Example:
   bin/sdr deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
-**NOTE 1**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured on a per-application basis in `config/settings.yml` via, .e.g.:
+**NOTE 1**: If you are deploying dependency changes and one of the default gems (e.g., `strscan`, `io-wait`) has been bumped, you may find it useful to use the `-b`/`--before-command` option as follows:
+
+```shell
+$ bin/sdr deploy -e stage -b 'bash -lc "gem install strscan"'
+```
+
+**NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/sul_pub
@@ -76,7 +83,7 @@ Example:
       - cap-dev
 ```
 
-**NOTE 2**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, .e.g.:
+**NOTE 3**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/argo

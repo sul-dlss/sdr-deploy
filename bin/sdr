@@ -100,6 +100,10 @@ class CLI < Thor
          default: false,
          desc: 'Only update repos affected by new cocina-models gem release',
          aliases: '-c'
+  option :before_command,
+         type: :string,
+         desc: 'Run this command on each host before deploying',
+         aliases: '-b'
   option :tag,
          type: :string,
          desc: 'Deploy the given tag instead of the main branch',
@@ -113,7 +117,7 @@ class CLI < Thor
          required: true,
          enum: Settings.supported_envs.keys.map(&:to_s),
          banner: 'ENVIRONMENT',
-         desc: "Environment (#{Settings.supported_envs.keys.map(&:to_s)})",
+         desc: 'Deployment environment',
          aliases: '-e'
   desc 'deploy', 'deploy all the services in an environment'
   def deploy
@@ -135,7 +139,12 @@ class CLI < Thor
     RepoUpdater.update(repos: repositories, prune: options.slice(:only, :except, :cocina).none?) unless options[:skip_update]
     abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check
 
-    Deployer.deploy(environment: options[:environment], repos: repositories, tag: options[:tag])
+    Deployer.deploy(
+      environment: options[:environment],
+      repos: repositories,
+      tag: options[:tag],
+      before_command: options[:before_command]
+    )
   end
 end
 
