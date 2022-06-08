@@ -44,6 +44,26 @@ bin/sdr check_cocina
 
 This will let you know which versions of cocina-models each project is locked to.
 
+### Create repository tags
+
+This command tags repositories in parallel.
+
+**NOTE**: We conventionally name tags `rel-{YYYY}-{MM}-{DD}`.
+
+```
+Usage:
+  bin/sdr tag TAG_NAME
+
+Options:
+  -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
+  -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
+  -c, [--cocina], [--no-cocina]         # Only update repos affected by new cocina-models gem release
+
+create or delete a tag named TAG_NAME
+
+Example:
+  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
+```
 
 ### Run the deploys
 
@@ -90,44 +110,6 @@ $ bin/sdr deploy -e stage -b 'bash -lc "gem install strscan"'
     confirmation_required_envs:
       - prod
 ```
-
-### Create repository tags
-
-This command tags repositories in parallel.
-
-**NOTE**: We conventionally name tags `rel-{YYYY}-{MM}-{DD}`.
-
-```
-Usage:
-  bin/sdr tag TAG_NAME
-
-Options:
-  -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
-  -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
-  -c, [--cocina], [--no-cocina]         # Only update repos affected by new cocina-models gem release
-
-create or delete a tag named TAG_NAME
-
-Example:
-  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
-```
-
-### A note about ruby versions
-
-As of Jan 2022, some projects have not yet been updated to be Ruby 3.0 compatible, so you either need to deploy all using ruby 2.7 or split the deployment into two chunks:
-
-In Ruby 3.0
-
-```
-bin/sdr deploy -e stage --except sul-dlss/dor-services-app
-```
-
-Then in Ruby 2.7
-```
-bin/sdr deploy -e stage --only sul-dlss/dor-services-app
-```
-
-The projects that still use ruby 2.7 should eventually be converted to Ruby 3.0
 
 ### Only Deploy Repos Related to Cocina-Models Update
 
