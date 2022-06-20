@@ -89,13 +89,7 @@ Example:
   bin/sdr deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
-**NOTE 1**: If you are deploying dependency changes and one of the default gems (e.g., `strscan`, `io-wait`) has been bumped, you may find it useful to use the `-b`/`--before-command` option as follows:
-
-```shell
-$ bin/sdr deploy -e stage -b 'bash -lc "gem install strscan"'
-```
-
-**NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+**NOTE 1**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/sul_pub
@@ -103,7 +97,7 @@ $ bin/sdr deploy -e stage -b 'bash -lc "gem install strscan"'
       - cap-dev
 ```
 
-**NOTE 3**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+**NOTE 2**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/argo
@@ -119,17 +113,11 @@ Note: this includes dor-services-app and sdr-api in addition to cocina level2 up
 
 Use the `--cocina` or `-c` flag.
 
-In Ruby 3.0
+Then
 
 ```
 # -e can be qa or stage or prod
-bin/sdr deploy -e stage -c --except sul-dlss/dor-services-app
-```
-
-Then in Ruby 2.7
-```
-# -e can be qa or stage or prod
-bin/sdr deploy -e stage -c --only sul-dlss/dor-services-app
+bin/sdr deploy -e stage -c
 ```
 
 ### Notes and tips:
