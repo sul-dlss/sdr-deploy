@@ -27,7 +27,7 @@ def within_project_dir(repo:, environment: nil, &block)
     #       the behavior provided by `Bundler.with_unbundled_env`, except we
     #       still need the ContribSys credentials in order to be able to install
     #       sidekiq-pro into the bundle for projects using sidekiq-pro.
-    contribsys_credentials = ENV['BUNDLE_GEMS__CONTRIBSYS__COM']
+    contribsys_credentials = ENV.fetch('BUNDLE_GEMS__CONTRIBSYS__COM', nil)
     Bundler.with_unbundled_env do
       ENV['BUNDLE_GEMS__CONTRIBSYS__COM'] = contribsys_credentials
       results << block.call(environment)
