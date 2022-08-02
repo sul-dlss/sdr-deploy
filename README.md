@@ -125,7 +125,7 @@ bin/sdr deploy -e stage -c
 
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
-* Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-depoy commands are run (unless the repo update is explicitly skipped via user-provided flag).
+* Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-deploy commands are run (unless the repo update is explicitly skipped via user-provided flag).
 * If you prefer your output in color, this will work:
 ```
 export SSHKIT_COLOR='TRUE'
