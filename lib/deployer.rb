@@ -25,7 +25,7 @@ class Deployer
     )
     @tag = tag
     ensure_tag_present_in_all_repos! if tag
-    prompt_user_for_main_confirmation!
+    prompt_user_for_branch_confirmation!
     prompt_user_for_approval_confirmation!
   end
 
@@ -68,6 +68,12 @@ class Deployer
     Launchy.open(status_url)
   end
 
+  def ensure_tag_present_in_all_repos!
+    return if repos_missing_tag.empty?
+
+    raise "Aborting: git tag '#{tag}' is missing in these repos: #{repos_missing_tag.join(', ')}"
+  end
+
   private
 
   def run_before_command!(env)
@@ -89,15 +95,15 @@ class Deployer
     Settings.supported_envs[environment]
   end
 
-  def prompt_user_for_main_confirmation!
+  def prompt_user_for_branch_confirmation!
     return if tag && tag != 'main'
 
-    prompt_text = 'You are deploying without a tag, which will deploy the main branch of all repos.  Are you sure?'
+    prompt_text = 'You are deploying without a tag, which will deploy the default branch of all repos.  Are you sure?'
     confirmation = TTY::Prompt.new.yes?(prompt_text) do |prompt|
       prompt.default(false)
     end
 
-    abort 'Deployment to main aborted.' unless confirmation
+    abort 'Deployment to default branch aborted.' unless confirmation
   end
 
   def prompt_user_for_approval_confirmation!
@@ -115,12 +121,6 @@ class Deployer
     repos
       .select { |repo| Array(repo.confirmation_required_envs).include?(environment) }
       .map(&:name)
-  end
-
-  def ensure_tag_present_in_all_repos!
-    return if repos_missing_tag.empty?
-
-    raise "Aborting: git tag '#{tag}' is missing in these repos: #{repos_missing_tag.join(', ')}"
   end
 
   def repos_missing_tag

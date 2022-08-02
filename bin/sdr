@@ -11,10 +11,21 @@ class CLI < Thor
     true
   end
 
+  option :skip_update,
+         type: :boolean,
+         default: false,
+         desc: 'Skip update repos',
+         aliases: '-s'
+  option :tag,
+         type: :string,
+         desc: 'Check cocina version for the given tag instead of the default branch',
+         aliases: '-t'
+
   desc 'check_cocina', 'check for cocina-models version mismatches'
   def check_cocina
-    RepoUpdater.update(repos: Settings.repositories)
-    CocinaChecker.check
+    repositories = Settings.repositories.select(&:cocina_models_update)
+    RepoUpdater.update(repos: repositories) unless options[:skip_update]
+    CocinaChecker.check(repos: repositories, tag: options[:tag])
   end
 
   option :message,
@@ -106,7 +117,7 @@ class CLI < Thor
          aliases: '-b'
   option :tag,
          type: :string,
-         desc: 'Deploy the given tag instead of the main branch',
+         desc: 'Deploy the given tag instead of the default branch',
          aliases: '-t'
   option :skip_update,
          type: :boolean,
@@ -137,7 +148,8 @@ class CLI < Thor
 
     # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
     RepoUpdater.update(repos: repositories, prune: options.slice(:only, :except, :cocina).none?) unless options[:skip_update]
-    abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check
+    cocina_repos = Settings.repositories.select(&:cocina_models_update)
+    abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check(repos: cocina_repos, tag: options[:tag])
 
     Deployer.deploy(
       environment: options[:environment],
