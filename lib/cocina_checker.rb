@@ -93,12 +93,13 @@ class CocinaChecker
 
   # git checkout repo to the given tag, or switch to default branch if none
   def switch_repo_to_tag(lockfile_path, target)
-    Dir.chdir(lockfile_path.delete_suffix('/Gemfile.lock'))
-    if target
-      # it's fine for this to be a detached HEAD
-      `git checkout #{target} -q -d`
-    else
-      `git switch -q -`
+    Dir.chdir(lockfile_path.delete_suffix('/Gemfile.lock')) do
+      if target
+        # it's fine for this to be a detached HEAD
+        `git checkout #{target} -q -d`
+      else
+        `git switch -q -`
+      end
     end
   end
 end
