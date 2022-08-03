@@ -2,22 +2,31 @@
 
 # Service class for checking Cocina versions
 class CocinaChecker
-  def self.check
-    new.check_cocina
+  # when tag is nil, use default branch
+  def self.check(repos:, tag: nil)
+    new(tag: tag, repos: repos).check_cocina
+  end
+
+  attr_reader :tag, :repos
+
+  # when tag is nil, use default branch
+  def initialize(repos:, tag: nil)
+    @tag = tag
+    @repos = repos
+    # the following raises an error if the tag isn't present in all repos
+    Deployer.new(tag: tag, repos: repos, environment: nil).ensure_tag_present_in_all_repos! if tag
   end
 
   def check_cocina
     puts "repos to Cocina check: #{repos.map(&:name).join(', ')}"
 
-    version_map = Dir["#{base_directory}**/Gemfile.lock"].filter_map do |lockfile_path|
-      cocina_models_version = cocina_version_from(lockfile_path)
-      next if cocina_models_version.empty?
-
-      [project_name_for(lockfile_path), cocina_models_version]
-    end.to_h
-
     unique_values = group_by_unique_values(version_map)
     puts '------- COCINA REPORT -------'
+    if tag
+      puts "  for tag #{tag} of repos"
+    else
+      puts '  for default branches of repos'
+    end
     puts 'Found these versions of cocina in use:'
     unique_values.sort.each do |version, repos|
       puts "\t#{version}"
@@ -32,8 +41,16 @@ class CocinaChecker
 
   private
 
-  def repos
-    @repos ||= Settings.repositories
+  def version_map
+    Dir["#{base_directory}**/Gemfile.lock"].filter_map do |lockfile_path|
+      switch_repo_to_tag(lockfile_path, tag) if tag
+      cocina_models_version = cocina_version_from(lockfile_path)
+      next if cocina_models_version.empty?
+
+      switch_repo_to_tag(lockfile_path, nil) if tag # back to default branch
+
+      [project_name_for(lockfile_path), cocina_models_version]
+    end.to_h
   end
 
   def base_directory
@@ -72,5 +89,16 @@ class CocinaChecker
     hash
       .group_by { |_key, value| value }
       .transform_values { |value| value.map(&:first) }
+  end
+
+  # git checkout repo to the given tag, or switch to default branch if none
+  def switch_repo_to_tag(lockfile_path, target)
+    Dir.chdir(lockfile_path.delete_suffix('/Gemfile.lock'))
+    if target
+      # it's fine for this to be a detached HEAD
+      `git checkout #{target} -q -d`
+    else
+      `git switch -q -`
+    end
   end
 end

@@ -38,11 +38,21 @@ NOTE: Watch the output for any errors
 
 ### Check versions of cocina-models
 
-```shell
-bin/sdr check_cocina
+```
+Usage:
+  sdr check_cocina
+
+Options:
+  -s, [--skip-update], [--no-skip-update]  # Skip update repos
+  -t, [--tag=TAG]                          # Check cocina version for the given tag instead of the default branch
+
+check for cocina-models version mismatches
+
+Examples:
+  bin/sdr check_ssh -s -t rel-2022-08-01
 ```
 
-This will let you know which versions of cocina-models each project is locked to.
+This will let you know which versions of cocina-models are used by each project with it in Gemfile.lock.
 
 ### Create repository tags
 
@@ -78,7 +88,7 @@ Options:
       [--except=one two three]             # Update all except these repos
   -c, [--cocina], [--no-cocina]            # Only update repos affected by new cocina-models gem release
   -b, [--before-command=BEFORE_COMMAND]    # Run this command on each host before deploying
-  -t, [--tag=TAG]                          # Deploy the given tag instead of the main branch
+  -t, [--tag=TAG]                          # Deploy the given tag instead of the default branch
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
   -e, --environment=ENVIRONMENT            # Deployment environment
                                            # Possible values: qa, prod, stage
