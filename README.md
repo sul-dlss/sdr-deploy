@@ -31,7 +31,7 @@ Options:
 check SSH connections
 
 Example:
-  bin/sdr check_ssh -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr check_ssh -s -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
@@ -49,7 +49,7 @@ Options:
 check for cocina-models version mismatches
 
 Examples:
-  bin/sdr check_ssh -s -t rel-2022-08-01
+  bin/sdr check_cocina -t rel-2022-08-01
 ```
 
 This will let you know which versions of cocina-models are used by each project with it in Gemfile.lock.
@@ -96,7 +96,7 @@ Options:
 deploy all the services in an environment
 
 Example:
-  bin/sdr deploy -s -e qa --only sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr deploy -s -e qa -t rel-2022-06-06 --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 **NOTE 1**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA or prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
