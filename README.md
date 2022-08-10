@@ -99,7 +99,37 @@ Example:
   bin/sdr deploy -s -e qa -t rel-2022-06-06 --only sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
-**NOTE 1**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA or prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+**NOTE 1**:
+
+If **`io-wait`** or **`strscan`** gems update, you _may_ need to ssh to the VM and manually run `gem install io-wait` and/or `gem install strscan` to keep the deployed app from breaking.  
+
+Why? Because `io-wait` and `strscan` are "system" gems, and aren't managed by bundler.  
+
+dlss-capistrano now automagically updates `strscan`;  see https://github.com/sul-dlss/dlss-capistrano/blob/main/lib/dlss/capistrano/tasks/strscan.rake
+
+If there is a problem, you can use `SKIP_UPDATE_STRSCAN` env var for an individual deploy (also for all deploys?):
+
+    ```
+    cd yer_local_cloned_argo directory
+    SKIP_UPDATE_STRSCAN=true cap deploy stage
+    ```
+
+You can update a gem for all apps for a given environment, like this:
+
+    ```
+    bin/sdr deploy -e stage -b 'bash -lc "gem install io-wait"'
+    ```
+
+Or you can update a gem for a specific app like this:
+
+    ```
+    cd yer_local_cloned_argo directory
+    cap stage remote_execute['bash -lc "gem install io-wait"']
+    ```
+
+[upgrading to ruby 3.1](https://github.com/sul-dlss/dor-services-app/issues/3723) might address this due to its [standard library updates](https://www.ruby-lang.org/en/news/2021/12/25/ruby-3-1-0-released/) -- but we're not sure.
+
+**NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA or prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/sul_pub
@@ -110,7 +140,7 @@ Example:
       - retro
 ```
 
-**NOTE 2**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+**NOTE 3**: Sometimes we want to be extra careful when deploying certain apps to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/argo
