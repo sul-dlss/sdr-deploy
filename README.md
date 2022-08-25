@@ -40,7 +40,7 @@ NOTE: Watch the output for any errors
 
 ```
 Usage:
-  sdr check_cocina
+  bin/sdr check_cocina
 
 Options:
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
@@ -101,9 +101,9 @@ Example:
 
 **NOTE 1**:
 
-If **`io-wait`** or **`strscan`** gems update, you _may_ need to ssh to the VM and manually run `gem install io-wait` and/or `gem install strscan` to keep the deployed app from breaking.  
+If **`io-wait`** or **`strscan`** gems update, you _may_ need to ssh to the VM and manually run `gem install io-wait` and/or `gem install strscan` to keep the deployed app from breaking.
 
-Why? Because `io-wait` and `strscan` are "system" gems, and aren't managed by bundler.  
+Why? Because `io-wait` and `strscan` are "system" gems, and aren't managed by bundler.
 
 dlss-capistrano now automagically updates `strscan`;  see https://github.com/sul-dlss/dlss-capistrano/blob/main/lib/dlss/capistrano/tasks/strscan.rake
 
