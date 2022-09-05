@@ -48,7 +48,7 @@ Options:
 
 check for cocina-models version mismatches
 
-Examples:
+Example:
   bin/sdr check_cocina -t rel-2022-08-01
 ```
 
@@ -71,8 +71,9 @@ Options:
 
 create or delete a tag named TAG_NAME
 
-Example:
-  bin/sdr tag -m 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
+Examples:
+  bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
+  bin/sdr tag -m -c 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
 ```
 
 ### Run the deploys
