@@ -118,14 +118,14 @@ If there is a problem, you can use `SKIP_UPDATE_STRSCAN` env var for an individu
 You can update a gem for all apps for a given environment, like this:
 
     ```
-    bin/sdr deploy -e stage -b 'bash -lc "gem install io-wait"'
+    bin/sdr deploy -e stage -b 'gem install io-wait'
     ```
 
 Or you can update a gem for a specific app like this:
 
     ```
     cd yer_local_cloned_argo directory
-    cap stage remote_execute['bash -lc "gem install io-wait"']
+    cap stage remote_execute['gem install io-wait']
     ```
 
 [upgrading to ruby 3.1](https://github.com/sul-dlss/dor-services-app/issues/3723) might address this due to its [standard library updates](https://www.ruby-lang.org/en/news/2021/12/25/ruby-3-1-0-released/) -- but we're not sure.
