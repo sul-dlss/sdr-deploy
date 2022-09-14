@@ -73,7 +73,7 @@ create or delete a tag named TAG_NAME
 
 Examples:
   bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
-  bin/sdr tag -m -c 'coordinating the release of cocina-models 1.2.3' rel-2022-03-28
+  bin/sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
 ```
 
 ### Run the deploys
@@ -96,8 +96,9 @@ Options:
 
 deploy all the services in an environment
 
-Example:
+Examples:
   bin/sdr deploy -s -e qa -t rel-2022-06-06 --only sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr deploy -c -e qa -t rel-2022-09-14
 ```
 
 **NOTE 1**:
