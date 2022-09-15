@@ -39,8 +39,6 @@ repositories:
       - cap-dev
   - name: sul-dlss/suri-rails
   - name: sul-dlss/technical-metadata-service
-    non_standard_prod_envs:
-      - retro
   - name: sul-dlss/was-pywb
   - name: sul-dlss/was-registrar-app
     cocina_models_update: true
