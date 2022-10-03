@@ -25,7 +25,6 @@ repositories:
     cocina_models_update: true
     non_standard_qa_envs:
       - uat
-  - name: sul-dlss/ksr-app
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     cocina_models_update: true
