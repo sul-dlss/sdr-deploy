@@ -4,7 +4,7 @@
 class CocinaChecker
   # when tag is nil, use default branch
   def self.check(repos:, tag: nil)
-    new(tag: tag, repos: repos).check_cocina
+    new(tag:, repos:).check_cocina
   end
 
   attr_reader :tag, :repos
@@ -14,7 +14,7 @@ class CocinaChecker
     @tag = tag
     @repos = repos
     # the following raises an error if the tag isn't present in all repos
-    Deployer.new(tag: tag, repos: repos, environment: nil).ensure_tag_present_in_all_repos! if tag
+    Deployer.new(tag:, repos:, environment: nil).ensure_tag_present_in_all_repos! if tag
   end
 
   def check_cocina

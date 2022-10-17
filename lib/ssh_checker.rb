@@ -3,7 +3,7 @@
 # Service class for checking SSH connections
 class SshChecker
   def self.check(environment:, repos:)
-    new(environment: environment, repos: repos).check_ssh
+    new(environment:, repos:).check_ssh
   end
 
   attr_reader :environment, :repos
@@ -16,7 +16,7 @@ class SshChecker
   def check_ssh
     puts "repos to SSH check: #{repos.map(&:name).join(', ')}"
     repos.each do |repo|
-      within_project_dir(repo: repo, environment: environment) do |environment|
+      within_project_dir(repo:, environment:) do |environment|
         puts "running 'cap #{environment} ssh_check' for #{repo.name}"
         ErrorEmittingExecutor.execute("bundle exec cap #{environment} ssh_check")
       end

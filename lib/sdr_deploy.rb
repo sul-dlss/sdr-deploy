@@ -21,7 +21,7 @@ Config.load_and_set_settings(
 def within_project_dir(repo:, environment: nil, &block)
   results = []
 
-  Dir.chdir(RepoUpdater.new(repo: repo).repo_dir) do
+  Dir.chdir(RepoUpdater.new(repo:).repo_dir) do
     # NOTE: This is how we execute commands in the project-specific bundler
     #       context, rather than sdr-deploy's bundler context. We want *most* of
     #       the behavior provided by `Bundler.with_unbundled_env`, except we

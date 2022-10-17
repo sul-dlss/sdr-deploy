@@ -9,7 +9,7 @@ class Deployer
   Result = Struct.new(:repo, :env, :status, :output)
 
   def self.deploy(environment:, repos:, tag: nil, before_command: nil)
-    new(environment: environment, repos: repos, tag: tag, before_command: before_command).deploy_all
+    new(environment:, repos:, tag:, before_command:).deploy_all
   end
 
   attr_reader :environment, :progress_bar, :repos, :tag, :before_command
@@ -38,7 +38,7 @@ class Deployer
       in_processes: Settings.num_parallel_processes,
       finish: ->(repo, _i, _result) { progress_bar.advance(repo: repo.name) }
     ) do |repo|
-      within_project_dir(repo: repo, environment: environment) do |env|
+      within_project_dir(repo:, environment:) do |env|
         auditor.audit(repo: repo.name)
         run_before_command!(env)
         set_deploy_target!
@@ -125,7 +125,7 @@ class Deployer
 
   def repos_missing_tag
     @repos_missing_tag ||= repos.reject do |repo|
-      Dir.chdir(RepoUpdater.new(repo: repo).repo_dir) { `git tag`.split.include?(tag) }
+      Dir.chdir(RepoUpdater.new(repo:).repo_dir) { `git tag`.split.include?(tag) }
     end.map(&:name)
   end
 
