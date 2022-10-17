@@ -56,9 +56,9 @@ class CLI < Thor
 
     RepoUpdater.update(repos: repositories)
     if options[:delete]
-      Tagger.delete(tag_name: tag_name, repos: repositories)
+      Tagger.delete(tag_name:, repos: repositories)
     else
-      Tagger.create(tag_name: tag_name, tag_message: options.fetch(:message, 'created by sdr-deploy'), repos: repositories)
+      Tagger.create(tag_name:, tag_message: options.fetch(:message, 'created by sdr-deploy'), repos: repositories)
     end
   end
 

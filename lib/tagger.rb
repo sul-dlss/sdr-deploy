@@ -3,11 +3,11 @@
 # Service class for tagging repositories
 class Tagger
   def self.create(tag_name:, tag_message:, repos:)
-    new(tag_name: tag_name, repos: repos).create(tag_message: tag_message)
+    new(tag_name:, repos:).create(tag_message:)
   end
 
   def self.delete(tag_name:, repos:)
-    new(tag_name: tag_name, repos: repos).delete
+    new(tag_name:, repos:).delete
   end
 
   attr_reader :tag_name, :repos
@@ -20,7 +20,7 @@ class Tagger
   def create(tag_message:)
     puts "creating tag in repos: #{repos.map(&:name).join(', ')}"
     Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
-      within_project_dir(repo: repo) do
+      within_project_dir(repo:) do
         puts "creating tag '#{tag_name}' for #{repo.name}: #{tag_message}"
         ErrorEmittingExecutor.execute("git tag -a #{tag_name} -m '#{tag_message}'", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push origin #{tag_name}", exit_on_error: true)
@@ -31,7 +31,7 @@ class Tagger
   def delete
     puts "deleting tag in repos: #{repos.map(&:name).join(', ')}"
     Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
-      within_project_dir(repo: repo) do
+      within_project_dir(repo:) do
         puts "deleting tag '#{tag_name}' from #{repo.name}"
         ErrorEmittingExecutor.execute("git tag -d #{tag_name}", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push --delete origin #{tag_name}", exit_on_error: true)
