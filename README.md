@@ -2,6 +2,10 @@
 
 This is a central place for deploying applications in the Infrastructure team portfolio, primarily but not exclusively related to the Stanford Digital Repository (SDR). This allows all applications to be deployed together with a single set of tools.
 
+## Requirements
+
+sdr-deploy expects Ruby 3.1.
+
 ## Usage
 
 Make sure that:
