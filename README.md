@@ -154,6 +154,14 @@ Or you can update a gem for a specific app like this:
       - prod
 ```
 
+**NOTE 4**: Sometimes we want to skip deploying to certain environments. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+
+```yaml
+  - name: sul-dlss/happy-heron
+    skip_envs:
+      - prod
+```
+
 ### Only Deploy Repos Related to Cocina-Models Update
 
 Note: this includes dor-services-app and sdr-api in addition to cocina level2 updates.
