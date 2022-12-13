@@ -21,6 +21,8 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/happy-heron
     cocina_models_update: true
+    skip_envs:
+      - prod
   - name: sul-dlss/hydra_etd
     cocina_models_update: true
     non_standard_qa_envs:
