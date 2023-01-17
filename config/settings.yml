@@ -7,8 +7,6 @@ supported_envs:
 repositories:
   - name: sul-dlss/argo
     cocina_models_update: true
-    confirmation_required_envs:
-      - prod
   - name: sul-dlss/common-accessioning
     cocina_models_update: true
   - name: sul-dlss/dor-services-app
