@@ -43,6 +43,8 @@ class CocinaChecker
 
   def version_map
     Dir["#{base_directory}**/Gemfile.lock"].filter_map do |lockfile_path|
+      next unless repos.map(&:name).any? { |repo_name| lockfile_path.match?(repo_name) }
+
       switch_repo_to_tag(lockfile_path, tag) if tag
       cocina_models_version = cocina_version_from(lockfile_path)
       next if cocina_models_version.empty?
