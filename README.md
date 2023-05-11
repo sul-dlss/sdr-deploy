@@ -4,7 +4,7 @@ This is a central place for deploying applications in the Infrastructure team po
 
 ## Requirements
 
-sdr-deploy expects Ruby 3.1.
+sdr-deploy expects Ruby 3.2.
 
 ## Usage
 
@@ -132,8 +132,6 @@ Or you can update a gem for a specific app like this:
     cd yer_local_cloned_argo directory
     cap stage remote_execute['gem install io-wait']
     ```
-
-[upgrading to ruby 3.1](https://github.com/sul-dlss/dor-services-app/issues/3723) might address this due to its [standard library updates](https://www.ruby-lang.org/en/news/2021/12/25/ruby-3-1-0-released/) -- but we're not sure.
 
 **NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA or prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
