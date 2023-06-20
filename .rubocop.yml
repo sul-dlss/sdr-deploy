@@ -179,3 +179,24 @@ Style/RedundantHeredocDelimiterQuotes: # new in 1.45
   Enabled: true
 Style/RedundantStringEscape: # new in 1.37
   Enabled: true
+
+Lint/DuplicateMatchPattern: # new in 1.50
+  Enabled: true
+Metrics/CollectionLiteralLength: # new in 1.47
+  Enabled: true
+Style/DataInheritance: # new in 1.49
+  Enabled: true
+Style/DirEmpty: # new in 1.48
+  Enabled: true
+Style/ExactRegexpMatch: # new in 1.51
+  Enabled: true
+Style/FileEmpty: # new in 1.48
+  Enabled: true
+Style/RedundantArrayConstructor: # new in 1.52
+  Enabled: true
+Style/RedundantFilterChain: # new in 1.52
+  Enabled: true
+Style/RedundantLineContinuation: # new in 1.49
+  Enabled: true
+Style/RedundantRegexpConstructor: # new in 1.52
+  Enabled: true
