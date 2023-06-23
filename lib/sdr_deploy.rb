@@ -16,8 +16,7 @@ Config.load_and_set_settings(
 )
 
 # Common methods
-# rubocop: disable Metrics/MethodLength
-# rubocop: disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
 def within_project_dir(repo:, environment: nil, &block)
   results = []
 
@@ -32,21 +31,16 @@ def within_project_dir(repo:, environment: nil, &block)
       ENV['BUNDLE_GEMS__CONTRIBSYS__COM'] = contribsys_credentials
       results << block.call(environment)
 
-      # Some of our apps use non-standard envs
-      if environment == 'qa' && repo.non_standard_qa_envs
-        repo.non_standard_qa_envs.each { |env| results << block.call(env) }
-      end
-
-      if environment == 'prod' && repo.non_standard_prod_envs
-        repo.non_standard_prod_envs.each { |env| results << block.call(env) }
+      # Some of our apps use non-standard envs, which we deploy alongside prod
+      if environment == 'prod' && repo.non_standard_envs
+        repo.non_standard_envs.each { |env| results << block.call(env) }
       end
 
       results
     end
   end
 end
-# rubocop: enable Metrics/MethodLength
-# rubocop: enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength
 
 def colorize_failure(string)
   pastel.white.on_bright_red.bold(string)

@@ -21,7 +21,7 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/hydra_etd
     cocina_models_update: true
-    non_standard_qa_envs:
+    non_standard_envs:
       - uat
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
@@ -32,8 +32,8 @@ repositories:
   - name: sul-dlss/sdr-api
     cocina_models_update: true
   - name: sul-dlss/sul_pub
-    non_standard_qa_envs:
-      - cap-dev
+    non_standard_envs:
+      - uat
   - name: sul-dlss/suri-rails
   - name: sul-dlss/technical-metadata-service
   - name: sul-dlss/was-pywb
