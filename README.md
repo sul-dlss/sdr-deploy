@@ -133,14 +133,14 @@ Or you can update a gem for a specific app like this:
     cap stage remote_execute['gem install io-wait']
     ```
 
-**NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to QA or prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
+**NOTE 2**: We have a couple applications that use environments outside of our standard ones (qa, prod, and stage), and sdr-deploy deploys to these oddball environments when deploying to prod. These are configured on a per-application basis in `config/settings.yml` via, e.g.:
 
 ```yaml
   - name: sul-dlss/sul_pub
-    non_standard_qa_envs:
-      - cap-dev
+    non_standard_envs:
+      - uat
   - name: sul-dlss/technical-metadata-service
-    non_standard_prod_envs:
+    non_standard_envs:
       - retro
 ```
 
