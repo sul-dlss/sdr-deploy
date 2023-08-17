@@ -32,8 +32,10 @@ repositories:
   - name: sul-dlss/sdr-api
     cocina_models_update: true
   - name: sul-dlss/sul_pub
-    non_standard_envs:
-      - uat
+    # Note: August 17 2023 This is temporarily disabled so we can test a branch on UAT.
+    # see https://github.com/sul-dlss/sul_pub/issues/1618
+    # non_standard_envs:
+    #   - uat
   - name: sul-dlss/suri-rails
   - name: sul-dlss/technical-metadata-service
   - name: sul-dlss/was-pywb
