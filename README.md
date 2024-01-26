@@ -105,6 +105,10 @@ Examples:
   bin/sdr deploy -c -e qa -t rel-2022-09-14
 ```
 
+**NOTE 0**:
+
+As part of the deployment process, the cocina-models versions used by the apps being deployed will be checked. If all apps use the same version, the deploy will proceed. If there is divergence at the major- or minor-level, the deploy will be halted. If there is divergence at the patch-level, the user will be notified about the different versions used and then prompted to continue (defaulting to "yes").
+
 **NOTE 1**:
 
 If **`io-wait`** or **`strscan`** gems update, you _may_ need to ssh to the VM and manually run `gem install io-wait` and/or `gem install strscan` to keep the deployed app from breaking.
