@@ -36,7 +36,17 @@ class CocinaChecker
     end
 
     # `true` is the happy path; `false` means dragons
-    unique_values.size <= 1
+    if unique_values.size <= 1 # local hack to get around known drift for DIA, which we pinned back one patch version of cocina-models, which should be fine for week of 2024-0
+      true
+    else
+      if ENV['CHECK_COCINA_WARN_ONLY']
+        puts "⚠️  overriding check_cocina: continuing despite #{unique_values.size} unique cocina versions found"
+        true
+      else
+        puts "cocina version check failed, #{unique_values.size} unique cocina versions found (specify CHECK_COCINA_WARN_ONLY env var to override)"
+        false
+      end
+    end
   end
 
   private
