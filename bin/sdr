@@ -151,7 +151,7 @@ class CLI < Thor
     # Do not prune repos if operating on a subset of repos else legitimate current repos get unnecessarily pruned
     RepoUpdater.update(repos: repositories, prune: options.slice(:only, :except, :cocina, :skip_envs).none?) unless options[:skip_update]
     cocina_repos = Settings.repositories.select(&:cocina_models_update)
-    abort 'ABORTING: multiple versions of the cocina-models gem are in use' unless CocinaChecker.check(repos: cocina_repos, tag: options[:tag])
+    abort 'ABORTING: due to cocina-models version divergence' unless CocinaChecker.check(repos: cocina_repos, tag: options[:tag])
 
     Deployer.deploy(
       environment: options[:environment],
