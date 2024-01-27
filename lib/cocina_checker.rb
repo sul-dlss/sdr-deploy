@@ -40,9 +40,9 @@ class CocinaChecker
 
     unique_major_minors = unique_values.keys.map do |version_string|
       version_string.split('.')[0..1].join('.')
-    end
+    end.uniq
 
-    return false if unique_major_minors.uniq.size > 1
+    return false if unique_major_minors.size > 1
 
     TTY::Prompt.new.yes?('Found divergence in cocina-models patch-level versions. Continue with deploy?') do |prompt|
       prompt.default(true)
