@@ -12,12 +12,80 @@ Make sure that:
 
 * You are on VPN.
 * You have `kinit`-ed.
-* You have added the public SSH key, often `~/.ssh/id_rsa.pub`, from your machine to [GitHub](https://github.com/settings/keys)
+* You have added the public SSH key, often `~/.ssh/id_rsa.pub` or `~/.ssh/id_ed25519.pub`, from your machine to [GitHub](https://github.com/settings/keys)
+* You have properly configured your local SSH setup to work with `sdr-infra.stanford.edu`
+* You have logged into `sdr-infra.stanford.edu` and cloned this repository.
 * You have previously `ssh`-ed into all servers.
   * NOTE: If you are unsure about this, run `bin/sdr check_ssh -e [qa|stage|prod]` and watch the output for any errors!
 * NOTE: if you run `bin/sdr check_cocina`, you may need to ensure that you have the contribsys gem credentials available for google-books to install the sidekiq-pro gem locally (the credential is already on our deploy target VMs).
   * You can get the env variable name and value from the README in shared_configs for google-books-prod (not in google-books-stage or -qa)
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
+
+### SSH Setup
+
+Follow the [Github Documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) if you need to establish new ssh keys.
+
+#### Local SSH Config
+
+1.) Edit your local `~/.ssh/config` file to look like:
+
+```
+## Uncomment these so you can SSH to boxes without the full .stanford.edu domain name  
+##   e.g., type `ssh sdr-infra` and the SSH client will use `*.stanford.edu` config  
+# CanonicalizeHostname yes  
+# CanonicalDomains stanford.edu  
+
+Host *.stanford.edu  
+    # Forward your SSH key so you can interact with GitHub  
+    ForwardAgent yes  
+    # Set up Kerberos authentication  
+    GSSAPIAuthentication yes  
+    GSSAPIDelegateCredentials yes  
+    # Specify your Stanford username here  
+    User YOURSUNETIDHERE
+```
+
+2.) Add your github key to your local ssh agent
+
+```
+# Or whatever the path is to the private key you've added to GitHub
+ssh-add ~/.ssh/id_ed25519`
+```
+
+3.) Verify the correct key(s) are forwarded to sdr-infra
+
+Verify the results of `ssh-add -L` on both your laptop and `sdr-infra` match.
+
+### Connecting to sdr-infra.stanford.edu
+
+With the above configuration, you will need to connect to `sdr-infra.stanford.edu` via ssh and will be presented with a MFA challenge:
+
+```
+ssh sdr-infra.stanford.edu
+(SUNETID@sdr-infra.stanford.edu) Duo two-factor login for SUNETID
+
+Enter a passcode or select one of the following options:
+
+ 1. Duo Push to XXX-XXX-1234
+ 2. Phone call to XXX-XXX-1234
+ 3. SMS passcodes to XXX-XXX-1234
+
+Passcode or option (1-3):
+```
+
+Once connected, you can proceed.
+
+### Configure bundler for your local path
+
+Set the bundler path:
+```
+bundle config --global path /home/[username]/.vendor/bundle
+```
+
+Setup contribsys gem authentication (Sidekiq pro):
+```
+bundle config gems.contribsys.com USER:PASS
+```
 
 ### Check your SSH connection to all servers
 
