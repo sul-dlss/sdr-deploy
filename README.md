@@ -116,12 +116,13 @@ Usage:
 
 Options:
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
-  -t, [--tag=TAG]                          # Check cocina version for the given tag instead of the default branch
+  -t, --branch, [--tag=TAG]                # Check cocina version in the given tag or branch instead of the default branch
 
 check for cocina-models version mismatches
 
 Example:
-  bin/sdr check_cocina -t rel-2022-08-01
+  bin/sdr check_cocina -s -t rel-2022-08-01
+  bin/sdr check_cocina -t my-wip-branch
 ```
 
 This will let you know which versions of cocina-models are used by each project with it in Gemfile.lock.
@@ -161,7 +162,7 @@ Options:
       [--except=one two three]             # Update all except these repos
   -c, [--cocina], [--no-cocina]            # Only update repos affected by new cocina-models gem release
   -b, [--before-command=BEFORE_COMMAND]    # Run this command on each host before deploying
-  -t, [--tag=TAG]                          # Deploy the given tag instead of the default branch
+  -t, --branch, [--tag=TAG]                # Deploy the given tag or branch instead of the default branch
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
   -e, --environment=ENVIRONMENT            # Deployment environment
                                            # Possible values: qa, prod, stage
@@ -169,7 +170,7 @@ Options:
 deploy all the services in an environment
 
 Examples:
-  bin/sdr deploy -s -e qa -t rel-2022-06-06 --only sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
   bin/sdr deploy -c -e qa -t rel-2022-09-14
 ```
 
