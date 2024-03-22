@@ -18,9 +18,8 @@ class CLI < Thor
          aliases: '-s'
   option :tag,
          type: :string,
-         desc: 'Check cocina version for the given tag instead of the default branch',
-         aliases: '-t'
-
+         desc: 'Check cocina version in the given tag or branch instead of the default branch',
+         aliases: ['-t', '--branch']
   desc 'check_cocina', 'check for cocina-models version mismatches'
   def check_cocina
     repositories = Settings.repositories.select(&:cocina_models_update)
@@ -45,7 +44,6 @@ class CLI < Thor
          default: false,
          desc: 'Only tag repos affected by new cocina-models gem release',
          aliases: '-c'
-
   desc 'tag TAG_NAME', 'create or delete a tag named TAG_NAME'
   def tag(tag_name)
     repositories = if options[:cocina]
@@ -117,8 +115,8 @@ class CLI < Thor
          aliases: '-b'
   option :tag,
          type: :string,
-         desc: 'Deploy the given tag instead of the default branch',
-         aliases: '-t'
+         desc: 'Deploy the given tag or branch instead of the default branch',
+         aliases: ['-t', '--branch']
   option :skip_update,
          type: :boolean,
          default: false,

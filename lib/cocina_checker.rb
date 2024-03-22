@@ -103,15 +103,29 @@ class CocinaChecker
       .transform_values { |value| value.map(&:first) }
   end
 
-  # git checkout repo to the given tag, or switch to default branch if none
+  # git checkout repo to the given tag/branch, or switch to default branch if none
   def switch_repo_to_tag(lockfile_path, target)
     Dir.chdir(lockfile_path.delete_suffix('/Gemfile.lock')) do
-      if target
+      if tag?(target)
         # it's fine for this to be a detached HEAD
         `git checkout #{target} -q -d`
+      elsif branch?(target)
+        `git switch -q #{target}`
       else
         `git switch -q -`
       end
     end
+  end
+
+  def branch?(target)
+    return false unless target
+
+    system("git show-ref -q --verify refs/remotes/origin/#{target}")
+  end
+
+  def tag?(target)
+    return false unless target
+
+    system("git show-ref -q --verify refs/tags/#{target}")
   end
 end
