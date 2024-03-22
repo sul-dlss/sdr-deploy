@@ -136,7 +136,7 @@ class Deployer
   def deploy(env)
     output = []
 
-    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy 2>&1") do |f|
+    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "cap #{env} deploy 2>&1") do |f|
       loop do
         output << f.readline
         # NOTE: Uncomment this if the deploy does something mysterious and you crave more observability.
