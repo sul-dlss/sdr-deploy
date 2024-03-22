@@ -68,7 +68,7 @@ class RepoUpdater
   def create_repo
     FileUtils.mkdir_p(repo_dir)
     within_project_dir(repo:) do
-      ErrorEmittingExecutor.execute("git clone --depth=5 --tags git@github.com:#{repo.name}.git .", exit_on_error: true)
+      ErrorEmittingExecutor.execute("git clone --tags git@github.com:#{repo.name}.git .", exit_on_error: true)
       ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('bundle install')
     end
