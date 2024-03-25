@@ -42,8 +42,10 @@ Host *.stanford.edu
     GSSAPIAuthentication yes  
     GSSAPIDelegateCredentials yes  
     # Specify your Stanford username here  
-    User YOURSUNETIDHERE
+    User <SUNETID without @stanford.edu>
 ```
+
+Note that order matters in `config` so place this before (or comment out) `Host *` configuration.
 
 2.) Add your github key to your local ssh agent
 
