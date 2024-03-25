@@ -18,7 +18,7 @@ Make sure that:
 * You have previously `ssh`-ed into all servers.
   * NOTE: If you are unsure about this, run `bin/sdr check_ssh -e [qa|stage|prod]` and watch the output for any errors!
 * NOTE: if you run `bin/sdr check_cocina`, you may need to ensure that you have the contribsys gem credentials available for google-books to install the sidekiq-pro gem locally (the credential is already on our deploy target VMs).
-  * You can get the env variable name and value from the README in shared_configs for google-books-prod (not in google-books-stage or -qa)
+  * The credentials are set to an environment variable on the server via puppet from values stored in vault (vault info: https://consul.stanford.edu/display/systeam/Vault+for+Developers).  To fetch without digging into vault, go to a server that has them set via puppet and view the environment variable. See below under "Configure bundler for your local path" for an example.
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
 
 ### SSH Setup
@@ -99,10 +99,10 @@ Setup contribsys gem authentication (Sidekiq pro):
 bundle config gems.contribsys.com USER:PASS
 ```
 
-If already setup on your laptop, you can get the value for USER:PASS needed above:
+If already setup on your laptop (or on a server that has them, such as sul-gbooks-prod), you can get the value for USER:PASS needed above:
 
 ```
-# on your laptop, it should show the USER:PASS values
+# on laptop or sul-gbooks-prod, it should show the USER:PASS values
 echo $BUNDLE_GEMS__CONTRIBSYS__COM
 user123:pass678
 ```
