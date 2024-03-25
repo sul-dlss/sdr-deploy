@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'English'
-require 'launchy'
 
 # Service class for deploying
 # rubocop:disable Metrics/ClassLength
@@ -64,8 +63,7 @@ class Deployer
       puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
     end
 
-    puts "Deployments to #{environment} complete. Opening #{status_url} in your browser so you can check statuses"
-    Launchy.open(status_url)
+    puts "Deployments to #{environment} complete. Open #{status_url} to check service status."
   end
 
   def ensure_tag_present_in_all_repos!
