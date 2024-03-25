@@ -18,7 +18,7 @@ Make sure that:
 * You have previously `ssh`-ed into all servers.
   * NOTE: If you are unsure about this, run `bin/sdr check_ssh -e [qa|stage|prod]` and watch the output for any errors!
 * NOTE: if you run `bin/sdr check_cocina`, you may need to ensure that you have the contribsys gem credentials available for google-books to install the sidekiq-pro gem locally (the credential is already on our deploy target VMs).
-  * You can get the env variable name and value from the README in shared_configs for google-books-prod (not in google-books-stage or -qa)
+  * The credentials are set via puppet from values stored in vault.
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
 
 ### SSH Setup
@@ -30,18 +30,18 @@ Follow the [Github Documentation](https://docs.github.com/en/authentication/conn
 1.) Edit your local `~/.ssh/config` file to look like:
 
 ```
-## Uncomment these so you can SSH to boxes without the full .stanford.edu domain name  
-##   e.g., type `ssh sdr-infra` and the SSH client will use `*.stanford.edu` config  
-# CanonicalizeHostname yes  
-# CanonicalDomains stanford.edu  
+## Uncomment these so you can SSH to boxes without the full .stanford.edu domain name
+##   e.g., type `ssh sdr-infra` and the SSH client will use `*.stanford.edu` config
+# CanonicalizeHostname yes
+# CanonicalDomains stanford.edu
 
-Host *.stanford.edu  
-    # Forward your SSH key so you can interact with GitHub  
-    ForwardAgent yes  
-    # Set up Kerberos authentication  
-    GSSAPIAuthentication yes  
-    GSSAPIDelegateCredentials yes  
-    # Specify your Stanford username here  
+Host *.stanford.edu
+    # Forward your SSH key so you can interact with GitHub
+    ForwardAgent yes
+    # Set up Kerberos authentication
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials yes
+    # Specify your Stanford username here
     User <SUNETID without @stanford.edu>
 ```
 
@@ -51,12 +51,22 @@ Note that order matters in `config` so place this before (or comment out) `Host 
 
 ```
 # Or whatever the path is to the private key you've added to GitHub
-ssh-add ~/.ssh/id_ed25519`
+ssh-add ~/.ssh/id_ed25519
 ```
 
 3.) Verify the correct key(s) are forwarded to sdr-infra
 
 Verify the results of `ssh-add -L` on both your laptop and `sdr-infra` match.
+
+You can also try this on both your laptop and the server and verify you get the response shown.  If not, then your local SSH key or forwarding may not be setup correctly.
+
+See https://docs.github.com/en/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding for more information
+
+```
+ssh -T git@github.com
+
+Hi [GITHUB_USERNAME]! You've successfully authenticated, but GitHub does not provide shell access.
+```
 
 ### Connecting to sdr-infra.stanford.edu
 
@@ -87,6 +97,14 @@ bundle config --global path /home/[username]/.vendor/bundle
 Setup contribsys gem authentication (Sidekiq pro):
 ```
 bundle config gems.contribsys.com USER:PASS
+```
+
+If already setup on your laptop, you can get the value for USER:PASS needed above:
+
+```
+# on your laptop, it should show the USER:PASS values
+echo $BUNDLE_GEMS__CONTRIBSYS__COM
+user123:pass678
 ```
 
 ### Check your SSH connection to all servers
