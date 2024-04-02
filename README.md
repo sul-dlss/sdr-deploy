@@ -13,7 +13,7 @@ Make sure that:
 * You are on VPN.
 * You have `kinit`-ed.
 * You have added the public SSH key, often `~/.ssh/id_rsa.pub` or `~/.ssh/id_ed25519.pub`, from your machine to [GitHub](https://github.com/settings/keys)
-* You have properly configured your local SSH setup to work with `sdr-infra.stanford.edu`
+* You have properly configured your local SSH setup (see below)
 * You have logged into `sdr-infra.stanford.edu` and cloned this repository.
 * You have previously `ssh`-ed into all servers.
   * NOTE: If you are unsure about this, run `bin/sdr check_ssh -e [qa|stage|prod]` and watch the output for any errors!
@@ -23,56 +23,23 @@ Make sure that:
 
 ### SSH Setup
 
-Follow the [Github Documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) if you need to establish new ssh keys.
+Follow the [GitHub Documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) if you need to establish new SSH keys.
 
-#### Local SSH Config
+1. Edit your local `~/.ssh/config` file to look like [DLSS developer best practice](https://github.com/sul-dlss/DeveloperPlaybook/blob/main/best-practices/ssh_configuration.md):
+2. Add your GitHub key to your local SSH agent
+    ```shell
+    # Or whatever the path is to the private key you've added to GitHub
+    ssh-add ~/.ssh/id_ed25519
+    ```
+3. Verify the correct key(s) are forwarded to `sdr-infra.stanford.edu` by running `ssh-add -L` on both your laptop and the server and making sure they match.
 
-1.) Edit your local `~/.ssh/config` file to look like:
-
-```
-## Uncomment these so you can SSH to boxes without the full .stanford.edu domain name
-##   e.g., type `ssh sdr-infra` and the SSH client will use `*.stanford.edu` config
-# CanonicalizeHostname yes
-# CanonicalDomains stanford.edu
-
-Host *.stanford.edu
-    # Forward your SSH key so you can interact with GitHub
-    ForwardAgent yes
-    # Set up Kerberos authentication
-    GSSAPIAuthentication yes
-    GSSAPIDelegateCredentials yes
-    # Specify your Stanford username here
-    User <SUNETID without @stanford.edu>
-```
-
-Note that order matters in `config` so place this before (or comment out) `Host *` configuration.
-
-2.) Add your github key to your local ssh agent
-
-```
-# Or whatever the path is to the private key you've added to GitHub
-ssh-add ~/.ssh/id_ed25519
-```
-
-3.) Verify the correct key(s) are forwarded to sdr-infra
-
-Verify the results of `ssh-add -L` on both your laptop and `sdr-infra` match.
-
-You can also try this on both your laptop and the server and verify you get the response shown.  If not, then your local SSH key or forwarding may not be setup correctly.
-
-See https://docs.github.com/en/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding for more information
-
-```
-ssh -T git@github.com
-
-Hi [GITHUB_USERNAME]! You've successfully authenticated, but GitHub does not provide shell access.
-```
+See https://docs.github.com/en/authentication/connecting-to-github-with-ssh/using-ssh-agent-forwarding for more information about SSH agent forwarding.
 
 ### Connecting to sdr-infra.stanford.edu
 
-With the above configuration, you will need to connect to `sdr-infra.stanford.edu` via ssh and will be presented with a MFA challenge:
+With the above configuration, you will need to connect to `sdr-infra.stanford.edu` via SSH and will be presented with a MFA challenge:
 
-```
+```shell
 ssh sdr-infra.stanford.edu
 (SUNETID@sdr-infra.stanford.edu) Duo two-factor login for SUNETID
 
@@ -82,7 +49,7 @@ Enter a passcode or select one of the following options:
  2. Phone call to XXX-XXX-1234
  3. SMS passcodes to XXX-XXX-1234
 
-Passcode or option (1-3):
+Passcode or option (1-3): 1
 ```
 
 Once connected, you can proceed.
