@@ -77,7 +77,7 @@ class Deployer
   def run_before_command!(env)
     return unless before_command
 
-    `bundle exec cap #{env} remote_execute['#{before_command}'] 2>&1`
+    `cap #{env} remote_execute['#{before_command}'] 2>&1`
   end
 
   def build_report_table!(results)
@@ -134,7 +134,7 @@ class Deployer
   def deploy(env)
     output = []
 
-    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy 2>&1") do |f|
+    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "cap #{env} deploy 2>&1") do |f|
       loop do
         output << f.readline
         # NOTE: Uncomment this if the deploy does something mysterious and you crave more observability.

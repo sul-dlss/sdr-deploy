@@ -18,7 +18,7 @@ class SshChecker
     repos.each do |repo|
       within_project_dir(repo:, environment:) do |environment|
         puts "running 'cap #{environment} ssh_check' for #{repo.name}"
-        ErrorEmittingExecutor.execute("bundle exec cap #{environment} ssh_check")
+        ErrorEmittingExecutor.execute("cap #{environment} ssh_check")
       end
     end
   end
