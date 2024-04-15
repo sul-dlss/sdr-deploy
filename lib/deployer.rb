@@ -19,7 +19,7 @@ class Deployer
     @repos = repos
     @progress_bar = TTY::ProgressBar.new(
       'Deploying [:bar] (:current/:total, ETA: :eta) :repo',
-      bar_format: :crate,
+      bar_format: :box,
       total: @repos.count
     )
     @tag = tag
