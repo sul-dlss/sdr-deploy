@@ -18,7 +18,7 @@ class RepoUpdater
   def self.progress_bar(repos)
     TTY::ProgressBar.new(
       'Updating cached git repository [:bar] (:current/:total, ETA: :eta) :repo',
-      bar_format: :crate,
+      bar_format: :box,
       total: repos.count
     )
   end
