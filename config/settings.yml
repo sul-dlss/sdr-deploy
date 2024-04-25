@@ -11,8 +11,6 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/dor-services-app
     cocina_models_update: true
-  - name: sul-dlss/dor_indexing_app
-    cocina_models_update: true
   - name: sul-dlss/gis-robot-suite
     cocina_models_update: true
   - name: sul-dlss/google-books
