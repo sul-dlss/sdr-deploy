@@ -1,6 +1,8 @@
 work_dir: tmp/repos
 num_parallel_processes: 4
-progress_file: 'tmp/progress.log'
+progress_file:
+  enabled: false # enable to log one file per repo in the location specified below
+  location: 'tmp'
 supported_envs:
   qa: https://sul-nagios-stage.stanford.edu/nagios/cgi-bin/status.cgi?hostgroup=infrastructure-qa&style=detail&servicestatustypes=28&hoststatustypes=15
   prod: https://sul-nagios-prod.stanford.edu/nagios/cgi-bin/status.cgi?hostgroup=infrastructure-prod&style=detail&servicestatustypes=28&hoststatustypes=15

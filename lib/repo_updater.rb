@@ -4,19 +4,26 @@ require 'fileutils'
 
 # Update locally cached git repositories, remove extraneous ones
 class RepoUpdater
+  # rubocop: disable Metrics/AbcSize
+  # rubocop: disable Metrics/MethodLength
   def self.update(repos:, prune: false)
     @progress_bar = progress_bar(repos)
     @progress_bar.start
     Parallel.each(
       repos,
       in_processes: Settings.num_parallel_processes,
-      finish: ->(repo, _i, _result) do
-        File.open(Settings.progress_file, 'a') { |f| f.write("#{Time.now} : #{repo.name} repo update complete\n") }
+      finish: lambda do |repo, _i, _result|
+        if Settings.progress_file.enabled
+          filename = File.join(Settings.progress_file.location, "#{File.basename(repo.name)}-update.log")
+          File.write(filename, "#{Time.now} : #{repo.name} repo update complete")
+        end
         @progress_bar.advance(repo: repo.name)
       end
     ) { |repo| new(repo:).update_or_create_repo }
     prune_removed_repos_from_cache!(repos) if prune
   end
+  # rubocop: enable Metrics/AbcSize
+  # rubocop: enable Metrics/MethodLength
 
   def self.progress_bar(repos)
     TTY::ProgressBar.new(
