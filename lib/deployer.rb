@@ -28,6 +28,7 @@ class Deployer
     prompt_user_for_approval_confirmation!
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def deploy_all
     puts "Repositories: #{repos.map(&:name).join(', ')}"
     progress_bar.start
@@ -35,7 +36,13 @@ class Deployer
     results = Parallel.map(
       repos,
       in_processes: Settings.num_parallel_processes,
-      finish: ->(repo, _i, _result) { progress_bar.advance(repo: repo.name) }
+      finish: lambda do |repo, _i, _result|
+        if Settings.progress_file.enabled
+          filename = File.join(Settings.progress_file.location, "#{File.basename(repo.name)}-deploy.log")
+          File.write(filename, "#{Time.now} : #{repo.name} deploy complete")
+        end
+        progress_bar.advance(repo: repo.name)
+      end
     ) do |repo|
       within_project_dir(repo:, environment:) do |env|
         auditor.audit(repo: repo.name)
@@ -65,6 +72,7 @@ class Deployer
 
     puts "Deployments to #{environment} complete. Open #{status_url} to check service status."
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def ensure_tag_present_in_all_repos!
     return if repos_missing_tag.empty?
