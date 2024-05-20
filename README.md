@@ -21,6 +21,8 @@ Make sure that:
   * The credentials are set to an environment variable on the server via puppet from values stored in vault (vault info: https://consul.stanford.edu/display/systeam/Vault+for+Developers).  To fetch without digging into vault, go to a server that has them set via puppet and view the environment variable. See below under "Configure bundler for your local path" for an example.
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
 
+Success output for repo cache updates and deploys is logged to 'tmp/progress.log'.  This is useful if you get a crash part way, as it can tell you which repos were successfully completed.
+
 ### SSH Setup
 
 Follow the [GitHub Documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh) if you need to establish new SSH keys.

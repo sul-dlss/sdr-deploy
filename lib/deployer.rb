@@ -35,8 +35,11 @@ class Deployer
     results = Parallel.map(
       repos,
       in_processes: Settings.num_parallel_processes,
-      finish: ->(repo, _i, _result) { progress_bar.advance(repo: repo.name) }
-    ) do |repo|
+      finish: ->(repo, _i, _result) do
+        File.open(Settings.progress_file, 'a') { |f| f.write("#{Time.now} : #{repo.name} deploy complete\n") }
+        progress_bar.advance(repo: repo.name)
+      end
+      ) do |repo|
       within_project_dir(repo:, environment:) do |env|
         auditor.audit(repo: repo.name)
         run_before_command!(env)

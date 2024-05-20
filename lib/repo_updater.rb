@@ -10,7 +10,10 @@ class RepoUpdater
     Parallel.each(
       repos,
       in_processes: Settings.num_parallel_processes,
-      finish: ->(repo, _i, _result) { @progress_bar.advance(repo: repo.name) }
+      finish: ->(repo, _i, _result) do
+        File.open(Settings.progress_file, 'a') { |f| f.write("#{Time.now} : #{repo.name} repo update complete\n") }
+        @progress_bar.advance(repo: repo.name)
+      end
     ) { |repo| new(repo:).update_or_create_repo }
     prune_removed_repos_from_cache!(repos) if prune
   end
