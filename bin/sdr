@@ -158,6 +158,19 @@ class CLI < Thor
       before_command: options[:before_command]
     )
   end
+
+  option :only,
+         type: :array,
+         default: [],
+         desc: 'Update only these repos'
+  option :except,
+         type: :array,
+         default: [],
+         desc: 'Update all except these repos'
+  desc 'refresh_repos', 'refresh the local repos'
+  def refresh_repos
+    RepoUpdater.update(repos: Settings.repositories, prune: options.slice(:only, :except).none?)
+  end
 end
 
 CLI.start(ARGV)

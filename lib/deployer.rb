@@ -157,7 +157,7 @@ class Deployer
     else
       # Forces the `git:create_release` cap task to use the HEAD ref, which allows
       # different repositories to use different default branches.
-      text.sub!(/ask :branch/, 'set :branch')
+      text.sub!('ask :branch', 'set :branch')
     end
 
     File.write('config/deploy.rb', text)
