@@ -237,6 +237,19 @@ Then
 bin/sdr deploy -e stage -c
 ```
 
+### Only Refresh Repositories
+
+If you have a need to pull main for all of the repositories without checking ssh or deploying, `refresh_repos` will do so.
+
+```
+Usage:
+  bin/sdr refresh_repos
+
+Options:
+      [--only=one two three]               # Update only these repos
+      [--except=one two three]             # Update all except these repos
+```
+
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
 * Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-deploy commands are run (unless the repo update is explicitly skipped via user-provided flag).
