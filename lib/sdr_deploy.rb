@@ -29,7 +29,7 @@ def within_project_dir(repo:, environment: nil, &block)
     contribsys_credentials = ENV.fetch('BUNDLE_GEMS__CONTRIBSYS__COM', nil)
     Bundler.with_unbundled_env do
       ENV['BUNDLE_GEMS__CONTRIBSYS__COM'] = contribsys_credentials
-      results << block.call(environment)
+      results << block.call(environment) unless repo.exclude_envs&.include?(environment)
 
       # Some of our apps use non-standard envs, which we deploy alongside prod
       if environment == 'prod' && repo.non_standard_envs
