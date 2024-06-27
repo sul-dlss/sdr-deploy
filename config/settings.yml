@@ -12,6 +12,13 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/common-accessioning
     cocina_models_update: true
+  - name: sul-dlss/dlme-airflow
+    non_standard_envs:
+      - dev
+    exclude_envs:
+      - prod
+      - stage
+      - qa
   - name: sul-dlss/dor-services-app
     cocina_models_update: true
   - name: sul-dlss/gis-robot-suite
