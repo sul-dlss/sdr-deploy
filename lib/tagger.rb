@@ -10,6 +10,10 @@ class Tagger
     new(tag_name:, repos:).delete
   end
 
+  def self.verify(tag_name:, repos:)
+    new(tag_name:, repos:).verify
+  end
+
   attr_reader :tag_name, :repos
 
   def initialize(tag_name:, repos:)
@@ -24,6 +28,26 @@ class Tagger
         puts "creating tag '#{tag_name}' for #{repo.name}: #{tag_message}"
         ErrorEmittingExecutor.execute("git tag -a #{tag_name} -m '#{tag_message}'", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push origin #{tag_name}", exit_on_error: true)
+      end
+    end
+  end
+
+  def verify
+    puts "verifying tag in repos: #{repos.map(&:name).join(', ')}"
+    repos.each do |repo|
+      puts "verifying tag '#{tag_name}' in #{repo.name}"
+      within_project_dir(repo:) do
+        ErrorEmittingExecutor.execute('git fetch --tags')
+        out, err, status = Open3.capture3("git tag -l #{tag_name}")
+        unless status.success?
+          puts colorize_failure("error checking for tag '#{tag_name}' in #{repo.name}: #{err}")
+          next
+        end
+        if out.include?(tag_name)
+          puts "tag '#{tag_name}' found in #{repo.name}"
+        else
+          puts colorize_failure("tag '#{tag_name}' not found in #{repo.name}")
+        end
       end
     end
   end

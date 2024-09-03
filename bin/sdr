@@ -39,6 +39,13 @@ class CLI < Thor
          banner: 'DELETE',
          desc: 'Delete the tag locally and remotely',
          aliases: '-d'
+  option :verify,
+         required: false,
+         type: :boolean,
+         default: false,
+         banner: 'VERIFY',
+         desc: 'Verify the tag remotely',
+         aliases: '-v'
   option :cocina,
          type: :boolean,
          default: false,
@@ -55,6 +62,8 @@ class CLI < Thor
     RepoUpdater.update(repos: repositories)
     if options[:delete]
       Tagger.delete(tag_name:, repos: repositories)
+    elsif options[:verify]
+      Tagger.verify(tag_name:, repos: repositories)
     else
       Tagger.create(tag_name:, tag_message: options.fetch(:message, 'created by sdr-deploy'), repos: repositories)
     end

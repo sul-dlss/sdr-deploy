@@ -129,9 +129,10 @@ Usage:
 Options:
   -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
   -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
+  -v, [--verify]                        # Verify the tags exist remotely
   -c, [--cocina], [--no-cocina]         # Only update repos affected by new cocina-models gem release
 
-create or delete a tag named TAG_NAME
+create, delete, or verify a tag named TAG_NAME
 
 Examples:
   bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
