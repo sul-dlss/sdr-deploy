@@ -7,6 +7,9 @@ require 'open3'
 require 'parallel'
 require 'pastel'
 require 'thor'
+require 'tty-file'
+require 'tty-logger'
+require 'tty-markdown'
 require 'tty-progressbar'
 require 'tty-prompt'
 require 'tty-table'
@@ -42,16 +45,60 @@ def within_project_dir(repo:, environment: nil, &block)
 end
 # rubocop:enable Metrics/MethodLength
 
-def colorize_failure(string)
-  pastel.white.on_bright_red.bold(string)
-end
-
-def colorize_success(string)
-  pastel.green.on_bright_black.bold(string)
+def light_mode?
+  !!Settings.light_mode
 end
 
 def pastel
   @pastel ||= Pastel.new
+end
+
+def colorize_failure(string)
+  if light_mode?
+    pastel.red.on_bright_white.italic(string)
+  else
+    pastel.white.on_bright_red.italic(string)
+  end
+end
+
+def colorize_success(string)
+  if light_mode?
+    pastel.green.on_bright_white.bold(string)
+  else
+    pastel.black.on_green.bold(string)
+  end
+end
+
+LIGHT_THEME = {
+  em: :italic,
+  header: %i[black bold on_bright_white],
+  hr: :green,
+  link: %i[blue underline],
+  list: :magenta,
+  strong: :bold,
+  table: :magenta,
+  quote: :magenta,
+  image: :bright_black,
+  note: :magenta,
+  comment: :bright_black
+}.freeze
+
+DARK_THEME = {
+  em: %i[bright_yellow italic],
+  header: %i[bright_cyan bold on_black],
+  hr: :bright_yellow,
+  link: %i[bright_yellow underline],
+  list: :bright_yellow,
+  strong: %i[bright_yellow bold],
+  table: :bright_yellow,
+  quote: :bright_yellow,
+  image: :bright_black,
+  note: :bright_yellow,
+  comment: :bright_black
+}.freeze
+
+def render_markdown(string)
+  puts TTY::Markdown.parse(string, theme: light_mode? ? LIGHT_THEME : DARK_THEME)
 end
 
 Dir['./lib/*.rb'].each { |f| require f }

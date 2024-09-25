@@ -1,4 +1,5 @@
 work_dir: tmp/repos
+light_mode: false
 num_parallel_processes: 4
 progress_file:
   enabled: false # enable to log one file per repo in the location specified below
