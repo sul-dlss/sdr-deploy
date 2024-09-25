@@ -18,30 +18,37 @@ class Deployer
     @environment = environment
     @repos = repos
     @progress_bar = TTY::ProgressBar.new(
-      'Deploying [:bar] (:current/:total, ETA: :eta) :repo',
+      'Deploying [:bar] (:current/:total, Elapsed: :elapsed, ETA: :eta)',
       bar_format: :box,
       total: @repos.count
     )
     @tag = tag
     ensure_tag_present_in_all_repos! if tag
-    prompt_user_for_branch_confirmation!
-    prompt_user_for_approval_confirmation!
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity
   def deploy_all
-    puts "Repositories: #{repos.map(&:name).join(', ')}"
+    render_markdown('***')
+    render_markdown("# Deploying the following repositories (#{tag || 'default branch'})")
+    render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
+
+    prompt_user_for_branch_confirmation!
+    prompt_user_for_approval_confirmation!
+
     progress_bar.start
 
     results = Parallel.map(
       repos,
       in_processes: Settings.num_parallel_processes,
-      finish: lambda do |repo, _i, _result|
-        if Settings.progress_file.enabled
-          filename = File.join(Settings.progress_file.location, "#{File.basename(repo.name)}-deploy.log")
-          File.write(filename, "#{Time.now} : #{repo.name} deploy complete")
+      finish: lambda do |repo, _i, result_array|
+        result_array.each do |result|
+          progress_bar.log(log_result(result:))
         end
-        progress_bar.advance(repo: repo.name)
+        progress_bar.advance
+        next unless Settings.progress_file.enabled
+
+        filename = File.join(Settings.progress_file.location, "#{File.basename(repo.name)}-deploy.log")
+        File.write(filename, "#{Time.now} : #{repo.name} deploy complete")
       end
     ) do |repo|
       within_project_dir(repo:, environment:) do |env|
@@ -49,28 +56,21 @@ class Deployer
         run_before_command!(env)
         set_deploy_target!
         status, output = deploy(env)
-        Result.new(
-          env == environment ? repo.name : "#{repo.name} (#{env})",
-          env,
-          status ? colorize_success('success') : colorize_failure('FAILED'),
-          output
-        )
+        Result.new(repo.name, env, status, output)
       end
     end.flatten
 
     auditor.report
 
-    build_report_table!(results)
-
-    puts report_table.render(:unicode)
-
     results
-      .select { |result| result.status.match?('FAILED') }
+      .select { |result| result.output.match?('FAILED') }
       .each do |result|
       puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
     end
 
-    puts "Deployments to #{environment} complete. Open #{status_url} to check service status."
+    render_markdown('***')
+    render_markdown("**Deployments to #{environment} complete**")
+    render_markdown("[Check service status](#{status_url})")
   end
   # rubocop:enable Metrics/CyclomaticComplexity
 
@@ -82,19 +82,28 @@ class Deployer
 
   private
 
+  def log_result(result:)
+    stream = StringIO.new
+    result_logger = logger(stream:)
+    if result.status
+      result_logger.success 'Deployed successfully', repo: result.repo, env: result.env
+    else
+      result_logger.error 'Deployment failed', repo: result.repo, env: result.env
+    end
+    stream.string
+  end
+
+  def logger(stream:)
+    TTY::Logger.new do |config|
+      config.handlers = [:console]
+      config.output = stream
+    end
+  end
+
   def run_before_command!(env)
     return unless before_command
 
     `bundle exec cap #{env} remote_execute['#{before_command}'] 2>&1`
-  end
-
-  def build_report_table!(results)
-    results.each do |result|
-      report_table << [
-        result.repo,
-        result.status
-      ]
-    end
   end
 
   def status_url
@@ -157,22 +166,14 @@ class Deployer
 
   # Either deploy HEAD or the given tag
   def set_deploy_target!
-    text = File.read('config/deploy.rb')
-
     if tag
       # Deploy the given tag
-      text.sub!(/^ask :branch.+$/, "set :branch, '#{tag}'")
+      TTY::File.replace_in_file('config/deploy.rb', /^ask :branch.+$/, "set :branch, '#{tag}'", verbose: false)
     else
       # Forces the `git:create_release` cap task to use the HEAD ref, which allows
       # different repositories to use different default branches.
-      text.sub!('ask :branch', 'set :branch')
+      TTY::File.replace_in_file('config/deploy.rb', /ask :branch/, 'set :branch', verbose: false)
     end
-
-    File.write('config/deploy.rb', text)
-  end
-
-  def report_table
-    @report_table ||= TTY::Table.new(header: %w[repo result])
   end
 end
 # rubocop:enable Metrics/ClassLength

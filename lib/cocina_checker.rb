@@ -18,21 +18,21 @@ class CocinaChecker
   end
 
   def check_cocina
-    puts "repos to Cocina check: #{repos.map(&:name).join(', ')}"
+    render_markdown('***')
+    render_markdown("# Checking Cocina version (#{tag || 'default branch'})")
 
     unique_values = group_by_unique_values(version_map)
-    puts '------- COCINA REPORT -------'
-    if tag
-      puts "  for tag #{tag} of repos"
-    else
-      puts '  for default branches of repos'
-    end
-    puts 'Found these versions of cocina in use:'
     unique_values.sort.each do |version, repos|
-      puts "\t#{version}"
-      repos.sort.each do |repo|
-        puts "\t\t#{repo}"
-      end
+      report_table << [
+        version,
+        repos.sort.join("\n")
+      ]
+    end
+
+    if unique_values.empty?
+      render_markdown('## No repositories depend on Cocina')
+    else
+      puts report_table.render(:unicode, multiline: true)
     end
 
     # `true` is the happy path; `false` means dragons
@@ -50,6 +50,10 @@ class CocinaChecker
   end
 
   private
+
+  def report_table
+    @report_table ||= TTY::Table.new(header: %w[version repos])
+  end
 
   def version_map
     Dir["#{base_directory}**/Gemfile.lock"].filter_map do |lockfile_path|

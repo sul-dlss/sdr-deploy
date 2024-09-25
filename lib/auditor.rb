@@ -27,9 +27,11 @@ class Auditor
   end
 
   def report
-    puts "\n\n------- BUNDLE AUDIT SECURITY REPORT -------"
+    render_markdown('***')
+    render_markdown('# Bundle Audit Security Report')
+
     if @project_errors.empty?
-      puts colorize_success('No bundle security vulns found!')
+      puts colorize_success('No bundle security vulnerabilities found!')
       return
     end
 
@@ -55,8 +57,8 @@ class Auditor
     err = err.delete_suffix(SUFFIX)
     err.split("\n\n").map do |error_str|
       Error.new(error_str.split("\n").to_h do |row|
-                  row.split(': ')
-                end.transform_keys(&:downcase).transform_keys(&:to_sym))
+        row.split(': ')
+      end.transform_keys(&:downcase).transform_keys(&:to_sym))
     rescue ArgumentError
       puts colorize_failure("!!!!!!!!! PROBLEM PUTTING ERROR INTO OUR ERROR STRUCT: #{error_str.inspect}")
     end
