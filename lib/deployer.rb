@@ -29,7 +29,7 @@ class Deployer
   # rubocop:disable Metrics/CyclomaticComplexity
   def deploy_all
     render_markdown('***')
-    render_markdown("# Deploying the following repositories (#{tag || 'default branch'})")
+    render_markdown("# Deploying the following repositories to #{environment} (#{tag || 'default branch'})")
     render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
 
     prompt_user_for_branch_confirmation!
