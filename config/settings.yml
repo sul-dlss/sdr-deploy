@@ -28,6 +28,8 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/happy-heron
     cocina_models_update: true
+  - name: sul-dlss/hungry-hungry-hippo
+    cocina_models_update: true
   - name: sul-dlss/hydra_etd
     cocina_models_update: true
     non_standard_envs:

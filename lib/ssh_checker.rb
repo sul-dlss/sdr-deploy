@@ -15,7 +15,7 @@ class SshChecker
 
   def check_ssh
     puts "repos to SSH check: #{repos.map(&:name).join(', ')}"
-    repos.each do |repo|
+    Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
       within_project_dir(repo:, environment:) do |environment|
         puts "running 'cap #{environment} ssh_check' for #{repo.name}"
         ErrorEmittingExecutor.execute("bundle exec cap #{environment} ssh_check")
