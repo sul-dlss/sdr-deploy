@@ -88,9 +88,20 @@ class CLI < Thor
          banner: 'ENVIRONMENT',
          desc: "Environment (#{Settings.supported_envs.keys.map(&:to_s)})",
          aliases: '-e'
+  option :control_master,
+         type: :boolean,
+         default: false,
+         desc: 'Use control master for SSH connections',
+         aliases: '-c'
   desc 'check_ssh', 'check SSH connections'
   def check_ssh
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
+
+    unless options[:control_master]
+      say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
+      control_master = ask('Have you started a control master session: (y/n): ')
+      exit unless control_master.downcase == 'y'
+    end
 
     repositories = if options[:only].any?
                      Settings.repositories.select { |repo| options[:only].include?(repo.name) }
@@ -137,9 +148,20 @@ class CLI < Thor
          banner: 'ENVIRONMENT',
          desc: 'Deployment environment',
          aliases: '-e'
+  option :control_master,
+         type: :boolean,
+         default: false,
+         desc: 'Use control master for SSH connections',
+         aliases: '-c'
   desc 'deploy', 'deploy all the services in an environment'
   def deploy
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
+
+    unless options[:control_master]
+      say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
+      control_master = ask('Have you started a control master session: (y/n): ')
+      exit unless control_master.downcase == 'y'
+    end
 
     repositories = if options[:cocina]
                      Settings.repositories.select(&:cocina_models_update)
