@@ -11,6 +11,21 @@ class CLI < Thor
     true
   end
 
+  no_commands do
+    def check_control_master(skip)
+      unless skip
+        say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
+        control_master = ask('Have you started a control master session: (y/n): ')
+        exit unless control_master.downcase == 'y'
+      end
+
+      return if `ps aux` =~ /ControlMaster=yes/
+
+      say('Control master not detected. Please start a control master session.')
+      exit
+    end
+  end
+
   option :skip_update,
          type: :boolean,
          default: false,
@@ -97,11 +112,7 @@ class CLI < Thor
   def check_ssh
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    unless options[:control_master]
-      say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
-      control_master = ask('Have you started a control master session: (y/n): ')
-      exit unless control_master.downcase == 'y'
-    end
+    check_control_master(options[:control_master])
 
     repositories = if options[:only].any?
                      Settings.repositories.select { |repo| options[:only].include?(repo.name) }
@@ -157,11 +168,7 @@ class CLI < Thor
   def deploy
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    unless options[:control_master]
-      say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
-      control_master = ask('Have you started a control master session: (y/n): ')
-      exit unless control_master.downcase == 'y'
-    end
+    check_control_master(options[:control_master])
 
     repositories = if options[:cocina]
                      Settings.repositories.select(&:cocina_models_update)
