@@ -1,3 +1,4 @@
+control_master_host: sdr-infra
 work_dir: tmp/repos
 light_mode: false
 num_parallel_processes: 4
