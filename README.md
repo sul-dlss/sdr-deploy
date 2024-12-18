@@ -88,7 +88,7 @@ Options:
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
   -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
                                            # Possible values: qa, prod, stage
-      [--skip_control_master]              # Skip the control master check
+      [--skip-control-master]    # Skip checking for active SSH control master connection
 
 check SSH connections
 
