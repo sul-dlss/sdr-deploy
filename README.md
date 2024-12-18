@@ -88,7 +88,7 @@ Options:
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
   -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
                                            # Possible values: qa, prod, stage
-  -c, [--control_master]                   # Skip the control master prompt
+      [--skip_control_master]              # Skip the control master check
 
 check SSH connections
 
@@ -157,8 +157,7 @@ Options:
   -s, [--skip-update], [--no-skip-update]  # Skip update repos
   -e, --environment=ENVIRONMENT            # Deployment environment
                                            # Possible values: qa, prod, stage
-  -c, [--control_master]                   # Skip the control master prompt
-
+      [--skip_control_master]              # Skip the control master check
 deploy all the services in an environment
 
 Examples:

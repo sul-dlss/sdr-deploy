@@ -13,13 +13,8 @@ class CLI < Thor
 
   no_commands do
     def check_control_master(skip)
-      unless skip
-        say("Checking SSH connections for #{options[:environment]} environment requires a control master.")
-        control_master = ask('Have you started a control master session: (y/n): ')
-        exit unless control_master.downcase == 'y'
-      end
-
-      return if `ps aux` =~ /ControlMaster=yes/
+      return if skip
+      return if system("ssh -O check #{Settings.control_master_host}", err: File::NULL)
 
       say('Control master not detected. Please start a control master session.')
       exit
@@ -103,16 +98,15 @@ class CLI < Thor
          banner: 'ENVIRONMENT',
          desc: "Environment (#{Settings.supported_envs.keys.map(&:to_s)})",
          aliases: '-e'
-  option :control_master,
+  option :skip_control_master,
          type: :boolean,
          default: false,
-         desc: 'Use control master for SSH connections',
-         aliases: '-c'
+         desc: 'Skip checking for active SSH control master connection'
   desc 'check_ssh', 'check SSH connections'
   def check_ssh
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    check_control_master(options[:control_master])
+    check_control_master(options[:skip_control_master])
 
     repositories = if options[:only].any?
                      Settings.repositories.select { |repo| options[:only].include?(repo.name) }
@@ -159,16 +153,15 @@ class CLI < Thor
          banner: 'ENVIRONMENT',
          desc: 'Deployment environment',
          aliases: '-e'
-  option :control_master,
+  option :skip_control_master,
          type: :boolean,
          default: false,
-         desc: 'Use control master for SSH connections',
-         aliases: '-c'
+         desc: 'Skip checking for active SSH control master connection'
   desc 'deploy', 'deploy all the services in an environment'
   def deploy
     raise Thor::Error, 'Use only one of --only or --except' if options[:only].any? && options[:except].any?
 
-    check_control_master(options[:control_master])
+    check_control_master(options[:skip_control_master])
 
     repositories = if options[:cocina]
                      Settings.repositories.select(&:cocina_models_update)
