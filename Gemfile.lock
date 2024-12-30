@@ -21,7 +21,7 @@ GEM
       tty-color (~> 0.5)
     racc (1.8.1)
     rainbow (3.1.1)
-    regexp_parser (2.9.3)
+    regexp_parser (2.10.0)
     rexml (3.4.0)
     rouge (4.5.1)
     rspec-core (3.13.2)
