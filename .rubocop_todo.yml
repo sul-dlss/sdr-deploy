@@ -12,13 +12,13 @@
 # URISchemes: http, https
 Layout/LineLength:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
 
 # Offense count: 7
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
     - 'lib/auditor.rb'
     - 'lib/cocina_checker.rb'
     - 'lib/deployer.rb'
@@ -28,20 +28,20 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
 
 # Offense count: 4
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
     - 'lib/cocina_checker.rb'
 
 # Offense count: 7
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
     - 'lib/auditor.rb'
     - 'lib/cocina_checker.rb'
     - 'lib/deployer.rb'
@@ -51,11 +51,11 @@ Metrics/MethodLength:
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
     - 'lib/cocina_checker.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 Style/IfUnlessModifier:
   Exclude:
-    - 'bin/sdr'
+    - 'lib/sdr_cli.rb'
