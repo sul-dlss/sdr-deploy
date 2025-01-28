@@ -4,7 +4,7 @@ This is a central place for deploying applications in the Infrastructure team po
 
 ## Requirements
 
-sdr-deploy expects Ruby 3.3.
+sdr-deploy expects Ruby 3.4.
 
 ## Usage
 
