@@ -40,6 +40,7 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/preservation_catalog
   - name: sul-dlss/preservation_robots
+  - name: sul-dlss/rialto-orgs
   - name: sul-dlss/robot-console
   - name: sul-dlss/sdr-api
     cocina_models_update: true
