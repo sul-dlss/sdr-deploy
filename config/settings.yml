@@ -44,6 +44,11 @@ repositories:
   - name: sul-dlss/robot-console
   - name: sul-dlss/sdr-api
     cocina_models_update: true
+  - name: sul-dlss/speech-to-text # deployment to AWS is handled by a Github Action
+    exclude_envs:
+      - prod
+      - stage
+      - qa
   - name: sul-dlss/sul_pub
     non_standard_envs:
       - uat
