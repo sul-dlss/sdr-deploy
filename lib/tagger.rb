@@ -22,10 +22,11 @@ class Tagger
   end
 
   def create(tag_message:)
-    puts "creating tag in repos: #{repos.map(&:name).join(', ')}"
+    render_markdown('***')
+    render_markdown("# Creating tag '#{tag_name}'")
+    render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
     Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
       within_project_dir(repo:) do
-        puts "creating tag '#{tag_name}' for #{repo.name}: #{tag_message}"
         ErrorEmittingExecutor.execute("git tag -a #{tag_name} -m '#{tag_message}'", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push origin #{tag_name}", exit_on_error: true)
       end
@@ -33,9 +34,10 @@ class Tagger
   end
 
   def verify
-    puts "verifying tag in repos: #{repos.map(&:name).join(', ')}"
-    repos.each do |repo|
-      puts "verifying tag '#{tag_name}' in #{repo.name}"
+    render_markdown('***')
+    render_markdown("# Verifying tag '#{tag_name}'")
+    render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
+    Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
       within_project_dir(repo:) do
         ErrorEmittingExecutor.execute('git fetch --tags')
         out, err, status = Open3.capture3("git tag -l #{tag_name}")
@@ -44,7 +46,7 @@ class Tagger
           next
         end
         if out.include?(tag_name)
-          puts "tag '#{tag_name}' found in #{repo.name}"
+          puts colorize_success("tag '#{tag_name}' found in #{repo.name}")
         else
           puts colorize_failure("tag '#{tag_name}' not found in #{repo.name}")
         end
@@ -53,10 +55,11 @@ class Tagger
   end
 
   def delete
-    puts "deleting tag in repos: #{repos.map(&:name).join(', ')}"
+    render_markdown('***')
+    render_markdown("# Deleting tag '#{tag_name}'")
+    render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
     Parallel.each(repos, in_processes: Settings.num_parallel_processes) do |repo|
       within_project_dir(repo:) do
-        puts "deleting tag '#{tag_name}' from #{repo.name}"
         ErrorEmittingExecutor.execute("git tag -d #{tag_name}", exit_on_error: true)
         ErrorEmittingExecutor.execute("git push --delete origin #{tag_name}", exit_on_error: true)
       end
