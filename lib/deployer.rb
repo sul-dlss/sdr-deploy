@@ -3,8 +3,7 @@
 require 'English'
 
 # Service class for deploying
-# rubocop:disable Metrics/ClassLength
-class Deployer
+class Deployer # rubocop:disable Metrics/ClassLength
   Result = Struct.new(:repo, :env, :status, :output)
 
   def self.deploy(environment:, repos:, tag: nil, before_command: nil)
@@ -26,8 +25,7 @@ class Deployer
     ensure_tag_present_in_all_repos! if tag
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  def deploy_all
+  def deploy_all # rubocop:disable Metrics/CyclomaticComplexity
     render_markdown('***')
     render_markdown("# Deploying the following repositories to #{environment} (#{tag || 'default branch'})")
     render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
@@ -72,7 +70,6 @@ class Deployer
     render_markdown("**Deployments to #{environment} complete**")
     render_markdown("[Check service status](#{status_url})")
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def ensure_tag_present_in_all_repos!
     return if repos_missing_tag.empty?
@@ -176,4 +173,3 @@ class Deployer
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
