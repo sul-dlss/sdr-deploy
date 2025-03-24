@@ -266,3 +266,20 @@ Lint/SharedMutableDefault: # new in 1.70
   Enabled: true
 Style/ItAssignment: # new in 1.70
   Enabled: true
+
+Lint/ArrayLiteralInRegexp: # new in 1.71
+  Enabled: true
+Lint/CopDirectiveSyntax: # new in 1.72
+  Enabled: true
+Lint/RedundantTypeConversion: # new in 1.72
+  Enabled: true
+Lint/SuppressedExceptionInNumberConversion: # new in 1.72
+  Enabled: true
+Lint/UselessConstantScoping: # new in 1.72
+  Enabled: true
+Style/ComparableBetween: # new in 1.74
+  Enabled: true
+Style/HashSlice: # new in 1.71
+  Enabled: true
+Style/RedundantFormat: # new in 1.72
+  Enabled: true
