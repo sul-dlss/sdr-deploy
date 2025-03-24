@@ -252,6 +252,18 @@ Options:
       [--except=one two three]             # Update all except these repos
 ```
 
+### Bundle audit all repos
+
+If you want to find the SDR repos effected by a CVE alert, `audit_repos` will run bundle audit on each repository to find each SDR repository that may be effected.
+
+```
+Usage:
+  bin/sdr audit_repos
+
+Note:
+  For non-rails repositories that do not execute bundle commands, you can add skip_audit: true to the repo config.
+```
+
 ### Notes and tips:
 * All repos will be cloned to `tmp/repos`.
 * Any repos cloned to `tmp/repos` that are removed from `config/settings.yml`, *e.g.* projects that have been decommissioned, will be automatically removed from `tmp/repos` the next time any of the sdr-deploy commands are run (unless the repo update is explicitly skipped via user-provided flag).
