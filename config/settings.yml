@@ -51,6 +51,7 @@ repositories:
       - prod
       - stage
       - qa
+    skip_audit: true
   - name: sul-dlss/sul_pub
     non_standard_envs:
       - uat
