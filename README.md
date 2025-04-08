@@ -80,20 +80,22 @@ user123:pass678
 
 ```
 Usage:
-  bin/sdr check_ssh -e, --environment=ENVIRONMENT
+  sdr check_ssh -e, --environment=ENVIRONMENT
 
 Options:
-      [--only=one two three]               # Update only these repos
-      [--except=one two three]             # Update all except these repos
-  -s, [--skip-update], [--no-skip-update]  # Skip update repos
-  -e, --environment=ENVIRONMENT            # Environment (["qa", "prod", "stage"])
-                                           # Possible values: qa, prod, stage
-      [--skip-control-master]              # Skip checking for active SSH control master connection
+      [--only=one two three]     # Check connections only to these services
+      [--except=one two three]   # Check connections except for these services
+  -s, [--skip-update]            # Skip refreshing the local git repository cache
+                                 # Default: false
+  -e, --environment=ENVIRONMENT  # Check connections in the given environment
+                                 # Possible values: qa, prod, stage
+      [--skip-control-master]    # Skip checking for an active SSH controlmaster connection
+                                 # Default: false
 
-check SSH connections
+Check SSH connections
 
 Example:
-  bin/sdr check_ssh -s -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+  sdr check_ssh -s -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
@@ -102,42 +104,78 @@ NOTE: Watch the output for any errors
 
 ```
 Usage:
-  bin/sdr check_cocina
+  sdr check_cocina
 
 Options:
-  -s, [--skip-update], [--no-skip-update]  # Skip update repos
-  -t, --branch, [--tag=TAG]                # Check cocina version in the given tag or branch instead of the default branch
+  -s,           [--skip-update]  # Skip refreshing the local git repository cache
+                                 # Default: false
+  -t, --branch, [--tag=TAG]      # Check cocina version in the given tag or branch instead of the default branch
 
-check for cocina-models version mismatches
+Check for Cocina data model mismatches
 
 Example:
-  bin/sdr check_cocina -s -t rel-2022-08-01
-  bin/sdr check_cocina -t my-wip-branch
+  sdr check_cocina -s -t rel-2022-08-01
+  sdr check_cocina -t my-wip-branch
 ```
 
 This will let you know which versions of cocina-models are used by each project with it in Gemfile.lock.
 
-### Create repository tags
+### Manage repository tags
 
-This command tags repositories in parallel.
+This command performs tag operations on repositories in parallel.
 
 **NOTE**: We conventionally name tags `rel-{YYYY}-{MM}-{DD}`.
 
+#### Create a tag
+
 ```
 Usage:
-  bin/sdr tag TAG_NAME
+  sdr tag create TAG_NAME
 
 Options:
-  -m, [--message=TAG MESSAGE]           # Message to describe a newly created tag
-  -d, [--delete=DELETE], [--no-delete]  # Delete the tag locally and remotely
-  -v, [--verify]                        # Verify the tags exist remotely
-  -c, [--cocina], [--no-cocina]         # Only update repos affected by new cocina-models gem release
+  -m, [--message=MESSAGE]  # Message to describe a newly created tag
+  -c, [--skip-non-cocina]  # Include only repos depending on new Cocina models releases
+                           # Default: false
 
-create, delete, or verify a tag named TAG_NAME
+Create a git tag locally and remotely
 
 Examples:
-  bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
-  bin/sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
+  sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
+  sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
+```
+
+#### Verify a tag
+
+```
+Usage:
+  sdr tag verify TAG_NAME
+
+Options:
+  -c, [--skip-non-cocina]  # Include only repos depending on new Cocina models releases
+                           # Default: false
+
+Verify a git tag exists remotely
+
+Examples:
+  sdr tag verify rel-2022-09-05
+  sdr tag verify --skip-non-cocina rel-2022-09-14
+```
+
+#### Delete a tag
+
+```
+Usage:
+  sdr tag delete TAG_NAME
+
+Options:
+  -c, [--skip-non-cocina]  # Include only repos depending on new Cocina models releases
+                           # Default: false
+
+Delete a git tag locally and remotely
+
+Examples:
+  sdr tag delete rel-2022-09-05
+  sdr tag delete --skip-non-cocina rel-2022-09-14
 ```
 
 ### Run the deploys
@@ -146,23 +184,27 @@ This command deploys repositories in parallel.
 
 ```
 Usage:
-  bin/sdr deploy -e, --environment=ENVIRONMENT
+  sdr deploy -e, --environment=ENVIRONMENT
 
 Options:
-      [--only=one two three]               # Update only these repos
-      [--except=one two three]             # Update all except these repos
-  -c, [--cocina], [--no-cocina]            # Only update repos affected by new cocina-models gem release
-  -b, [--before-command=BEFORE_COMMAND]    # Run this command on each host before deploying
-  -t, --branch, [--tag=TAG]                # Deploy the given tag or branch instead of the default branch
-  -s, [--skip-update], [--no-skip-update]  # Skip update repos
-  -e, --environment=ENVIRONMENT            # Deployment environment
-                                           # Possible values: qa, prod, stage
-      [--skip-control-master]              # Skip checking for active SSH control master connection
-deploy all the services in an environment
+                [--only=one two three]             # Deploy only these services
+                [--except=one two three]           # Deploy all except these services
+  -c,           [--skip-non-cocina]                # Deploy only services depending on new Cocina models releases
+                                                   # Default: false
+  -b,           [--before-command=BEFORE_COMMAND]  # Run this command on each host before deploying
+  -t, --branch, [--tag=TAG]                        # Deploy the given tag or branch instead of the default branch
+  -s,           [--skip-update]                    # Skip refreshing the local git repository cache
+                                                   # Default: false
+  -e,           --environment=ENVIRONMENT          # Deployment environment
+                                                   # Possible values: qa, prod, stage
+                [--skip-control-master]            # Skip checking for active SSH control master connection
+                                                   # Default: false
+
+Deploy services to a given environment
 
 Examples:
-  bin/sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
-  bin/sdr deploy -c -e qa -t rel-2022-09-14
+  sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
+  sdr deploy -c -e qa -t rel-2022-09-14
 ```
 
 **NOTE 0**:
@@ -245,11 +287,13 @@ If you have a need to pull main for all of the repositories without checking ssh
 
 ```
 Usage:
-  bin/sdr refresh_repos
+  sdr refresh_repos
 
 Options:
-      [--only=one two three]               # Update only these repos
-      [--except=one two three]             # Update all except these repos
+  [--only=one two three]    # Update the cache only for these repos
+  [--except=one two three]  # Update the cache except for these repos
+
+Refresh the local git repository cache
 ```
 
 ### Bundle audit all repos
@@ -258,7 +302,7 @@ If you want to find the SDR repos effected by a CVE alert, `audit_repos` will ru
 
 ```
 Usage:
-  bin/sdr audit_repos
+  sdr audit_repos
 
 Note:
   For non-rails repositories that do not execute bundle commands, you can add skip_audit: true to the repo config.
