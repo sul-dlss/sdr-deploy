@@ -80,7 +80,7 @@ user123:pass678
 
 ```
 Usage:
-  sdr check_ssh -e, --environment=ENVIRONMENT
+  bin/sdr check_ssh -e, --environment=ENVIRONMENT
 
 Options:
       [--only=one two three]     # Check connections only to these services
@@ -95,7 +95,7 @@ Options:
 Check SSH connections
 
 Example:
-  sdr check_ssh -s -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
+  bin/sdr check_ssh -s -e qa --except sul-dlss/technical-metadata-service sul-dlss/argo
 ```
 
 NOTE: Watch the output for any errors
@@ -104,7 +104,7 @@ NOTE: Watch the output for any errors
 
 ```
 Usage:
-  sdr check_cocina
+  bin/sdr check_cocina
 
 Options:
   -s,           [--skip-update]  # Skip refreshing the local git repository cache
@@ -114,8 +114,8 @@ Options:
 Check for Cocina data model mismatches
 
 Example:
-  sdr check_cocina -s -t rel-2022-08-01
-  sdr check_cocina -t my-wip-branch
+  bin/sdr check_cocina -s -t rel-2022-08-01
+  bin/sdr check_cocina -t my-wip-branch
 ```
 
 This will let you know which versions of cocina-models are used by each project with it in Gemfile.lock.
@@ -130,7 +130,7 @@ This command performs tag operations on repositories in parallel.
 
 ```
 Usage:
-  sdr tag create TAG_NAME
+  bin/sdr tag create TAG_NAME
 
 Options:
   -m, [--message=MESSAGE]  # Message to describe a newly created tag
@@ -140,15 +140,15 @@ Options:
 Create a git tag locally and remotely
 
 Examples:
-  sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
-  sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
+  bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
+  bin/sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
 ```
 
 #### Verify a tag
 
 ```
 Usage:
-  sdr tag verify TAG_NAME
+  bin/sdr tag verify TAG_NAME
 
 Options:
   -c, [--skip-non-cocina]  # Include only repos depending on new Cocina models releases
@@ -157,15 +157,15 @@ Options:
 Verify a git tag exists remotely
 
 Examples:
-  sdr tag verify rel-2022-09-05
-  sdr tag verify --skip-non-cocina rel-2022-09-14
+  bin/sdr tag verify rel-2022-09-05
+  bin/sdr tag verify --skip-non-cocina rel-2022-09-14
 ```
 
 #### Delete a tag
 
 ```
 Usage:
-  sdr tag delete TAG_NAME
+  bin/sdr tag delete TAG_NAME
 
 Options:
   -c, [--skip-non-cocina]  # Include only repos depending on new Cocina models releases
@@ -174,8 +174,8 @@ Options:
 Delete a git tag locally and remotely
 
 Examples:
-  sdr tag delete rel-2022-09-05
-  sdr tag delete --skip-non-cocina rel-2022-09-14
+  bin/sdr tag delete rel-2022-09-05
+  bin/sdr tag delete --skip-non-cocina rel-2022-09-14
 ```
 
 ### Run the deploys
@@ -184,7 +184,7 @@ This command deploys repositories in parallel.
 
 ```
 Usage:
-  sdr deploy -e, --environment=ENVIRONMENT
+  bin/sdr deploy -e, --environment=ENVIRONMENT
 
 Options:
                 [--only=one two three]             # Deploy only these services
@@ -203,8 +203,8 @@ Options:
 Deploy services to a given environment
 
 Examples:
-  sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
-  sdr deploy -c -e qa -t rel-2022-09-14
+  bin/sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
+  bin/sdr deploy -c -e qa -t rel-2022-09-14
 ```
 
 **NOTE 0**:
@@ -287,7 +287,7 @@ If you have a need to pull main for all of the repositories without checking ssh
 
 ```
 Usage:
-  sdr refresh_repos
+  bin/sdr refresh_repos
 
 Options:
   [--only=one two three]    # Update the cache only for these repos
@@ -302,7 +302,7 @@ If you want to find the SDR repos effected by a CVE alert, `audit_repos` will ru
 
 ```
 Usage:
-  sdr audit_repos
+  bin/sdr audit_repos
 
 Note:
   For non-rails repositories that do not execute bundle commands, you can add skip_audit: true to the repo config.
