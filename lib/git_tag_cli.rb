@@ -2,6 +2,16 @@
 
 # Container for git tag subcommands
 class GitTagCLI < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  def self.banner(command, ...)
+    "#{@package_name} #{command.usage}"
+  end
+
+  package_name 'bin/sdr tag'
+
   class_option :skip_non_cocina,
                type: :boolean,
                default: false,

@@ -6,6 +6,12 @@ class SdrCLI < Thor
     true
   end
 
+  def self.banner(command, ...)
+    "#{@package_name} #{command.usage}"
+  end
+
+  package_name 'bin/sdr'
+
   no_commands do
     def check_control_master(skip)
       return if skip
