@@ -140,8 +140,8 @@ Options:
 Create a git tag locally and remotely
 
 Examples:
-  bin/sdr tag -m 'coordinating the deploy of dependency updates' rel-2022-09-05
-  bin/sdr tag -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
+  bin/sdr tag create -m 'coordinating the deploy of dependency updates' rel-2022-09-05
+  bin/sdr tag create -c -m 'coordinating the release of cocina-models 0.66.6' rel-2022-09-14
 ```
 
 #### Verify a tag
