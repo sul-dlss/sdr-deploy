@@ -62,4 +62,4 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/was_robot_suite
     cocina_models_update: true
-  - name: sul-dlss/workflow-server-rails
+  
