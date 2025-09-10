@@ -36,8 +36,8 @@ repositories:
     # # TODO: once heracles can go to prod, it can go to uat, in which case we'd want to
     #         uncomment the following lines, remove the `exclude_envs` immediately above,
     #         and get rid of hydra_etd below.
-    # non_standard_envs:
-    #   - uat
+    non_standard_envs:
+      - uat
   - name: sul-dlss/hungry-hungry-hippo
     cocina_models_update: true
   - name: sul-dlss/hydra_etd
@@ -45,8 +45,6 @@ repositories:
     exclude_envs:
       - qa
       - stage
-    non_standard_envs:
-      - uat
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     cocina_models_update: true
