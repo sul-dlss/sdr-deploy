@@ -33,8 +33,7 @@ repositories:
     cocina_models_update: true
     exclude_envs:
       - prod
-    # # TODO: once heracles can go to prod, it can go to uat, in which case we'd want to
-    #         uncomment the following lines, remove the `exclude_envs` immediately above,
+    # # TODO: once heracles can go to prod, remove the `exclude_envs` immediately above,
     #         and get rid of hydra_etd below.
     non_standard_envs:
       - uat
