@@ -29,19 +29,10 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/heracles-etd
     cocina_models_update: true
-    exclude_envs:
-      - prod
-    # # TODO: once heracles can go to prod, remove the `exclude_envs` immediately above,
-    #         and get rid of hydra_etd below.
     non_standard_envs:
       - uat
   - name: sul-dlss/hungry-hungry-hippo
     cocina_models_update: true
-  - name: sul-dlss/hydra_etd
-    cocina_models_update: true
-    exclude_envs:
-      - qa
-      - stage
   - name: sul-dlss/modsulator-app-rails
   - name: sul-dlss/pre-assembly
     cocina_models_update: true
