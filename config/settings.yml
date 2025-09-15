@@ -27,8 +27,6 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/google-books
     cocina_models_update: true
-  - name: sul-dlss/happy-heron
-    cocina_models_update: true
   - name: sul-dlss/heracles-etd
     cocina_models_update: true
     exclude_envs:
