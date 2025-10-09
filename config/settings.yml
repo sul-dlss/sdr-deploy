@@ -38,6 +38,7 @@ repositories:
     cocina_models_update: true
   - name: sul-dlss/preservation_catalog
   - name: sul-dlss/preservation_robots
+  - name: sul-dlss/rialto-airflow
   - name: sul-dlss/rialto-orgs
     exclude_envs:
       - qa
