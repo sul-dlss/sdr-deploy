@@ -44,6 +44,7 @@ repositories:
   - name: sul-dlss/rialto-orgs
     exclude_envs:
       - qa
+  - name: sul-dlss/rialto-web
   - name: sul-dlss/robot-console
   - name: sul-dlss/sdr-api
     cocina_models_update: true
