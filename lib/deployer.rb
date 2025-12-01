@@ -50,7 +50,8 @@ class Deployer # rubocop:disable Metrics/ClassLength
       end
     ) do |repo|
       within_project_dir(repo:, environment:) do |env|
-        auditor.audit(repo: repo.name)
+        # 2025-12-01 commented out after audit was removed from dlss-capistrano pending dev planning discussion
+        # auditor.audit(repo: repo.name)
         run_before_command!(env)
         set_deploy_target!
         status, output = deploy(env)
@@ -58,7 +59,8 @@ class Deployer # rubocop:disable Metrics/ClassLength
       end
     end.flatten
 
-    auditor.report
+    # 2025-12-01 commented out after audit was removed from dlss-capistrano pending dev planning discussion
+    # auditor.report
 
     results
       .select { |result| result.output.match?('FAILED') }
