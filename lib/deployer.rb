@@ -65,7 +65,7 @@ class Deployer # rubocop:disable Metrics/ClassLength
     results
       .select { |result| result.output.match?('FAILED') }
       .each do |result|
-        puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
+      puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
     end
 
     render_markdown('***')
