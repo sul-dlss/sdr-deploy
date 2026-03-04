@@ -10,6 +10,7 @@ class SdrCLI < Thor
     "#{@package_name} #{command.usage}"
   end
 
+  namespace 'bin/sdr'
   package_name 'bin/sdr'
 
   no_commands do

@@ -10,6 +10,7 @@ class GitTagCLI < Thor
     "#{@package_name} #{command.usage}"
   end
 
+  namespace 'bin/sdr tag'
   package_name 'bin/sdr tag'
 
   class_option :skip_non_cocina,
