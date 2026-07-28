@@ -51,7 +51,10 @@ class RepoUpdater
   end
 
   def already_created?
-    File.exist?(repo_dir)
+    # Check for a real clone (.git), not just the directory: a failed clone can
+    # leave an empty dir behind, and treating that as "created" means we run
+    # update_repo (git fetch/reset) against the parent repo instead of re-cloning.
+    File.directory?(File.join(repo_dir, '.git'))
   end
 
   def update_or_create_repo
@@ -71,7 +74,7 @@ class RepoUpdater
       ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
       ErrorEmittingExecutor.execute('git reset --hard $(git symbolic-ref refs/remotes/origin/HEAD)',
                                     exit_on_error: true)
-      ErrorEmittingExecutor.execute('bundle install')
+      ErrorEmittingExecutor.execute('bundle install', exit_on_error: true)
     end
   end
 
@@ -80,7 +83,7 @@ class RepoUpdater
     within_project_dir(repo:) do
       ErrorEmittingExecutor.execute("git clone --tags git@github.com:#{repo.name}.git .", exit_on_error: true)
       ErrorEmittingExecutor.execute('git fetch --tags origin', exit_on_error: true)
-      ErrorEmittingExecutor.execute('bundle install')
+      ErrorEmittingExecutor.execute('bundle install', exit_on_error: true)
     end
   end
 end
