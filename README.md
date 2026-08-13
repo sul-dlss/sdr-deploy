@@ -21,6 +21,12 @@ Make sure that:
   * The credentials are set to an environment variable on the server via puppet from values stored in vault (vault info: https://consul.stanford.edu/display/systeam/Vault+for+Developers).  To fetch without digging into vault, go to a server that has them set via puppet and view the environment variable. See below under "Configure bundler for your local path" for an example.
 * NOTE: You *may* invoke the `bin/` scripts via `bundle exec`.
 
+Deploying a Kamal-managed repository also requires the Docker CLI with Buildx,
+the Vault CLI, and the standard OpenSSH client tools (`ssh`, `ssh-agent`,
+`ssh-add`, and `ssh-keygen`). Authenticate to Vault before deploying; when the
+current token is invalid, `sdr-deploy` will run `vault login -method=oidc`
+before parallel deployments begin.
+
 You can turn on success output for repo cache updates and deploy logging if you find it useful.  Override the Settings.progress_file in a config/settings.local.yml and you will get one file per repo.  This is useful if you get a crash part way, as it can tell you which repos were successfully completed.
 
 ### SSH Setup
@@ -182,6 +188,11 @@ Examples:
 
 This command deploys repositories in parallel.
 
+Repositories use Capistrano by default. A repository configured with
+`deployment_strategy: kamal` is deployed through its `bin/kamal-otk` wrapper
+from a clean temporary clone at the exact selected commit. Both strategies can
+therefore run together in the same command.
+
 ```
 Usage:
   bin/sdr deploy -e, --environment=ENVIRONMENT
@@ -204,6 +215,7 @@ Deploy services to a given environment
 
 Examples:
   bin/sdr deploy -s -e qa -t my-wip-branch --only=sul-dlss/technical-metadata-service
+  bin/sdr deploy -e qa --only=sul-dlss/argo-b3
   bin/sdr deploy -c -e qa -t rel-2022-09-14
 ```
 

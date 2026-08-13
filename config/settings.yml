@@ -12,6 +12,9 @@ supported_envs:
 repositories:
   - name: sul-dlss/argo
     cocina_models_update: true
+  - name: sul-dlss/argo-b3
+    deployment_strategy: kamal
+    cocina_models_update: true
   - name: sul-dlss/common-accessioning
     cocina_models_update: true
   - name: sul-dlss/dlme-airflow
