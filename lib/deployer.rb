@@ -25,13 +25,14 @@ class Deployer # rubocop:disable Metrics/ClassLength
     ensure_tag_present_in_all_repos! if tag
   end
 
-  def deploy_all # rubocop:disable Metrics/CyclomaticComplexity
+  def deploy_all # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     render_markdown('***')
     render_markdown("# Deploying the following repositories to #{environment} (#{tag || 'default branch'})")
     render_markdown(repos.map { |repo| "* #{repo.name}" }.join("\n"))
 
     prompt_user_for_branch_confirmation!
     prompt_user_for_approval_confirmation!
+    preflight_deployment_strategies!
 
     progress_bar.start
 
@@ -46,15 +47,15 @@ class Deployer # rubocop:disable Metrics/ClassLength
         next unless Settings.progress_file.enabled
 
         filename = File.join(Settings.progress_file.location, "#{File.basename(repo.name)}-deploy.log")
-        File.write(filename, "#{Time.now} : #{repo.name} deploy complete")
+        status = result_array.all?(&:status) ? 'succeeded' : 'failed'
+        File.write(filename, "#{Time.now} : #{repo.name} deploy #{status}")
       end
     ) do |repo|
+      strategy = strategy_for(repo)
       within_project_dir(repo:, environment:) do |env|
         # 2025-12-01 commented out after audit was removed from dlss-capistrano pending dev planning discussion
         # auditor.audit(repo: repo.name)
-        run_before_command!(env)
-        set_deploy_target!
-        status, output = deploy(env)
+        status, output = strategy.deploy(environment: env, before_command:)
         Result.new(repo.name, env, status, output)
       end
     end.flatten
@@ -62,13 +63,17 @@ class Deployer # rubocop:disable Metrics/ClassLength
     # 2025-12-01 commented out after audit was removed from dlss-capistrano pending dev planning discussion
     # auditor.report
 
-    results
-      .select { |result| result.output.match?('FAILED') }
-      .each do |result|
+    failed_results = results.reject(&:status)
+    failed_results.each do |result|
       puts "Output from failed deployment of #{result.repo} (#{result.env}):\n#{result.output}"
     end
 
     render_markdown('***')
+    if failed_results.any?
+      render_markdown("**#{failed_results.count} deployment(s) to #{environment} failed**")
+      raise Thor::Error, 'One or more deployments failed'
+    end
+
     render_markdown("**Deployments to #{environment} complete**")
     render_markdown("[Check service status](#{status_url})")
   end
@@ -97,12 +102,6 @@ class Deployer # rubocop:disable Metrics/ClassLength
       config.handlers = [:console]
       config.output = stream
     end
-  end
-
-  def run_before_command!(env)
-    return unless before_command
-
-    `bundle exec cap #{env} remote_execute['#{before_command}'] 2>&1`
   end
 
   def status_url
@@ -147,31 +146,13 @@ class Deployer # rubocop:disable Metrics/ClassLength
     @auditor ||= Auditor.new
   end
 
-  def deploy(env)
-    output = []
-
-    IO.popen({ 'SKIP_BUNDLE_AUDIT' => 'true' }, "bundle exec cap #{env} deploy 2>&1") do |f|
-      loop do
-        output << f.readline
-        # NOTE: Uncomment this if the deploy does something mysterious and you crave more observability.
-        # puts output
-      rescue EOFError
-        break
-      end
-    end
-
-    [$CHILD_STATUS.success?, output.join]
+  def strategy_for(repo)
+    DeploymentStrategy.for(repo:, target: tag)
   end
 
-  # Either deploy HEAD or the given tag
-  def set_deploy_target!
-    if tag
-      # Deploy the given tag
-      TTY::File.replace_in_file('config/deploy.rb', /^ask :branch.+$/, "set :branch, '#{tag}'", verbose: false)
-    else
-      # Forces the `git:create_release` cap task to use the HEAD ref, which allows
-      # different repositories to use different default branches.
-      TTY::File.replace_in_file('config/deploy.rb', /ask :branch/, 'set :branch', verbose: false)
+  def preflight_deployment_strategies!
+    repos.each do |repo|
+      strategy_for(repo).class.preflight!
     end
   end
 end

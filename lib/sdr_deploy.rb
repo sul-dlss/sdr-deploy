@@ -13,6 +13,14 @@ require 'tty-markdown'
 require 'tty-progressbar'
 require 'tty-prompt'
 require 'tty-table'
+require 'zeitwerk'
+
+loader = Zeitwerk::Loader.new
+loader.tag = 'sdr-deploy'
+
+loader.push_dir(__dir__)
+loader.ignore(__FILE__)
+loader.setup
 
 Config.load_and_set_settings(
   Config.setting_files('config', 'local')
@@ -100,5 +108,3 @@ DARK_THEME = {
 def render_markdown(string)
   puts TTY::Markdown.parse(string, theme: light_mode? ? LIGHT_THEME : DARK_THEME)
 end
-
-Dir['./lib/*.rb'].each { |f| require f }

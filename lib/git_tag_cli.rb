@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Container for git tag subcommands
-class GitTagCLI < Thor
+class GitTagCli < Thor
   def self.exit_on_failure?
     true
   end

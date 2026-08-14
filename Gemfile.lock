@@ -91,6 +91,7 @@ GEM
     unicode-display_width (2.6.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   arm64-darwin-23
@@ -116,6 +117,7 @@ DEPENDENCIES
   tty-progressbar
   tty-prompt
   tty-table
+  zeitwerk
 
 BUNDLED WITH
   4.0.18

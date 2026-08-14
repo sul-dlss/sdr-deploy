@@ -4,4 +4,4 @@
 $LOAD_PATH.unshift 'lib'
 require 'sdr_deploy'
 
-SdrCLI.start(ARGV)
+SdrCli.start(ARGV)
