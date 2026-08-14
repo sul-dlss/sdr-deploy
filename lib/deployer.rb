@@ -22,7 +22,7 @@ class Deployer # rubocop:disable Metrics/ClassLength
       total: @repos.count
     )
     @tag = tag
-    ensure_ref_present_in_all_repos! if tag
+    ensure_tag_present_in_all_repos! if tag
   end
 
   def deploy_all # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -78,10 +78,10 @@ class Deployer # rubocop:disable Metrics/ClassLength
     render_markdown("[Check service status](#{status_url})")
   end
 
-  def ensure_ref_present_in_all_repos!
-    return if repos_missing_ref.empty?
+  def ensure_tag_present_in_all_repos!
+    return if repos_missing_tag.empty?
 
-    raise "Aborting: git ref '#{tag}' is missing in these repos: #{repos_missing_ref.join(', ')}"
+    raise "Aborting: git tag '#{tag}' is missing in these repos: #{repos_missing_tag.join(', ')}"
   end
 
   private
@@ -136,29 +136,18 @@ class Deployer # rubocop:disable Metrics/ClassLength
       .map(&:name)
   end
 
-  def repos_missing_ref
-    @repos_missing_ref ||= repos.filter_map do |repo|
-      resolved_refs[repo.name] = GitRefResolver.resolve(repo:, target: tag)
-      nil
-    rescue GitRefResolver::RefNotFound
-      repo.name
-    end
+  def repos_missing_tag
+    @repos_missing_tag ||= repos.reject do |repo|
+      Dir.chdir(RepoUpdater.new(repo:).repo_dir) { system("git show-ref -q #{tag}") }
+    end.map(&:name)
   end
 
   def auditor
     @auditor ||= Auditor.new
   end
 
-  def ref_for(repo)
-    resolved_refs[repo.name] ||= GitRefResolver.resolve(repo:, target: tag)
-  end
-
-  def resolved_refs
-    @resolved_refs ||= {}
-  end
-
   def strategy_for(repo)
-    DeploymentStrategy.for(repo:, ref: ref_for(repo), target: tag)
+    DeploymentStrategy.for(repo:, target: tag)
   end
 
   def preflight_deployment_strategies!

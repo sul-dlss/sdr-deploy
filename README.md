@@ -190,8 +190,10 @@ This command deploys repositories in parallel.
 
 Repositories use Capistrano by default. A repository configured with
 `deployment_strategy: kamal` is deployed through its `bin/kamal-otk` wrapper
-from a clean temporary clone at the exact selected commit. Both strategies can
-therefore run together in the same command.
+from its cached repository. Kamal checks out the tag supplied with `-t`, or
+uses the cached repository's current `HEAD` when no tag is supplied. Repository
+caches are normally refreshed before deployment unless `--skip-update` is used.
+Capistrano and Kamal repositories can run together in the same command.
 
 ```
 Usage:

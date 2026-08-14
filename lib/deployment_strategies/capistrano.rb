@@ -14,7 +14,7 @@ module DeploymentStrategies
     end
 
     def check_ssh(environment:)
-      capture_command({}, 'bundle', 'exec', 'cap', environment, 'ssh_check')
+      capture_command('bundle', 'exec', 'cap', environment, 'ssh_check')
     end
 
     private
@@ -22,18 +22,15 @@ module DeploymentStrategies
     def deploy_command(environment)
       set_deploy_target!
       capture_command(
-        { 'SKIP_BUNDLE_AUDIT' => 'true' },
-        'bundle', 'exec', 'cap', environment, 'deploy'
+        'bundle', 'exec', 'cap', environment, 'deploy',
+        command_env: { 'SKIP_BUNDLE_AUDIT' => 'true' }
       )
     end
 
     def run_before_command(environment, before_command)
       return [true, ''] unless before_command
 
-      capture_command(
-        {},
-        'bundle', 'exec', 'cap', environment, "remote_execute[#{before_command}]"
-      )
+      capture_command('bundle', 'exec', 'cap', environment, "remote_execute[#{before_command}]")
     end
 
     def set_deploy_target!

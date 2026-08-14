@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'tmpdir'
-
 module DeploymentStrategies
-  # Executes Kamal from a clean, temporary clone at the selected commit.
+  # Executes Kamal from the selected target in the cached repository.
   class Kamal < DeploymentStrategy
     REQUIRED_EXECUTABLES = %w[bundle docker ssh ssh-add ssh-agent ssh-keygen vault].freeze
 
@@ -28,52 +26,39 @@ module DeploymentStrategies
     private_class_method :executable_available?
 
     def deploy(environment:, before_command: nil)
-      with_source_clone { deploy_from_clone(environment, before_command) }
+      checkout_target
+      ensure_bundle!
+      deploy_from_repo(environment, before_command)
     rescue StandardError => e
       [false, "#{e.class}: #{e.message}\n"]
     end
 
     def check_ssh(environment:)
-      capture_command({}, 'bin/kamal-otk', environment, 'server', 'exec', 'true')
+      capture_command('bin/kamal-otk', environment, 'server', 'exec', 'true')
     end
 
     private
 
-    def deploy_from_clone(environment, before_command)
+    def checkout_target
+      run_command('git', '-C', repo_dir, 'checkout', '--quiet', '--detach', target || 'HEAD')
+    end
+
+    def deploy_from_repo(environment, before_command)
       status, output = run_before_command(environment, before_command)
       return [false, output] unless status
 
-      deploy_status, deploy_output = capture_command({}, 'bin/kamal-otk', environment, 'deploy')
+      deploy_status, deploy_output = capture_command('bin/kamal-otk', environment, 'deploy')
       [deploy_status, output + deploy_output]
     end
 
     def run_before_command(environment, before_command)
       return [true, ''] unless before_command
 
-      capture_command({}, 'bin/kamal-otk', environment, 'server', 'exec', before_command)
-    end
-
-    def with_source_clone
-      Dir.mktmpdir("#{File.basename(repo.name)}-deploy-") do |temporary_directory|
-        clone_directory = File.join(temporary_directory, 'repo')
-        clone_repository(clone_directory)
-        run_command('git', '-C', clone_directory, 'checkout', '--quiet', '--detach', ref)
-
-        Dir.chdir(clone_directory) do
-          ensure_bundle!
-          return yield
-        end
-      end
-    end
-
-    def clone_repository(clone_directory)
-      origin = run_command('git', '-C', repo_dir, 'remote', 'get-url', 'origin').strip
-      run_command('git', 'clone', '--quiet', '--no-hardlinks', '--no-checkout', repo_dir, clone_directory)
-      run_command('git', '-C', clone_directory, 'remote', 'set-url', 'origin', origin)
+      capture_command('bin/kamal-otk', environment, 'server', 'exec', before_command)
     end
 
     def ensure_bundle!
-      status, = capture_command({}, 'bundle', 'check')
+      status, = capture_command('bundle', 'check')
       run_command('bundle', 'install') unless status
     end
   end
