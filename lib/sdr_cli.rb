@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # SDR command-line interface
-class SdrCLI < Thor
+class SdrCli < Thor
   def self.exit_on_failure?
     true
   end
@@ -40,7 +40,7 @@ class SdrCLI < Thor
   end
 
   desc 'tag SUBCOMMAND TAG_NAME', 'Create, delete, or verify a git tag named TAG_NAME'
-  subcommand 'tag', GitTagCLI
+  subcommand 'tag', GitTagCli
 
   option :only,
          type: :array,

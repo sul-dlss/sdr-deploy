@@ -26,7 +26,8 @@ class DeploymentStrategy
     @target = target
   end
 
-  def preflight!; end
+  # override in subclasses to perform preflight checks before deployment
+  def self.preflight!; end
 
   private
 
@@ -50,6 +51,3 @@ class DeploymentStrategy
     raise CommandFailed, "Command failed: #{command.join(' ')}\n#{output}"
   end
 end
-
-require_relative 'deployment_strategies/capistrano'
-require_relative 'deployment_strategies/kamal'

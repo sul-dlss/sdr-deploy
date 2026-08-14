@@ -16,6 +16,7 @@ gem 'tty-markdown'
 gem 'tty-progressbar'
 gem 'tty-prompt'
 gem 'tty-table'
+gem 'zeitwerk'
 
 group :test, :development do
   gem 'rspec_junit_formatter' # Used by CircleCI

@@ -7,6 +7,26 @@ module DeploymentStrategies
   class Kamal < DeploymentStrategy
     REQUIRED_EXECUTABLES = %w[bundle docker ssh ssh-add ssh-agent ssh-keygen vault].freeze
 
+    def self.preflight!
+      missing = REQUIRED_EXECUTABLES.reject { |executable| executable_available?(executable) }
+      raise Thor::Error, "Missing commands required for Kamal: #{missing.join(', ')}" if missing.any?
+
+      unless system('docker', 'buildx', 'version', out: File::NULL, err: File::NULL)
+        raise Thor::Error, 'Kamal deployments require the Docker Buildx plugin'
+      end
+
+      vault_authenticated = system('vault', 'token', 'lookup', out: File::NULL, err: File::NULL) ||
+                            system('vault', 'login', '-method=oidc')
+      raise Thor::Error, 'Unable to authenticate to Vault for the Kamal deployment' unless vault_authenticated
+    end
+
+    def self.executable_available?(executable)
+      ENV.fetch('PATH', '').split(File::PATH_SEPARATOR).any? do |directory|
+        File.executable?(File.join(directory, executable))
+      end
+    end
+    private_class_method :executable_available?
+
     def deploy(environment:, before_command: nil)
       with_source_clone { deploy_from_clone(environment, before_command) }
     rescue StandardError => e
@@ -15,20 +35,6 @@ module DeploymentStrategies
 
     def check_ssh(environment:)
       capture_command({}, 'bin/kamal-otk', environment, 'server', 'exec', 'true')
-    end
-
-    def preflight!
-      missing = REQUIRED_EXECUTABLES.reject { |executable| executable_available?(executable) }
-      raise Thor::Error, "Missing commands required for Kamal: #{missing.join(', ')}" if missing.any?
-
-      unless system('docker', 'buildx', 'version', out: File::NULL, err: File::NULL)
-        raise Thor::Error, 'Kamal deployments require the Docker Buildx plugin'
-      end
-
-      return if system('vault', 'token', 'lookup', out: File::NULL, err: File::NULL)
-      return if system('vault', 'login', '-method=oidc')
-
-      raise Thor::Error, 'Unable to authenticate to Vault for the Kamal deployment'
     end
 
     private
@@ -69,12 +75,6 @@ module DeploymentStrategies
     def ensure_bundle!
       status, = capture_command({}, 'bundle', 'check')
       run_command('bundle', 'install') unless status
-    end
-
-    def executable_available?(executable)
-      ENV.fetch('PATH', '').split(File::PATH_SEPARATOR).any? do |directory|
-        File.executable?(File.join(directory, executable))
-      end
     end
   end
 end

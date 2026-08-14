@@ -162,8 +162,8 @@ class Deployer # rubocop:disable Metrics/ClassLength
   end
 
   def preflight_deployment_strategies!
-    repos
-      .select { |repo| repo.deployment_strategy.to_s == 'kamal' }
-      .each { |repo| strategy_for(repo).preflight! }
+    repos.each do |repo|
+      strategy_for(repo).class.preflight!
+    end
   end
 end
