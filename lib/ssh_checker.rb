@@ -15,7 +15,7 @@ class SshChecker
 
   def check_ssh
     puts "repos to SSH check: #{repos.map(&:name).join(', ')}"
-    results = Parallel.map(repos, in_processes: Settings.num_parallel_processes) { |repo| check_repo(repo) }.flatten
+    results = Parallel.flat_map(repos, in_processes: Settings.num_parallel_processes) { |repo| check_repo(repo) }
 
     failed_results = results.reject { |result| result[:status] }
     report_failures(failed_results)

@@ -9,9 +9,9 @@ class DeploymentStrategy
 
     case strategy.to_s
     when 'capistrano'
-      CapistranoDeploymentStrategy.new(repo:, ref:, target:)
+      DeploymentStrategies::Capistrano.new(repo:, ref:, target:)
     when 'kamal'
-      KamalDeploymentStrategy.new(repo:, ref:, target:)
+      DeploymentStrategies::Kamal.new(repo:, ref:, target:)
     else
       raise ArgumentError, "Unknown deployment strategy '#{strategy}' for #{repo.name}"
     end
@@ -43,8 +43,8 @@ class DeploymentStrategy
     [status.success?, output.join]
   end
 
-  def run_command!(environment, *command)
-    status, output = capture_command(environment, *command)
+  def run_command(*command)
+    status, output = capture_command({}, *command)
     return output if status
 
     raise CommandFailed, "Command failed: #{command.join(' ')}\n#{output}"
