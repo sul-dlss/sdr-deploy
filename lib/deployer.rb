@@ -71,11 +71,14 @@ class Deployer # rubocop:disable Metrics/ClassLength
     render_markdown('***')
     if failed_results.any?
       render_markdown("**#{failed_results.count} deployment(s) to #{environment} failed**")
-      raise Thor::Error, 'One or more deployments failed'
+      render_markdown("**Failed repositories:**\n#{failed_results.map do |result|
+        "* #{result.repo} (#{result.env})"
+      end.join("\n")}")
     end
 
     render_markdown("**Deployments to #{environment} complete**")
     render_markdown("[Check service status](#{status_url})")
+    raise Thor::Error, 'One or more deployments failed' if failed_results.any?
   end
 
   def ensure_tag_present_in_all_repos!
