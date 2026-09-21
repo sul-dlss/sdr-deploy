@@ -9,7 +9,7 @@ GEM
       ostruct
     deep_merge (1.2.2)
     diff-lcs (1.6.2)
-    io-console (0.9.3)
+    io-console (0.9.4)
     json (3.0.2)
     kramdown (2.5.2)
       rexml (>= 3.4.4)
@@ -120,4 +120,4 @@ DEPENDENCIES
   zeitwerk
 
 BUNDLED WITH
-  4.0.20
+  4.0.21
