@@ -30,9 +30,9 @@ GEM
       io-console (~> 0.5)
     rexml (3.4.4)
     rouge (4.7.0)
-    rspec-core (3.13.6)
+    rspec-core (3.13.7)
       rspec-support (~> 3.13.0)
-    rspec-support (3.13.7)
+    rspec-support (3.13.8)
     rspec_junit_formatter (0.8.0)
       rspec-core (>= 3.13, < 4)
     rubocop (1.92.2)
@@ -120,4 +120,4 @@ DEPENDENCIES
   zeitwerk
 
 BUNDLED WITH
-  4.0.23
+  4.0.24
