@@ -11,7 +11,7 @@ GEM
     diff-lcs (1.6.2)
     io-console (0.9.5)
     json (3.1.0)
-    kramdown (2.5.2)
+    kramdown (2.6.1)
       rexml (>= 3.4.4)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
@@ -22,7 +22,10 @@ GEM
       racc
     pastel (0.8.0)
       tty-color (~> 0.5)
-    prism (1.9.0)
+    prism (2.1.0)
+    prism (2.1.0-arm64-darwin)
+    prism (2.1.0-x86_64-darwin)
+    prism (2.1.0-x86_64-linux-gnu)
     racc (1.8.1)
     rainbow (3.1.1)
     regexp_parser (2.13.1)
@@ -46,9 +49,9 @@ GEM
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.50.0)
+    rubocop-ast (1.51.0)
       parser (>= 3.3.7.2)
-      prism (~> 1.7)
+      prism (>= 1.7)
     ruby-progressbar (1.13.0)
     strings (0.2.1)
       strings-ansi (~> 0.2)
@@ -120,4 +123,4 @@ DEPENDENCIES
   zeitwerk
 
 BUNDLED WITH
-  4.0.24
+  4.1.0
